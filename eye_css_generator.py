@@ -338,7 +338,7 @@ class FlexBox:
         self.flex_css_classes.append(flex_basis_auto)
         for i in range(0, 101, 1):
             flex_basis_css = f"""
-            .flex-basis-{i}: {{flex-basis: {i/12 * 100}%;}}
+            .flex-basis-{i}: {{flex-basis: {i / 12 * 100}%;}}
             """
             self.flex_css_classes.append(flex_basis_css)
 
@@ -618,7 +618,7 @@ class Margins:
     @property
     def css_properties(self):
         return self.margin_css_classes
-        
+
     def gen_margin_small_helpers(self):
         """
         :Date: June 27, 2022.
@@ -824,12 +824,12 @@ class Paddings:
     @property
     def css_properties(self):
         return self.padding_css_classes
-    
+
     def gen_padding_default_helpers(self):
-            """
-            :Date: June 27, 2022.
-            """
-            pad_default_css = f"""
+        """
+        :Date: June 27, 2022.
+        """
+        pad_default_css = f"""
             .pad-0 {{padding: 0;}}
             .pad-x-0 {{padding-left: 0; padding-right: 0;}}
             .pad-y-0 {{padding-top: 0; padding-bottom: 0;}}
@@ -859,8 +859,7 @@ class Paddings:
             .pad-left-unset {{padding-left: unset;}}
             .pad-right-unset {{padding-right: unset;}}
             """
-            self.padding_css_classes.append(pad_default_css)
-
+        self.padding_css_classes.append(pad_default_css)
 
     def gen_padding_auto_helpers(self):
         """Generates padding auto css class
@@ -1034,15 +1033,16 @@ class ZIndex:
     This Class defined z-index css properties.
     :Date: June 27, 2022.
     """
+
     def __init__(self) -> None:
         self.zindex_css_classes = list()
         self.zindex_default_helpers()
         self.zindex_helpers()
         self.negative_zindex_helpers()
-    
+
     @property
     def css_properties(self):
-        return self.zindex_css_classes()
+        return self.zindex_css_classes
 
     def zindex_default_helpers(self):
         """
@@ -1059,7 +1059,7 @@ class ZIndex:
         .neg\:z-index-1000 {{z-index: -1000;}}
         """
         self.zindex_css_classes.append(zindex_default_css)
-    
+
     def zindex_helpers(self):
         """
         :Date: June 27, 2022.
@@ -1345,14 +1345,16 @@ class Texts:
         """
         pass
 
+
 class Colors:
     """
     Colors css classes.
     :Date: June 19, 2022.
     """
+
     def __init__(self) -> None:
         pass
-    
+
     def default_colors(self):
         """
         :Date: June 27, 2022.
@@ -1365,13 +1367,14 @@ class Borders:
     Border css classes.
     :Date: June 27, 2022.
     """
+
     def __init__(self) -> None:
         self.border_css_classes = list()
-    
+
     @property
     def css_properties(self):
-        return self.border_css_classes()
-    
+        return self.border_css_classes
+
     def border_width(self):
         """
         :Date: June 27, 2022.
@@ -1379,16 +1382,16 @@ class Borders:
         border_css = f"""
         .border {{box-shadow: 0 0 0 1px lightgray;}}
         """
-        self.border_css_classes.append(self.border_css)
+        self.border_css_classes.append(border_css)
         for i in range(2, 24, 2):
             border_css = f"""
             .border {{box-shadow: 0 0 0 {i}px lightgray;}}
             """
-            self.border_css_classes.append(self.border_css)
-    
+            self.border_css_classes.append(border_css)
+
     def border_color(self):
         pass
-        
+
 
 if "__main__" == __name__:
     CSSGenerator().write_styles()
