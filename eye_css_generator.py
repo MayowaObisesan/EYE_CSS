@@ -76,6 +76,7 @@ class CSSGenerator:
             *Radius().css_properties,
             *Texts().css_properties,
             *ZIndex().css_properties,
+            *Borders().css_properties,
         ]
         # print(css_properties_list)
         return css_properties_list
@@ -1370,6 +1371,8 @@ class Borders:
 
     def __init__(self) -> None:
         self.border_css_classes = list()
+        self.border_width()
+        self.border_color()
 
     @property
     def css_properties(self):
