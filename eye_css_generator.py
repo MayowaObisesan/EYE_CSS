@@ -19,6 +19,13 @@
 # One of the philosophies of eye.css is that:
 # "What should not be difficult should not be programmed unnecessarily complex."
 
+# TEXT DEFINITION - Source from csstricks.com
+# :root {
+#   font-size: 62.5%; /* (62.5/100) * 16px = 10px */
+#   --font-size--small: 1.4rem; /* 14px */
+#   --font-size--default: 1.6rem; /* 16px */
+#   --font-size--large: 2.4rem; /* 24px */
+# }
 
 class CSSGenerator:
     """
@@ -50,7 +57,8 @@ class CSSGenerator:
         css_list = [each_item.strip("\n").strip(" ") for each_item in css_list]
         return css_list
 
-    def minify_css_list(self, css_list):
+    @staticmethod
+    def minify_css_list(css_list):
         """:Date: inherit"""
         css_list = [
             each_item.lstrip("\n").rstrip("\n").strip(" ").replace("\n", "")
@@ -1339,8 +1347,24 @@ class Texts:
         """
         self.text_css_classes.append(text_weight_css)
 
-    def text_size(self):
-        """:Date: inherit"""
+    def font_size(self):
+        """:Date: inherit
+        Define font_sizes using rem according to css-tricks
+        Also, let the environment define your styles, don't make assumptions. - Also from csstricks.com
+        Embrace a diverse web!
+        The bottom line is this: we don’t have control over how content is consumed. Users have personal browser settings, the ability to zoom in and out, and various other ways to customize their reading experience. But we do have best CSS best practices we can use to maintain a good user experience alongside those preferences:
+
+        Work with proportions instead of explicit sizes.
+        Rely on default browser font sizes instead of setting it on the :root, <html> or <body>.
+        Use rem units to help scale content with a user’s personal preferences.
+        Avoid making assumptions and let the environment decide how your content is being consumed.
+
+        :root {
+          --font-size--small: calc((14/16) * 1rem); /* 14px */
+          --font-size--default: calc((16/16) * 1rem); /* 16px */
+          --font-size--large: calc((24/16) * 1rem); /* 24px */
+        }
+        """
         text_size_css = f"""
         .text-xs {{font-size: }}
         """
@@ -1393,7 +1417,10 @@ class Borders:
             self.border_css_classes.append(border_css)
 
     def border_color(self):
-        pass
+        border_colors = f"""
+        .border-color: {{border-color: }}
+        """
+        self.border_css_classes.append(border_colors)
 
 
 if "__main__" == __name__:
