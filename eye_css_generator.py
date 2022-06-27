@@ -624,9 +624,9 @@ class Margins:
         :Date: June 27, 2022.
         """
         for i in range(1, 13, 1):
-        mg_small_css = f"""
-        .mg-x{i}-sm {{margin-left: {(i * 8) - 2}px;}}
-        """
+            mg_small_css = f"""
+            .mg-x{i}-sm {{margin-left: {(i * 8) - 2}px;}}
+            """
 
     def gen_margin_default_helpers(self):
         """
@@ -825,41 +825,41 @@ class Paddings:
     def css_properties(self):
         return self.padding_css_classes
     
-        def gen_padding_default_helpers(self):
-        """
-        :Date: June 27, 2022.
-        """
-        pad_default_css = f"""
-        .pad-0 {{padding: 0;}}
-        .pad-x-0 {{padding-left: 0; padding-right: 0;}}
-        .pad-y-0 {{padding-top: 0; padding-bottom: 0;}}
-        .pad-top-0 {{padding-top: 0;}}
-        .pad-bottom-0 {{padding-bottom: 0;}}
-        .pad-left-0 {{padding-left: 0;}}
-        .pad-right-0 {{padding-right: 0;}}
-        .pad-initial {{padding: initial;}}
-        .pad-x-initial {{padding-left: initial; padding-right: initial;}}
-        .pad-y-initial {{padding-top: initial; padding-bottom: initial;}}
-        .pad-top-initial {{padding-top: initial;}}
-        .pad-bottom-initial {{padding-bottom: initial;}}
-        .pad-left-initial {{padding-left: initial;}}
-        .pad-right-initial {{padding-right: initial;}}
-        .pad-inherit {{padding: inherit;}}
-        .pad-x-inherit {{padding-left: inherit; padding-right: inherit;}}
-        .pad-y-inherit {{padding-top: inherit; padding-bottom: inherit;}}
-        .pad-top-inherit {{padding-top: inherit;}}
-        .pad-bottom-inherit {{padding-bottom: inherit;}}
-        .pad-left-inherit {{padding-left: inherit;}}
-        .pad-right-inherit {{padding-right: inherit;}}
-        .pad-unset {{padding: unset;}}
-        .pad-x-unset {{padding-left: unset; padding-right: unset;}}
-        .pad-y-unset {{padding-top: unset; padding-bottom: unset;}}
-        .pad-top-unset {{padding-top: unset;}}
-        .pad-bottom-unset {{padding-bottom: unset;}}
-        .pad-left-unset {{padding-left: unset;}}
-        .pad-right-unset {{padding-right: unset;}}
-        """
-        self.padding_css_classes.append(pad_default_css)
+    def gen_padding_default_helpers(self):
+            """
+            :Date: June 27, 2022.
+            """
+            pad_default_css = f"""
+            .pad-0 {{padding: 0;}}
+            .pad-x-0 {{padding-left: 0; padding-right: 0;}}
+            .pad-y-0 {{padding-top: 0; padding-bottom: 0;}}
+            .pad-top-0 {{padding-top: 0;}}
+            .pad-bottom-0 {{padding-bottom: 0;}}
+            .pad-left-0 {{padding-left: 0;}}
+            .pad-right-0 {{padding-right: 0;}}
+            .pad-initial {{padding: initial;}}
+            .pad-x-initial {{padding-left: initial; padding-right: initial;}}
+            .pad-y-initial {{padding-top: initial; padding-bottom: initial;}}
+            .pad-top-initial {{padding-top: initial;}}
+            .pad-bottom-initial {{padding-bottom: initial;}}
+            .pad-left-initial {{padding-left: initial;}}
+            .pad-right-initial {{padding-right: initial;}}
+            .pad-inherit {{padding: inherit;}}
+            .pad-x-inherit {{padding-left: inherit; padding-right: inherit;}}
+            .pad-y-inherit {{padding-top: inherit; padding-bottom: inherit;}}
+            .pad-top-inherit {{padding-top: inherit;}}
+            .pad-bottom-inherit {{padding-bottom: inherit;}}
+            .pad-left-inherit {{padding-left: inherit;}}
+            .pad-right-inherit {{padding-right: inherit;}}
+            .pad-unset {{padding: unset;}}
+            .pad-x-unset {{padding-left: unset; padding-right: unset;}}
+            .pad-y-unset {{padding-top: unset; padding-bottom: unset;}}
+            .pad-top-unset {{padding-top: unset;}}
+            .pad-bottom-unset {{padding-bottom: unset;}}
+            .pad-left-unset {{padding-left: unset;}}
+            .pad-right-unset {{padding-right: unset;}}
+            """
+            self.padding_css_classes.append(pad_default_css)
 
 
     def gen_padding_auto_helpers(self):
