@@ -145,7 +145,7 @@ class Positions:
             abs_x_css = f"""
             .abs-x{i} {{left: {i / self.default_x_grid_value * 100}%;}}
             """
-        self.position_css_classes.append(abs_x_css)
+            self.position_css_classes.append(abs_x_css)
 
     def abs_y_helpers(self):
         """
@@ -160,7 +160,7 @@ class Positions:
             abs_y_css = f"""
             .abs-y{i} {{top: {i / self.default_y_grid_value * 100}%;}}
             """
-        self.position_css_classes.append(abs_y_css)
+            self.position_css_classes.append(abs_y_css)
 
     def fixed(self):
         """
@@ -184,7 +184,7 @@ class Positions:
             fixed_x_css = f"""
             .fixed-x{i} {{left: {i / self.default_x_grid_value * 100}%;}}
             """
-        self.position_css_classes.append(fixed_x_css)
+            self.position_css_classes.append(fixed_x_css)
 
     def fixed_y_helpers(self):
         """
@@ -199,7 +199,7 @@ class Positions:
             fixed_y_css = f"""
             .fixed-y{i} {{top: {i / self.default_y_grid_value * 100}%;}}
             """
-        self.position_css_classes.append(fixed_y_css)
+            self.position_css_classes.append(fixed_y_css)
 
     def relative(self):
         """
@@ -223,7 +223,7 @@ class Positions:
             relative_x_css = f"""
             .relative-x{i} {{left: {i / self.default_x_grid_value * 100}%;}}
             """
-        self.position_css_classes.append(relative_x_css)
+            self.position_css_classes.append(relative_x_css)
 
     def relative_y_helpers(self):
         """
@@ -238,7 +238,7 @@ class Positions:
             relative_y_css = f"""
             .relative-y{i} {{top: {i / self.default_y_grid_value * 100}%;}}
             """
-        self.position_css_classes.append(relative_y_css)
+            self.position_css_classes.append(relative_y_css)
 
 
 class FlexBox:
