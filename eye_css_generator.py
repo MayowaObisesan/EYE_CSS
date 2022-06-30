@@ -100,6 +100,33 @@ class CSSGenerator:
             print("An error occured with initializing eye.css. Do Try again.")
 
 
+class Root:
+    """ :Date: June 30, 2022. """
+
+    def __init__(self) -> None:
+        self.root_css_classes = list()
+
+    @property
+    def css_properties(self):
+        """ :Date: inherit """
+        return self.root_css_classes
+
+    def gen_root(self):
+        """ :Date: inherit """
+        # --font-small: calc((14/16) * 1rem); /* 14px */
+        # --font-default: calc((16/16) * 1rem); /* 16px */
+        # --font-large: calc((24/16) * 1rem); /* 24px */
+        root_css = f""":root {{
+            --default_font_h1: {(32 / 16) * 1}rem;
+            --default_font_h2: {(24 / 16) * 1}rem;
+            --default_font_h3: {(18.72 / 16) * 1}rem;
+            --default_font_h4: {(16 / 16) * 1}rem;
+            --default_font_h5: {(13.28 / 16) * 1}rem;
+            --default_font_h6: {(10.72 / 16) * 1}rem;
+        }}"""
+        self.root_css_classes.append(root_css)
+
+
 class Positions:
     """
     CSS Position Helpers
@@ -1352,7 +1379,9 @@ class Texts:
         Define font_sizes using rem according to css-tricks
         Also, let the environment define your styles, don't make assumptions. - Also from csstricks.com
         Embrace a diverse web!
-        The bottom line is this: we don’t have control over how content is consumed. Users have personal browser settings, the ability to zoom in and out, and various other ways to customize their reading experience. But we do have best CSS best practices we can use to maintain a good user experience alongside those preferences:
+        The bottom line is this: we don’t have control over how content is consumed. Users have personal browser
+        settings, the ability to zoom in and out, and various other ways to customize their reading experience.
+        But we do have best CSS best practices we can use to maintain a good user experience alongside those preferences
 
         Work with proportions instead of explicit sizes.
         Rely on default browser font sizes instead of setting it on the :root, <html> or <body>.
@@ -1366,7 +1395,12 @@ class Texts:
         }
         """
         text_size_css = f"""
-        .text-xs {{font-size: }}
+        .font-h1 {{font-size: {(32 / 16) * 1}rem;}}
+        .font-h2 {{font-size: {(24 / 16) * 1}rem;}}
+        .font-h3 {{font-size: {(18.72 / 16) * 1}rem;}}
+        .font-h4 {{font-size: {(16 / 16) * 1}rem;}}
+        .font-h5 {{font-size: {(13.28 / 16) * 1}rem;}}
+        .font-h6 {{font-size: {(10.72 / 16) * 1}rem;}}
         """
         pass
 
