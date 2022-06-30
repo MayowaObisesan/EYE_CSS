@@ -85,6 +85,8 @@ class CSSGenerator:
             *Texts().css_properties,
             *ZIndex().css_properties,
             *Borders().css_properties,
+            *Colors().css_properties,
+            *Root().css_properties,
         ]
         # print(css_properties_list)
         return css_properties_list
@@ -105,14 +107,87 @@ class Root:
 
     def __init__(self) -> None:
         self.root_css_classes = list()
-        self.colors_dict = dict()
-        self.colors_dict["--default_color_white"]: "hsla(0, 0 %, 100 %, .9)"
-        self.colors_dict["--default_color_white_solid"]: "hsla(0, 0 %, 100 %, 1)"
-        self.colors_dict["--default_color_white_disabled"]: "hsla(0, 0 %, 60 %, 0.2)"
-        self.colors_dict["--default_color_white_transparent"]: "hsla(0, 0 %, 100 %, .8)"
+        # self.colors_dict = dict()
+        self.default_color_white = "hsla(0, 0 %, 100 %, .9)"
+        self.default_color_white_solid = "hsla(0, 0 %, 100 %, 1)"
+        self.default_color_white_disabled = "hsla(0, 0 %, 60 %, 0.2)"
+        self.default_color_white_transparent = "hsla(0, 0 %, 100 %, .8)"
 
-        self.colors_dict["--default_color_black"]: "hsla(0, 0 %, 0 %, 1)"
-        self.colors_dict["--default_color_black_transparent"]: "hsla(0, 0 %, 0 %, .9)"
+        self.default_color_black = "hsla(0, 0 %, 0 %, 1)"
+        self.default_color_black_transparent = "hsla(0, 0 %, 0 %, .9)"
+
+        self.default_color_light = "hsla(0, 0%, 82.7%, 0.9)"
+        self.default_color_light_hover = "hsla(0, 0%, 72.7%, 0.9)"
+        self.default_color_light_disabled = "hsla(0, 0%, 62.7%, 0.8)"
+        self.default_color_light_solid = "hsla(0, 0%, 82.7%, 1)"
+
+        self.default_color_lighter = "hsla(0, 0%, 96.1%, 0.9)"
+        self.default_color_lighter_hover = "hsla(0, 0%, 86.1%, 0.9)"
+        self.default_color_lighter_disabled = "hsla(0, 0%, 76.1%, 0.9)"
+        self.default_color_lighter_solid = "hsla(0, 0%, 96.1%, 1)"
+
+        self.default_color_green = "hsla(120, 76.5%, 33.3%, 0.7)"
+        self.default_color_green_hover = "hsla(120, 96.5%, 23.3%, 0.7)"
+        self.default_color_green_inverse = "hsla(120, 76.5%, 33.3%, 0.2)"
+        self.default_color_green_inverse_hover = "hsla(120, 76.5%, 33.3%, 0.4)"
+        self.default_color_green_border = "hsla(120, 76.5%, 33.3%, 0.4)"
+        self.default_color_green_dark = "hsl(120, 76.5%, 33.3%)"
+        self.default_color_green_disabled = "hsla(120, 76.5%, 23.3%, 0.2)"
+        self.default_color_green_solid = "hsla(120, 76.5%, 33.3%, 1)"
+
+        self.default_color_blue = "hsla(208, 95.2%, 58.8%, 0.9)"
+        self.default_color_blue_hover = "hsla(210, 85.2%, 48.8%, 0.9)"
+        self.default_color_blue_inverse = "hsla(206.1, 95.8%, 52.9%, 0.2)"
+        self.default_color_blue_inverse_hover = "hsla(206.1, 95.8%, 52.9%, 0.4)"
+        self.default_color_blue_dark = "hsl(208, 95.8%, 52.9%)"
+        self.default_color_blue_border = "hsla(208, 95.8%, 52.9%, 0.4)"
+        self.default_color_blue_disabled = "hsla(208, 85.8%, 42.9%, 0.4)"
+        self.default_color_blue_solid = "hsla(208, 95.2%, 58.8%, 1)"
+
+        self.default_color_red = "hsla(0, 88.3%, 40.4%, 0.9)"
+        self.default_color_red_hover = "hsla(0, 88.3%, 45.4%, 0.9)"
+        self.default_color_red_disabled = "hsla(0, 48.3%, 70.4%, 0.8)"
+        self.default_color_red_inverse = "hsla(0, 88.3%, 60.4%, 0.2)"
+        self.default_color_red_inverse_hover = "hsla(0, 88.3%, 60.4%, 0.4)"
+        self.default_color_red_border = "hsla(0, 68.3%, 60.4%, 0.2)"
+        self.default_color_red_dark = "hsl(0, 88.3%, 60.4%)"
+        self.default_color_red_solid = "hsla(0, 88.3%, 40.4%, 1)"
+
+        self.default_color_itheirs = "hsla(48, 95.2%, 58.8%, 0.9)"
+
+        self.default_color_itheirs_hover = "hsla(48, 95.2%, 48.8%, 0.9)"
+        self.default_color_itheirs_disabled = "hsla(48, 95.2%, 48.8%, 0.2)"
+        self.default_color_itheirs_border = "hsla(36, 90.9%, 78.4%, 0.9)"
+        self.default_color_itheirs_inverse = "hsla(48, 95.2%, 48.8%, 0.3)"
+        self.default_color_itheirs_inverse_hover = "hsla(48, 95.2%, 58.8%, 0.5)"
+        self.default_color_itheirs_dark = "hsl(39, 95.2%, 58.8%)"
+        self.default_color_itheirs_solid = "hsla(48, 95.2%, 58.8%, 1)"
+
+        self.default_color_purple = "hsla(278, 100%, 19.2%, 0.9)"
+        self.default_color_purple_hover = "hsla(278, 100%, 24.2%, 0.9)"
+        self.default_color_purple_disabled = "hsla(278, 40%, 59.2%, 0.9)"
+        self.default_color_purple_inverse = "hsla(278, 100%, 39.2%, 0.15)"
+        self.default_color_purple_inverse_hover = "hsla(278, 100%, 39.2%, 0.3)"
+        self.default_color_purple_border = "hsla(278, 50%, 39.2%, 0.4)"
+        self.default_color_purple_dark = "hsl(278, 50%, 29.2%)"
+        self.default_color_purple_solid = "hsla(278, 100%, 19.2%, 1)"
+
+        self.gen_root()
+        self.default_variables()
+
+    @staticmethod
+    def default_variables():
+        f"""
+            /*--default_color_gold = "hsla(40, 88.3%, 50.4%, 0.96);*/
+            /*--default_color_red = "hsla(0, 68.3%, 60.4%, 0.9);*/
+            /*
+            1.  On hover of colors, it becomes darker and looses some or all of it's transparency.
+            Think of a Plantain leaf. When it is covered, it's color becomes darker and less transparent. - 05TH OCTOBER, 2021.
+            2.  Disabled:  Light colors become dark when disabled, and Dark colors becomes Light when Disabled.;
+            3.  Hover: Dark Colors becomes Lighter and Light Colors become dark;
+            4.  Hover: Increase the Saturation and Reduce the Lightness for a Beautiful Hover Color.;
+            */
+        """
 
     @property
     def css_properties(self):
@@ -1448,6 +1523,14 @@ class Colors(Root):
         super().__init__()
         self.color_css_classes = list()
         self.white_color()
+        self.black_color()
+        self.light_color()
+        self.lighter_color()
+        self.green_color()
+        self.blue_color()
+        self.red_color()
+        self.purple_color()
+        self.itheirs_color()
 
     @property
     def css_properties(self):
@@ -1459,18 +1542,251 @@ class Colors(Root):
         """
         pass
 
+    def black_color(self):
+        """ :Date: July 1, 2022. """
+        black_color = f"""
+        .color-black {{color: {self.default_color_black};}}
+        .color-black-transparent {{color: {self.default_color_black_transparent};}}
+        """
+        self.color_css_classes.append(black_color)
+
     def white_color(self):
         """ :Date: July 1, 2022. """
         white_color = f"""
-        .color-white {{color: {self.colors_dict.get("--default_color_white")};}}
-        .color-white-solid {{color: {self.colors_dict.get("--default_color_white_solid")};}}
-        .color-white-transparent {{color: {self.colors_dict.get("--default_color_white_transparent")};}}
-        .color-white-disabled {{color: {self.colors_dict.get("--default_color_white_disabled")};}}
+        .color-white {{color: {self.default_color_white};}}
+        .color-white-solid {{color: {self.default_color_white_solid};}}
+        .color-white-transparent {{color: {self.default_color_white_transparent};}}
+        .color-white-disabled {{color: {self.default_color_white_disabled};}}
         """
         self.color_css_classes.append(white_color)
 
+    def light_color(self):
+        """ :Date: July 1, 2022. """
+        light_color = f"""
+        .color-light {{color: {self.default_color_light};}}
+        .color-light-solid {{color: {self.default_color_light_solid};}}
+        .color-light-hover {{color: {self.default_color_light_hover};}}
+        .color-light-disabled {{color: {self.default_color_light_disabled};}}
+        """
+        self.color_css_classes.append(light_color)
+
+    def lighter_color(self):
+        """ :Date: July 1, 2022. """
+        lighter_color = f"""
+        .color-lighter {{color: {self.default_color_lighter};}}
+        .color-lighter-solid {{color: {self.default_color_lighter_solid};}}
+        .color-lighter-hover {{color: {self.default_color_lighter_hover};}}
+        .color-lighter-disabled {{color: {self.default_color_lighter_disabled};}}
+        """
+        self.color_css_classes.append(lighter_color)
+
     def green_color(self):
+        """ :Date: July 1, 2022. """
+        green_color = f"""
+        .color-green {{color: {self.default_color_green};}}
+        .color-green-solid {{color: {self.default_color_green_solid};}}
+        .color-green-hover {{color: {self.default_color_green_hover};}}
+        .color-green-disabled {{color: {self.default_color_green_disabled};}}
+        .color-green-dark {{color: {self.default_color_green_dark};}}
+        .color-green-border {{color: {self.default_color_green_border};}}
+        .color-green-inverse {{color: {self.default_color_green_inverse};}}
+        .color-green-inverse-hover {{color: {self.default_color_green_inverse_hover};}}
+        """
+        self.color_css_classes.append(green_color)
+
+    def blue_color(self):
+        """ :Date: July 1, 2022. """
+        blue_color = f"""
+        .color-blue {{color: {self.default_color_blue};}}
+        .color-blue-solid {{color: {self.default_color_blue_solid};}}
+        .color-blue-hover {{color: {self.default_color_blue_hover};}}
+        .color-blue-disabled {{color: {self.default_color_blue_disabled};}}
+        .color-blue-dark {{color: {self.default_color_blue_dark};}}
+        .color-blue-border {{color: {self.default_color_blue_border};}}
+        .color-blue-inverse {{color: {self.default_color_blue_inverse};}}
+        .color-blue-inverse-hover {{color: {self.default_color_blue_inverse_hover};}}
+        """
+        self.color_css_classes.append(blue_color)
+
+    def red_color(self):
+        """ :Date: July 1, 2022. """
+        red_color = f"""
+        .color-red {{color: {self.default_color_red};}}
+        .color-red-solid {{color: {self.default_color_red_solid};}}
+        .color-red-hover {{color: {self.default_color_red_hover};}}
+        .color-red-disabled {{color: {self.default_color_red_disabled};}}
+        .color-red-dark {{color: {self.default_color_red_dark};}}
+        .color-red-border {{color: {self.default_color_red_border};}}
+        .color-red-inverse {{color: {self.default_color_red_inverse};}}
+        .color-red-inverse-hover {{color: {self.default_color_red_inverse_hover};}}
+        """
+        self.color_css_classes.append(red_color)
+
+    def purple_color(self):
+        """ :Date: July 1, 2022. """
+        purple_color = f"""
+        .color-purple {{color: {self.default_color_purple};}}
+        .color-purple-solid {{color: {self.default_color_purple_solid};}}
+        .color-purple-hover {{color: {self.default_color_purple_hover};}}
+        .color-purple-disabled {{color: {self.default_color_purple_disabled};}}
+        .color-purple-dark {{color: {self.default_color_purple_dark};}}
+        .color-purple-border {{color: {self.default_color_purple_border};}}
+        .color-purple-inverse {{color: {self.default_color_purple_inverse};}}
+        .color-purple-inverse-hover {{color: {self.default_color_purple_inverse_hover};}}
+        """
+        self.color_css_classes.append(purple_color)
+
+    def itheirs_color(self):
+        """ :Date: July 1, 2022. """
+        itheirs_color = f"""
+        .color-itheirs {{color: {self.default_color_itheirs};}}
+        .color-itheirs-solid {{color: {self.default_color_itheirs_solid};}}
+        .color-itheirs-hover {{color: {self.default_color_itheirs_hover};}}
+        .color-itheirs-disabled {{color: {self.default_color_itheirs_disabled};}}
+        .color-itheirs-dark {{color: {self.default_color_itheirs_dark};}}
+        .color-itheirs-border {{color: {self.default_color_itheirs_border};}}
+        .color-itheirs-inverse {{color: {self.default_color_itheirs_inverse};}}
+        .color-itheirs-inverse-hover {{color: {self.default_color_itheirs_inverse_hover};}}
+        """
+        self.color_css_classes.append(itheirs_color)
+
+
+class Backgrounds(Root):
+    """
+    Background css classes.
+    :Date: July 1, 2022.
+    """
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.bg_css_classes = list()
+        self.white_bg()
+        self.black_bg()
+        self.light_bg()
+        self.lighter_bg()
+        self.green_bg()
+        self.blue_bg()
+        self.red_bg()
+        self.purple_bg()
+        self.itheirs_bg()
+
+    @property
+    def css_properties(self):
+        return self.bg_css_classes
+
+    def default_colors(self):
+        """
+        :Date: inherit.
+        """
         pass
+
+    def black_bg(self):
+        """ :Date: July 1, 2022. """
+        black_bg = f"""
+        .bg-black {{color: {self.default_color_black};}}
+        .bg-black-transparent {{color: {self.default_color_black_transparent};}}
+        """
+        self.bg_css_classes.append(black_bg)
+
+    def white_bg(self):
+        """ :Date: July 1, 2022. """
+        white_bg = f"""
+        .bg-white {{color: {self.default_color_white};}}
+        .bg-white-solid {{color: {self.default_color_white_solid};}}
+        .bg-white-transparent {{color: {self.default_color_white_transparent};}}
+        .bg-white-disabled {{color: {self.default_color_white_disabled};}}
+        """
+        self.bg_css_classes.append(white_bg)
+
+    def light_bg(self):
+        """ :Date: July 1, 2022. """
+        light_bg = f"""
+        .bg-light {{color: {self.default_color_light};}}
+        .bg-light-solid {{color: {self.default_color_light_solid};}}
+        .bg-light-hover {{color: {self.default_color_light_hover};}}
+        .bg-light-disabled {{color: {self.default_color_light_disabled};}}
+        """
+        self.bg_css_classes.append(light_bg)
+
+    def lighter_bg(self):
+        """ :Date: July 1, 2022. """
+        lighter_bg = f"""
+        .bg-lighter {{color: {self.default_color_lighter};}}
+        .bg-lighter-solid {{color: {self.default_color_lighter_solid};}}
+        .bg-lighter-hover {{color: {self.default_color_lighter_hover};}}
+        .bg-lighter-disabled {{color: {self.default_color_lighter_disabled};}}
+        """
+        self.bg_css_classes.append(lighter_bg)
+
+    def green_bg(self):
+        """ :Date: July 1, 2022. """
+        green_bg = f"""
+        .bg-green {{color: {self.default_color_green};}}
+        .bg-green-solid {{color: {self.default_color_green_solid};}}
+        .bg-green-hover {{color: {self.default_color_green_hover};}}
+        .bg-green-disabled {{color: {self.default_color_green_disabled};}}
+        .bg-green-dark {{color: {self.default_color_green_dark};}}
+        .bg-green-border {{color: {self.default_color_green_border};}}
+        .bg-green-inverse {{color: {self.default_color_green_inverse};}}
+        .bg-green-inverse-hover {{color: {self.default_color_green_inverse_hover};}}
+        """
+        self.bg_css_classes.append(green_bg)
+
+    def blue_bg(self):
+        """ :Date: July 1, 2022. """
+        blue_bg = f"""
+        .bg-blue {{color: {self.default_color_blue};}}
+        .bg-blue-solid {{color: {self.default_color_blue_solid};}}
+        .bg-blue-hover {{color: {self.default_color_blue_hover};}}
+        .bg-blue-disabled {{color: {self.default_color_blue_disabled};}}
+        .bg-blue-dark {{color: {self.default_color_blue_dark};}}
+        .bg-blue-border {{color: {self.default_color_blue_border};}}
+        .bg-blue-inverse {{color: {self.default_color_blue_inverse};}}
+        .bg-blue-inverse-hover {{color: {self.default_color_blue_inverse_hover};}}
+        """
+        self.bg_css_classes.append(blue_bg)
+
+    def red_bg(self):
+        """ :Date: July 1, 2022. """
+        red_bg = f"""
+        .bg-red {{color: {self.default_color_red};}}
+        .bg-red-solid {{color: {self.default_color_red_solid};}}
+        .bg-red-hover {{color: {self.default_color_red_hover};}}
+        .bg-red-disabled {{color: {self.default_color_red_disabled};}}
+        .bg-red-dark {{color: {self.default_color_red_dark};}}
+        .bg-red-border {{color: {self.default_color_red_border};}}
+        .bg-red-inverse {{color: {self.default_color_red_inverse};}}
+        .bg-red-inverse-hover {{color: {self.default_color_red_inverse_hover};}}
+        """
+        self.bg_css_classes.append(red_bg)
+
+    def purple_bg(self):
+        """ :Date: July 1, 2022. """
+        purple_bg = f"""
+        .bg-purple {{color: {self.default_color_purple};}}
+        .bg-purple-solid {{color: {self.default_color_purple_solid};}}
+        .bg-purple-hover {{color: {self.default_color_purple_hover};}}
+        .bg-purple-disabled {{color: {self.default_color_purple_disabled};}}
+        .bg-purple-dark {{color: {self.default_color_purple_dark};}}
+        .bg-purple-border {{color: {self.default_color_purple_border};}}
+        .bg-purple-inverse {{color: {self.default_color_purple_inverse};}}
+        .bg-purple-inverse-hover {{color: {self.default_color_purple_inverse_hover};}}
+        """
+        self.bg_css_classes.append(purple_bg)
+
+    def itheirs_bg(self):
+        """ :Date: July 1, 2022. """
+        itheirs_bg = f"""
+        .bg-itheirs {{color: {self.default_color_itheirs};}}
+        .bg-itheirs-solid {{color: {self.default_color_itheirs_solid};}}
+        .bg-itheirs-hover {{color: {self.default_color_itheirs_hover};}}
+        .bg-itheirs-disabled {{color: {self.default_color_itheirs_disabled};}}
+        .bg-itheirs-dark {{color: {self.default_color_itheirs_dark};}}
+        .bg-itheirs-border {{color: {self.default_color_itheirs_border};}}
+        .bg-itheirs-inverse {{color: {self.default_color_itheirs_inverse};}}
+        .bg-itheirs-inverse-hover {{color: {self.default_color_itheirs_inverse_hover};}}
+        """
+        self.bg_css_classes.append(itheirs_bg)
 
 
 class Borders:
