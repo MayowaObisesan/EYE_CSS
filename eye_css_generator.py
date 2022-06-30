@@ -1336,6 +1336,7 @@ class Texts:
         self.text_align()
         self.text_styles()
         self.text_weight()
+        self.gen_font_size()
 
     @property
     def css_properties(self):
@@ -1374,7 +1375,23 @@ class Texts:
         """
         self.text_css_classes.append(text_weight_css)
 
-    def font_size(self):
+    @staticmethod
+    def font_size_template():
+        """:Date: July 1, 2022."""
+        font_size_sequence_template = "0.08, 0.08, 0.08, 0.09"
+        return font_size_sequence_template.replace(" ", "").split(",")
+
+    def gen_font_size(self, nth_size=20):
+        """ :Date: July 1, 2022. """
+        from decimal import Decimal
+        prev_ = Decimal("0.01")
+        for index, i in enumerate(self.font_size_template() * nth_size, 1):
+            prev_ += Decimal(i).quantize(Decimal("0.00"))
+            # print(f"{index} - {i} - {prev_}")
+            font_size_css = f".font-{index} {{font-size: {prev_}rem;}}"
+            self.text_css_classes.append(font_size_css)
+
+    def default_font_size(self):
         """:Date: inherit
         Define font_sizes using rem according to css-tricks
         Also, let the environment define your styles, don't make assumptions. - Also from csstricks.com
@@ -1394,7 +1411,8 @@ class Texts:
           --font-size--large: calc((24/16) * 1rem); /* 24px */
         }
         """
-        text_size_css = f"""
+        # .font2-h {{font-size: }}
+        default_font_size_css = f"""
         .font-h1 {{font-size: {(32 / 16) * 1}rem;}}
         .font-h2 {{font-size: {(24 / 16) * 1}rem;}}
         .font-h3 {{font-size: {(18.72 / 16) * 1}rem;}}
@@ -1402,7 +1420,7 @@ class Texts:
         .font-h5 {{font-size: {(13.28 / 16) * 1}rem;}}
         .font-h6 {{font-size: {(10.72 / 16) * 1}rem;}}
         """
-        pass
+        self.text_css_classes.append(default_font_size_css)
 
 
 class Colors:
@@ -1459,3 +1477,21 @@ class Borders:
 
 if "__main__" == __name__:
     CSSGenerator().write_styles()
+
+# def gen_font_size():
+#     from decimal import Decimal
+#     prev_font_size = Decimal(0.0)
+#     point_nine_stepper = 0
+#     for i in range(1, 13, 1):
+#         if i % 3 != 0:
+#             prev_font_size += Decimal(ret_point_eight()).quantize(Decimal("0.00"))
+#             print(f"{ret_point_eight()} - {prev_font_size} - {point_nine_stepper} - {i}")
+#         # if point_nine_stepper < 2:
+#         if i % 3 == 0:
+#             prev_font_size += Decimal(ret_point_nine()).quantize(Decimal("0.00"))
+#             print(f"{ret_point_nine()} - {prev_font_size} - {point_nine_stepper} - {i}")
+#             point_nine_stepper += 3
+#         # if i == point_nine_stepper:
+#         #     prev_font_size += Decimal(ret_point_nine()).quantize(Decimal("0.00"))
+#         #     print(f"{ret_point_nine()} - {prev_font_size} - {point_nine_stepper} - {i}")
+#         #     point_nine_stepper += 3
