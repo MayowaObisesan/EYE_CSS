@@ -105,6 +105,14 @@ class Root:
 
     def __init__(self) -> None:
         self.root_css_classes = list()
+        self.colors_dict = dict()
+        self.colors_dict["--default_color_white"]: "hsla(0, 0 %, 100 %, .9)"
+        self.colors_dict["--default_color_white_solid"]: "hsla(0, 0 %, 100 %, 1)"
+        self.colors_dict["--default_color_white_disabled"]: "hsla(0, 0 %, 60 %, 0.2)"
+        self.colors_dict["--default_color_white_transparent"]: "hsla(0, 0 %, 100 %, .8)"
+
+        self.colors_dict["--default_color_black"]: "hsla(0, 0 %, 0 %, 1)"
+        self.colors_dict["--default_color_black_transparent"]: "hsla(0, 0 %, 0 %, .9)"
 
     @property
     def css_properties(self):
@@ -123,6 +131,12 @@ class Root:
             --default_font_h4: {(16 / 16) * 1}rem;
             --default_font_h5: {(13.28 / 16) * 1}rem;
             --default_font_h6: {(10.72 / 16) * 1}rem;
+            
+            // Define css colors variables - July 1, 2022.
+            --default_color_white: hsla(0, 0 %, 100 %, .9);
+            --default_color_white_solid: hsla(0, 0 %, 100 %, 1);
+            --default_color_white_disabled: hsla(0, 0 %, 60 %, 0.2);
+            --default_color_white_transparent: hsla(0, 0 %, 100 %, .8);
         }}"""
         self.root_css_classes.append(root_css)
 
@@ -1336,6 +1350,7 @@ class Texts:
         self.text_align()
         self.text_styles()
         self.text_weight()
+        self.default_font_size()
         self.gen_font_size()
 
     @property
@@ -1392,7 +1407,7 @@ class Texts:
             self.text_css_classes.append(font_size_css)
 
     def default_font_size(self):
-        """:Date: inherit
+        """:Date: inherit (Modified: July 1, 2022)
         Define font_sizes using rem according to css-tricks
         Also, let the environment define your styles, don't make assumptions. - Also from csstricks.com
         Embrace a diverse web!
@@ -1423,19 +1438,38 @@ class Texts:
         self.text_css_classes.append(default_font_size_css)
 
 
-class Colors:
+class Colors(Root):
     """
     Colors css classes.
     :Date: June 19, 2022.
     """
 
     def __init__(self) -> None:
-        pass
+        super().__init__()
+        self.color_css_classes = list()
+        self.white_color()
+
+    @property
+    def css_properties(self):
+        return self.color_css_classes
 
     def default_colors(self):
         """
         :Date: June 27, 2022.
         """
+        pass
+
+    def white_color(self):
+        """ :Date: July 1, 2022. """
+        white_color = f"""
+        .color-white {{color: {self.colors_dict.get("--default_color_white")};}}
+        .color-white-solid {{color: {self.colors_dict.get("--default_color_white_solid")};}}
+        .color-white-transparent {{color: {self.colors_dict.get("--default_color_white_transparent")};}}
+        .color-white-disabled {{color: {self.colors_dict.get("--default_color_white_disabled")};}}
+        """
+        self.color_css_classes.append(white_color)
+
+    def green_color(self):
         pass
 
 
