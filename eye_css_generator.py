@@ -70,7 +70,12 @@ class CSSGenerator:
     def eye_init():
         """:Date: July 1, 2022."""
         eye_init_css = f"""
-        * {{--webkit-box-sizing: border-box; --moz-box-sizing: border-box; box-sizing: border-box;}}
+        * {{
+            --webkit-box-sizing: border-box; --moz-box-sizing: border-box; box-sizing: border-box;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: antialiased; /* | grayscale*/
+        }}
         """
         return [eye_init_css]
 
@@ -82,6 +87,7 @@ class CSSGenerator:
         # css_properties_list = Squares() + FlexBox() + Paddings()
         css_properties_list = [
             *self.eye_init(),
+            *Root().css_properties,
             *Positions().css_properties,
             *Displays().css_properties,
             *VerticalAlign().css_properties,
@@ -98,7 +104,7 @@ class CSSGenerator:
             *Borders().css_properties,
             *Colors().css_properties,
             *Backgrounds().css_properties,
-            *Root().css_properties,
+            *Overflows().css_properties,
         ]
         # print(css_properties_list)
         return css_properties_list
@@ -125,7 +131,7 @@ class Root:
         self.default_color_white_disabled = "hsla(0, 0%, 60%, 0.2)"
         self.default_color_white_transparent = "hsla(0, 0%, 100%, .8)"
 
-        self.default_color_black = "hsla(0, 0 %, 0 %, 1)"
+        self.default_color_black = "hsla(0, 0%, 0%, 1)"
         self.default_color_black_transparent = "hsla(0, 0%, 0%, .9)"
 
         self.default_color_light = "hsla(0, 0%, 82.7%, 0.9)"
@@ -252,6 +258,11 @@ class Positions:
         self.fixed_x_helpers()
         self.fixed_y_helpers()
         self.relative()
+        self.sticky()
+        self.left_helpers()
+        self.right_helpers()
+        self.top_helpers()
+        self.bottom_helpers()
 
     @property
     def css_properties(self):
@@ -282,9 +293,9 @@ class Positions:
         .abs-x2 {left: (1/12) * 100%;}
         :return:
         """
-        for i in range(1, self.default_x_grid_value + 1, 1):
+        for i in range(0, self.default_x_grid_value + 1, 1):
             abs_x_css = f"""
-            .abs-x{i} {{left: {i / self.default_x_grid_value + 1 * 100}%;}}
+            .abs-x{i} {{left: {i / self.default_x_grid_value * 100}%;}}
             """
             self.position_css_classes.append(abs_x_css)
 
@@ -297,7 +308,7 @@ class Positions:
         .abs-y2 {top: (1/12) * 100%;}
         :return:
         """
-        for i in range(1, self.default_y_grid_value, 1):
+        for i in range(0, self.default_y_grid_value + 1, 1):
             abs_y_css = f"""
             .abs-y{i} {{top: {i / self.default_y_grid_value * 100}%;}}
             """
@@ -321,9 +332,9 @@ class Positions:
         .fixed-x2 {left: (1/12) * 100%;}
         :return:
         """
-        for i in range(1, self.default_x_grid_value + 1, 1):
+        for i in range(0, self.default_x_grid_value + 1, 1):
             fixed_x_css = f"""
-            .fixed-x{i} {{left: {i / self.default_x_grid_value + 1 * 100}%;}}
+            .fixed-x{i} {{left: {i / self.default_x_grid_value * 100}%;}}
             """
             self.position_css_classes.append(fixed_x_css)
 
@@ -336,7 +347,7 @@ class Positions:
         .fixed-y2 {top: (1/12) * 100%;}
         :return:
         """
-        for i in range(1, self.default_y_grid_value, 1):
+        for i in range(0, self.default_y_grid_value + 1, 1):
             fixed_y_css = f"""
             .fixed-y{i} {{top: {i / self.default_y_grid_value * 100}%;}}
             """
@@ -360,9 +371,9 @@ class Positions:
         .relative-x2 {left: (1/12) * 100%;}
         :return:
         """
-        for i in range(1, self.default_x_grid_value + 1, 1):
+        for i in range(0, self.default_x_grid_value + 1, 1):
             relative_x_css = f"""
-            .relative-x{i} {{left: {i / self.default_x_grid_value + 1 * 100}%;}}
+            .relative-x{i} {{left: {i / self.default_x_grid_value * 100}%;}}
             """
             self.position_css_classes.append(relative_x_css)
 
@@ -375,11 +386,51 @@ class Positions:
         .relative-y2 {top: (1/12) * 100%;}
         :return:
         """
-        for i in range(1, self.default_y_grid_value, 1):
+        for i in range(0, self.default_y_grid_value + 1, 1):
             relative_y_css = f"""
             .relative-y{i} {{top: {i / self.default_y_grid_value * 100}%;}}
             """
             self.position_css_classes.append(relative_y_css)
+
+    def sticky(self):
+        """
+        Initialize the .sticky css class.
+        :Date: July 1, 2022.
+        """
+        sticky_css = ".sticky {position: sticky;}"
+        self.position_css_classes.append(sticky_css)
+
+    def left_helpers(self):
+        """:Date: July 1, 2022."""
+        for i in range(0, 101, 1):
+            left_css = f"""
+            .left-{i} {{left: {i}%;}}
+            """
+            self.position_css_classes.append(left_css)
+
+    def right_helpers(self):
+        """:Date: July 1, 2022."""
+        for i in range(0, 101, 1):
+            right_css = f"""
+            .right-{i} {{right: {i}%;}}
+            """
+            self.position_css_classes.append(right_css)
+
+    def top_helpers(self):
+        """:Date: July 1, 2022."""
+        for i in range(0, 101, 1):
+            top_css = f"""
+            .top-{i} {{top: {i}%;}}
+            """
+            self.position_css_classes.append(top_css)
+
+    def bottom_helpers(self):
+        """:Date: July 1, 2022."""
+        for i in range(0, 101, 1):
+            bottom_css = f"""
+            .bottom-{i} {{bottom: {i}%;}}
+            """
+            self.position_css_classes.append(bottom_css)
 
 
 class Displays:
@@ -642,6 +693,7 @@ class Widths:
         self.gen_percent_width_helpers()
         self.gen_width_helpers()
         self.gen_width_2x_helpers()
+        self.gen_width_3x_helpers()
         self.gen_width_safe_helpers()
 
     @property
@@ -697,6 +749,18 @@ class Widths:
             width_2x_css = f".w2-{i} {{width: {(i + 12) * self.default_dimension_value}px}}"
             self.width_css_classes.append(width_2x_css)
 
+    def gen_width_3x_helpers(self):
+        """
+        Generates eye.css width 3x helpers.
+        Format to be returned is:
+        .w3-1 {width: 104px;}   # i.e., (1 + 12 + 12) * self.default_dimension_value
+        .w3-2 {width: 112px;}   # i.e., (2 + 12 + 12) * self.default_dimension_value
+        :return: 3x width helper css classes
+        """
+        for i in range(1, 13, 1):
+            width_3x_css = f".w3-{i} {{width: {(i + 12 + 12) * self.default_dimension_value}px}}"
+            self.width_css_classes.append(width_3x_css)
+
     def gen_width_safe_helpers(self):
         """
         Generates eye.css width helpers.
@@ -725,6 +789,7 @@ class Heights:
         self.gen_percent_height_helpers()
         self.gen_height_helpers()
         self.gen_height_2x_helpers()
+        self.gen_height_3x_helpers()
         self.gen_height_safe_helpers()
 
     @property
@@ -781,6 +846,18 @@ class Heights:
         for i in range(1, 13, 1):
             height_2x_css = f".h2-{i} {{height: {(i + 12) * self.default_dimension_value}px}}"
             self.height_css_classes.append(height_2x_css)
+
+    def gen_height_3x_helpers(self):
+        """
+        Generates eye.css height 3x helpers.
+        Format to be returned is:
+        .h3-1 {height: 104px;}   # i.e., (1 + 12 + 12) * self.default_dimension_value
+        .h3-2 {height: 112px;}   # i.e., (2 + 12 + 12) * self.default_dimension_value
+        :return: 3x height helper css classes
+        """
+        for i in range(1, 13, 1):
+            height_3x_css = f".h3-{i} {{height: {(i + 12 + 12) * self.default_dimension_value}px}}"
+            self.height_css_classes.append(height_3x_css)
 
     def gen_height_safe_helpers(self):
         """
@@ -944,11 +1021,11 @@ class Margins:
         """
         for i in range(1, 13, 1):
             mg_left_css = f"""
-            .mg-left{i} {{margin-left: {self.default_dimension_value * i}px;}}
-            .mg-left{i}-sm {{margin-left: {(self.default_dimension_value * i) - 2}px;}}
-            .mg-left{i}-smr {{margin-left: {(self.default_dimension_value * i) - 4}px;}}
-            .mg-left{i}-smt {{margin-left: {(self.default_dimension_value * i) - 6}px;}}
-            .mg-left{i}-xs {{margin-left: {(self.default_dimension_value * i) - 7}px;}}
+            .mg-left{i}, .mg-l{i} {{margin-left: {self.default_dimension_value * i}px;}}
+            .mg-left{i}-sm, .mg-l{i}-sm {{margin-left: {(self.default_dimension_value * i) - 2}px;}}
+            .mg-left{i}-smr, .mg-l{i}-smr {{margin-left: {(self.default_dimension_value * i) - 4}px;}}
+            .mg-left{i}-smt, .mg-l{i}-smt {{margin-left: {(self.default_dimension_value * i) - 6}px;}}
+            .mg-left{i}-xs, .mg-l{i}-xs {{margin-left: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(mg_left_css, end="")
             self.margin_css_classes.append(mg_left_css)
@@ -961,11 +1038,11 @@ class Margins:
         """
         for i in range(1, 13, 1):
             mg_right_css = f"""
-            .mg-right{i} {{margin-right: {self.default_dimension_value * i}px;}}
-            .mg-right{i}-sm {{margin-right: {(self.default_dimension_value * i) - 2}px;}}
-            .mg-right{i}-smr {{margin-right: {(self.default_dimension_value * i) - 4}px;}}
-            .mg-right{i}-smt {{margin-right: {(self.default_dimension_value * i) - 6}px;}}
-            .mg-right{i}-xs {{margin-right: {(self.default_dimension_value * i) - 7}px;}}
+            .mg-right{i}, .mg-r{i} {{margin-right: {self.default_dimension_value * i}px;}}
+            .mg-right{i}-sm, .mg-r{i}-sm {{margin-right: {(self.default_dimension_value * i) - 2}px;}}
+            .mg-right{i}-smr, .mg-r{i}-smr {{margin-right: {(self.default_dimension_value * i) - 4}px;}}
+            .mg-right{i}-smt, .mg-r{i}-smt {{margin-right: {(self.default_dimension_value * i) - 6}px;}}
+            .mg-right{i}-xs, .mg-r{i}-xs {{margin-right: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(mg_right_css, end="")
             self.margin_css_classes.append(mg_right_css)
@@ -978,11 +1055,11 @@ class Margins:
         """
         for i in range(1, 13, 1):
             mg_top_css = f"""
-            .mg-top{i} {{margin-top: {self.default_dimension_value * i}px;}}
-            .mg-top{i}-sm {{margin-top: {(self.default_dimension_value * i) - 2}px;}}
-            .mg-top{i}-smr {{margin-top: {(self.default_dimension_value * i) - 4}px;}}
-            .mg-top{i}-smt {{margin-top: {(self.default_dimension_value * i) - 6}px;}}
-            .mg-top{i}-xs {{margin-top: {(self.default_dimension_value * i) - 7}px;}}
+            .mg-top{i}, .mg-t{i} {{margin-top: {self.default_dimension_value * i}px;}}
+            .mg-top{i}-sm, .mg-t{i}-sm {{margin-top: {(self.default_dimension_value * i) - 2}px;}}
+            .mg-top{i}-smr, .mg-t{i}-smr {{margin-top: {(self.default_dimension_value * i) - 4}px;}}
+            .mg-top{i}-smt, .mg-t{i}-smt {{margin-top: {(self.default_dimension_value * i) - 6}px;}}
+            .mg-top{i}-xs, .mg-t{i}-xs {{margin-top: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(mg_top_css, end="")
             self.margin_css_classes.append(mg_top_css)
@@ -995,11 +1072,11 @@ class Margins:
         """
         for i in range(1, 13, 1):
             mg_bottom_css = f"""
-            .mg-bottom{i} {{margin-bottom: {self.default_dimension_value * i}px;}}
-            .mg-bottom{i}-sm {{margin-bottom: {(self.default_dimension_value * i) - 2}px;}}
-            .mg-bottom{i}-smr {{margin-bottom: {(self.default_dimension_value * i) - 4}px;}}
-            .mg-bottom{i}-smt {{margin-bottom: {(self.default_dimension_value * i) - 6}px;}}
-            .mg-bottom{i}-xs {{margin-bottom: {(self.default_dimension_value * i) - 7}px;}}
+            .mg-bottom{i}, .mg-b{i} {{margin-bottom: {self.default_dimension_value * i}px;}}
+            .mg-bottom{i}-sm, .mg-b{i}-sm {{margin-bottom: {(self.default_dimension_value * i) - 2}px;}}
+            .mg-bottom{i}-smr, .mg-b{i}-smr {{margin-bottom: {(self.default_dimension_value * i) - 4}px;}}
+            .mg-bottom{i}-smt, .mg-b{i}-smt {{margin-bottom: {(self.default_dimension_value * i) - 6}px;}}
+            .mg-bottom{i}-xs, .mg-b{i}-xs {{margin-bottom: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(mg_bottom_css, end="")
             self.margin_css_classes.append(mg_bottom_css)
@@ -1143,11 +1220,11 @@ class Paddings:
         """
         for i in range(1, 13, 1):
             pad_left_css = f"""
-            .pad-left{i} {{padding-left: {self.default_dimension_value * i}px;}}
-            .pad-left{i}-sm {{padding-left: {(self.default_dimension_value * i) - 2}px;}}
-            .pad-left{i}-smr {{padding-left: {(self.default_dimension_value * i) - 4}px;}}
-            .pad-left{i}-smt {{padding-left: {(self.default_dimension_value * i) - 6}px;}}
-            .pad-left{i}-xs {{padding-left: {(self.default_dimension_value * i) - 7}px;}}
+            .pad-left{i}, .pad-l{i} {{padding-left: {self.default_dimension_value * i}px;}}
+            .pad-left{i}-sm, .pad-l{i}-sm {{padding-left: {(self.default_dimension_value * i) - 2}px;}}
+            .pad-left{i}-smr, .pad-l{i}-smr {{padding-left: {(self.default_dimension_value * i) - 4}px;}}
+            .pad-left{i}-smt, .pad-l{i}-smt {{padding-left: {(self.default_dimension_value * i) - 6}px;}}
+            .pad-left{i}-xs, .pad-l{i}-xs {{padding-left: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(pad_left_css, end="")
             self.padding_css_classes.append(pad_left_css)
@@ -1160,11 +1237,11 @@ class Paddings:
         """
         for i in range(1, 13, 1):
             pad_right_css = f"""
-            .pad-right{i} {{padding-right: {self.default_dimension_value * i}px;}}
-            .pad-right{i}-sm {{padding-right: {(self.default_dimension_value * i) - 2}px;}}
-            .pad-right{i}-smr {{padding-right: {(self.default_dimension_value * i) - 4}px;}}
-            .pad-right{i}-smt {{padding-right: {(self.default_dimension_value * i) - 6}px;}}
-            .pad-right{i}-xs {{padding-right: {(self.default_dimension_value * i) - 7}px;}}
+            .pad-right{i}, .pad-r{i} {{padding-right: {self.default_dimension_value * i}px;}}
+            .pad-right{i}-sm, .pad-r{i}-sm {{padding-right: {(self.default_dimension_value * i) - 2}px;}}
+            .pad-right{i}-smr, .pad-r{i}-smr {{padding-right: {(self.default_dimension_value * i) - 4}px;}}
+            .pad-right{i}-smt, .pad-r{i}-smt {{padding-right: {(self.default_dimension_value * i) - 6}px;}}
+            .pad-right{i}-xs, .pad-r{i}-xs {{padding-right: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(pad_right_css, end="")
             self.padding_css_classes.append(pad_right_css)
@@ -1177,11 +1254,11 @@ class Paddings:
         """
         for i in range(1, 13, 1):
             pad_top_css = f"""
-            .pad-top{i} {{padding-top: {self.default_dimension_value * i}px;}}
-            .pad-top{i}-sm {{padding-top: {(self.default_dimension_value * i) - 2}px;}}
-            .pad-top{i}-smr {{padding-top: {(self.default_dimension_value * i) - 4}px;}}
-            .pad-top{i}-smt {{padding-top: {(self.default_dimension_value * i) - 6}px;}}
-            .pad-top{i}-xs {{padding-top: {(self.default_dimension_value * i) - 7}px;}}
+            .pad-top{i}, .pad-t{i} {{padding-top: {self.default_dimension_value * i}px;}}
+            .pad-top{i}-sm, .pad-t{i}-sm {{padding-top: {(self.default_dimension_value * i) - 2}px;}}
+            .pad-top{i}-smr, .pad-t{i}-smr {{padding-top: {(self.default_dimension_value * i) - 4}px;}}
+            .pad-top{i}-smt, .pad-t{i}-smt {{padding-top: {(self.default_dimension_value * i) - 6}px;}}
+            .pad-top{i}-xs, .pad-t{i}-xs {{padding-top: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(pad_top_css, end="")
             self.padding_css_classes.append(pad_top_css)
@@ -1194,11 +1271,11 @@ class Paddings:
         """
         for i in range(1, 13, 1):
             pad_bottom_css = f"""
-            .pad-bottom{i} {{padding-bottom: {self.default_dimension_value * i}px;}}
-            .pad-bottom{i}-sm {{padding-bottom: {(self.default_dimension_value * i) - 2}px;}}
-            .pad-bottom{i}-smr {{padding-bottom: {(self.default_dimension_value * i) - 4}px;}}
-            .pad-bottom{i}-smt {{padding-bottom: {(self.default_dimension_value * i) - 6}px;}}
-            .pad-bottom{i}-xs {{padding-bottom: {(self.default_dimension_value * i) - 7}px;}}
+            .pad-bottom{i}, .pad-b{i} {{padding-bottom: {self.default_dimension_value * i}px;}}
+            .pad-bottom{i}-sm, .pad-b{i}-sm {{padding-bottom: {(self.default_dimension_value * i) - 2}px;}}
+            .pad-bottom{i}-smr, .pad-b{i}-smr {{padding-bottom: {(self.default_dimension_value * i) - 4}px;}}
+            .pad-bottom{i}-smt, .pad-b{i}-smt {{padding-bottom: {(self.default_dimension_value * i) - 6}px;}}
+            .pad-bottom{i}-xs, .pad-b{i}-xs {{padding-bottom: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(pad_bottom_css, end="")
             self.padding_css_classes.append(pad_bottom_css)
@@ -1449,6 +1526,8 @@ class Squares:
         self.default_square_value = 8
 
         self.gen_square()
+        self.gen_2x_square()
+        self.gen_3x_square()
 
         # square_css_header = (
         #     """
@@ -1494,6 +1573,24 @@ class Squares:
             self.square_css_classes.append(square_css)
         # return self.square_css_classes
 
+    def gen_2x_square(self):
+        """:Date: July 1, 2022. """
+        for i in range(1, 13, 1):
+            square_2x_css = f"""
+            .square2-{i} {{width: {(i + 12) * self.default_square_value}px; height: {(i + 12) * self.default_square_value}px;}}
+            """
+            self.square_css_classes.append(square_2x_css)
+        # return self.square_css_classes
+
+    def gen_3x_square(self):
+        """:Date: July 1, 2022. """
+        for i in range(1, 13, 1):
+            square_3x_css = f"""
+            .square2-{i} {{width: {(i + 12 + 12) * self.default_square_value}px; height: {(i + 12 + 12) * self.default_square_value}px;}}
+            """
+            self.square_css_classes.append(square_3x_css)
+        # return self.square_css_classes
+
 
 class Texts:
     """
@@ -1518,6 +1615,7 @@ class Texts:
         self.text_align()
         self.text_styles()
         self.text_weight()
+        self.text_overflow()
         self.default_font_size()
         self.gen_font_size()
 
@@ -1604,6 +1702,17 @@ class Texts:
         .font-h6 {{font-size: {(10.72 / 16) * 1}rem;}}
         """
         self.text_css_classes.append(default_font_size_css)
+
+    def text_overflow(self):
+        """:Date: July 1, 2022."""
+        text_overflow_css = f"""
+        .text-overflow-unset: {{text-overflow: unset;}}
+        .text-overflow-initial: {{text-overflow: initial;}}
+        .text-overflow-inherit: {{text-overflow: inherit;}}
+        .text-overflow-ellipsis: {{text-overflow: ellipsis;}}
+        .text-overflow-clip: {{text-overflow: clip;}}
+        """
+        self.text_css_classes.append(text_overflow_css)
 
 
 class Colors(Root):
@@ -1753,6 +1862,7 @@ class Backgrounds(Root):
     def __init__(self) -> None:
         super().__init__()
         self.bg_css_classes = list()
+        self.default_bg()
         self.white_bg()
         self.black_bg()
         self.light_bg()
@@ -1762,22 +1872,35 @@ class Backgrounds(Root):
         self.red_bg()
         self.purple_bg()
         self.itheirs_bg()
+        self.mica_bg()
 
     @property
     def css_properties(self):
         return self.bg_css_classes
 
-    def default_colors(self):
+    def default_bg(self):
         """
         :Date: inherit.
         """
-        pass
+        background_defaults = f"""
+        .bg-unset {{background: unset;}}
+        .bg-initial {{background: initial;}}
+        .bg-inherit {{background: inherit;}}
+        .bg-fixed {{background: fixed;}}
+        .bg-local {{background: local;}}
+        .bg-none {{background: none;}}
+        .bg-scroll {{background: scroll;}}
+        .bg-transparent {{background: transparent;}}
+        .bg-content-box {{background: content-box;}}
+        .bg-current-color {{background: current-color;}}
+        """
+        return self.bg_css_classes.append(background_defaults)
 
     def black_bg(self):
         """ :Date: July 1, 2022. """
         black_bg = f"""
-        .bg-black {{color: {self.default_color_black};}}
-        .bg-black-transparent {{color: {self.default_color_black_transparent};}}
+        .bg-black {{background-color: {self.default_color_black};}}
+        .bg-black-transparent {{background-color: {self.default_color_black_transparent};}}
         """
         self.bg_css_classes.append(black_bg)
 
@@ -1881,6 +2004,17 @@ class Backgrounds(Root):
         """
         self.bg_css_classes.append(itheirs_bg)
 
+    def mica_bg(self):
+        """:Date: July 1, 2022."""
+        mica_bg = f"""
+        .bg-mica {{backdrop-filter: blur(8px);}}
+        .bg-mica-sm {{backdrop-filter: blur(6px);}}
+        .bg-mica-smr {{backdrop-filter: blur(4px);}}
+        .bg-mica-smt {{backdrop-filter: blur(2px);}}
+        .bg-mica-xs {{backdrop-filter: blur(1px);}}
+        """
+        self.bg_css_classes.append(mica_bg)
+
 
 class Borders:
     """
@@ -1929,6 +2063,38 @@ class Borders:
         .border-color: {{border-color: }}
         """
         self.border_css_classes.append(border_colors)
+
+
+class Overflows:
+    """ :Date: July 1, 2022. """
+
+    def __init__(self) -> None:
+        self.overflow_css_classes = list()
+
+    @property
+    def css_properties(self):
+        return self.overflow_css_classes
+
+    def overflow_helpers(self):
+        """:Date: inherit"""
+        overflow_css = f"""
+        .overflow-visible {{overflow: visible}}
+        .overflow-hidden {{overflow: hidden}}
+        .overflow-clip {{overflow: clip}}
+        .overflow-scroll {{overflow: scroll}}
+        .overflow-auto {{overflow: auto}}
+        .overflow-x-visible {{overflow-x: visible}}
+        .overflow-x-hidden {{overflow-x: hidden}}
+        .overflow-x-clip {{overflow-x: clip}}
+        .overflow-x-scroll {{overflow-x: scroll}}
+        .overflow-x-auto {{overflow-x: auto}}
+        .overflow-y-visible {{overflow-y: visible}}
+        .overflow-y-hidden {{overflow-y: hidden}}
+        .overflow-y-clip {{overflow-y: clip}}
+        .overflow-y-scroll {{overflow-y: scroll}}
+        .overflow-y-auto {{overflow-y: auto}}
+        """
+        self.overflow_css_classes.append(overflow_css)
 
 
 if "__main__" == __name__:
