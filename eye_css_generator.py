@@ -566,7 +566,7 @@ class FlexBox:
         self.flex_css_classes.append(flex_basis_auto)
         for i in range(1, 13, 1):
             flex_basis_css = f"""
-            .flex-basis-{i}: {{flex-basis: {i * self.default_dimension_value}px;}}
+            .flex-basis-{i} {{flex-basis: {i * self.default_dimension_value}px;}}
             """
             self.flex_css_classes.append(flex_basis_css)
 
@@ -574,7 +574,7 @@ class FlexBox:
         for x in range(2, 3, 1):
             for i in range(1, 13, 1):
                 flex_basis_css = f"""
-                .flex-basis{x}-{i}: {{flex-basis: {(i + 12) * self.default_dimension_value}px;}}
+                .flex-basis{x}-{i} {{flex-basis: {(i + 12) * self.default_dimension_value}px;}}
                 """
                 self.flex_css_classes.append(flex_basis_css)
 
@@ -583,7 +583,7 @@ class FlexBox:
         self.flex_css_classes.append(flex_basis_auto)
         for i in range(0, 101, 1):
             flex_basis_css = f"""
-            .pct\:flex-basis-{i}: {{flex-basis: {i}%;}}
+            .pct\:flex-basis-{i} {{flex-basis: {i}%;}}
             """
             self.flex_css_classes.append(flex_basis_css)
 
