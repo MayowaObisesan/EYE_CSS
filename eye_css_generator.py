@@ -66,6 +66,14 @@ class CSSGenerator:
         ]
         return css_list
 
+    @staticmethod
+    def eye_init():
+        """:Date: July 1, 2022."""
+        eye_init_css = f"""
+        * {{--webkit-box-sizing: border-box; --moz-box-sizing: border-box; box-sizing: border-box;}}
+        """
+        return [eye_init_css]
+
     def css_properties(self):
         """
         All the defined css property classes.
@@ -73,7 +81,10 @@ class CSSGenerator:
         """
         # css_properties_list = Squares() + FlexBox() + Paddings()
         css_properties_list = [
+            *self.eye_init(),
             *Positions().css_properties,
+            *Displays().css_properties,
+            *VerticalAlign().css_properties,
             *FlexBox().css_properties,
             *Widths().css_properties,
             *Heights().css_properties,
@@ -86,6 +97,7 @@ class CSSGenerator:
             *ZIndex().css_properties,
             *Borders().css_properties,
             *Colors().css_properties,
+            *Backgrounds().css_properties,
             *Root().css_properties,
         ]
         # print(css_properties_list)
@@ -178,6 +190,10 @@ class Root:
     @staticmethod
     def default_variables():
         f"""
+            /* DEFINING COLORS TO BE USED ON iTheirs - 021021. */
+            /*lightgray == #D3D3D3 == rgb(211, 211, 211) = hsl(0, 0%, 82.7%);*/
+            /* iTheirs COLORS - 05TH OCTOBER, 2021. */
+            
             /*--default_color_gold = "hsla(40, 88.3%, 50.4%, 0.96);*/
             /*--default_color_red = "hsla(0, 68.3%, 60.4%, 0.9);*/
             /*
@@ -364,6 +380,59 @@ class Positions:
             .relative-y{i} {{top: {i / self.default_y_grid_value * 100}%;}}
             """
             self.position_css_classes.append(relative_y_css)
+
+
+class Displays:
+    """:Date: July 1, 2022."""
+
+    def __init__(self) -> None:
+        self.display_css_classes = list()
+        self.block_helpers()
+
+    @property
+    def css_properties(self):
+        return self.display_css_classes
+
+    def block_helpers(self):
+        """:Date: inherit """
+        display_css = f"""
+        .d-unset {{display: unset;}}
+        .d-initial {{display: initial;}}
+        .d-inherit {{display: inherit;}}
+        .d-none {{display: none;}}
+        .d-inline {{display: inline;}}
+        .d-block {{display: block;}}
+        .d-inline-block {{display: inline-block;}}
+        .d-contents {{display: contents;}}
+        """
+        return self.display_css_classes.append(display_css)
+
+
+class VerticalAlign:
+    """:Date: July 1, 2022."""
+
+    def __init__(self) -> None:
+        self.vertical_align_css_classes = list()
+        self.vertical_align_helpers()
+
+    @property
+    def css_properties(self):
+        return self.vertical_align_css_classes
+
+    def vertical_align_helpers(self):
+        """:Date: inherit """
+        vertical_align_css = f"""
+        .v-align-auto {{vertical-align: auto;}}
+        .v-align-baseline {{vertical-align: baseline;}}
+        .v-align-bottom {{vertical-align: bottom;}}
+        .v-align-middle {{vertical-align: middle;}}
+        .v-align-top {{vertical-align: top;}}
+        .v-align-super {{vertical-align: super;}}
+        .v-align-texttop {{vertical-align: texttop;}}
+        .v-align-textbottom {{vertical-align: textbottom;}}
+        .v-align-top {{vertical-align: top;}}
+        """
+        return self.vertical_align_css_classes.append(vertical_align_css)
 
 
 class FlexBox:
@@ -569,6 +638,7 @@ class Widths:
     def __init__(self) -> None:
         self.width_css_classes = list()
         self.default_dimension_value = 8
+        self.default_width_helpers()
         self.gen_percent_width_helpers()
         self.gen_width_helpers()
         self.gen_width_2x_helpers()
@@ -577,6 +647,17 @@ class Widths:
     @property
     def css_properties(self):
         return self.width_css_classes
+
+    def default_width_helpers(self):
+        """:Date: July 1, 2022."""
+        default_width_css = f"""
+        .w-auto {{width: auto;}}
+        .w-initial {{width: initial;}}
+        .w-inherit {{width: inherit;}}
+        .w-unset {{width: unset;}}
+        .w-0 {{width: 0;}}
+        """
+        self.width_css_classes.append(default_width_css)
 
     def gen_percent_width_helpers(self, percent_prefix_string="pct"):
         """
@@ -601,7 +682,7 @@ class Widths:
         :return: 1x width helper css classes
         """
         for i in range(1, 13, 1):
-            width_css = f"w-{i} {{width: {i * self.default_dimension_value}px}}"
+            width_css = f".w-{i} {{width: {i * self.default_dimension_value}px}}"
             self.width_css_classes.append(width_css)
 
     def gen_width_2x_helpers(self):
@@ -613,7 +694,7 @@ class Widths:
         :return: 2x width helper css classes
         """
         for i in range(1, 13, 1):
-            width_2x_css = f"w2-{i} {{width: {i * self.default_dimension_value}px}}"
+            width_2x_css = f".w2-{i} {{width: {(i + 12) * self.default_dimension_value}px}}"
             self.width_css_classes.append(width_2x_css)
 
     def gen_width_safe_helpers(self):
@@ -626,7 +707,7 @@ class Widths:
         """
         for i in range(1, 13, 1):
             width_safe_css = (
-                f"w-safe-{i} {{width: {i * self.default_dimension_value}%}}"
+                f".w-safe-{i} {{width: {i * self.default_dimension_value}%}}"
             )
             self.width_css_classes.append(width_safe_css)
 
@@ -640,6 +721,7 @@ class Heights:
     def __init__(self) -> None:
         self.height_css_classes = list()
         self.default_dimension_value = 8
+        self.default_height_helpers()
         self.gen_percent_height_helpers()
         self.gen_height_helpers()
         self.gen_height_2x_helpers()
@@ -648,6 +730,17 @@ class Heights:
     @property
     def css_properties(self):
         return self.height_css_classes
+
+    def default_height_helpers(self):
+        """:Date: July 1, 2022."""
+        default_height_css = f"""
+        .h-auto {{height: auto;}}
+        .h-initial {{height: initial;}}
+        .h-inherit {{height: inherit;}}
+        .h-unset {{height: unset;}}
+        .h-0 {{height: 0;}}
+        """
+        self.height_css_classes.append(default_height_css)
 
     def gen_percent_height_helpers(self, percent_prefix_string="pct"):
         """
@@ -674,7 +767,7 @@ class Heights:
         :return: 1x height helper css classes
         """
         for i in range(1, 13, 1):
-            height_css = f"h-{i} {{height: {i * self.default_dimension_value}px}}"
+            height_css = f".h-{i} {{height: {i * self.default_dimension_value}px}}"
             self.height_css_classes.append(height_css)
 
     def gen_height_2x_helpers(self):
@@ -686,7 +779,7 @@ class Heights:
         :return: 2x height helper css classes
         """
         for i in range(1, 13, 1):
-            height_2x_css = f"h2-{i} {{height: {i * self.default_dimension_value}px}}"
+            height_2x_css = f".h2-{i} {{height: {(i + 12) * self.default_dimension_value}px}}"
             self.height_css_classes.append(height_2x_css)
 
     def gen_height_safe_helpers(self):
@@ -699,7 +792,7 @@ class Heights:
         """
         for i in range(1, 13, 1):
             height_safe_css = (
-                f"h-safe-{i} {{height: {i * self.default_dimension_value}%}}"
+                f".h-safe-{i} {{height: {i * self.default_dimension_value}%}}"
             )
             self.height_css_classes.append(height_safe_css)
 
@@ -1148,7 +1241,7 @@ class LineHeights:
         """
         for i in range(1, 13, 1):
             line_height_css = f"""
-            .line-height-{i} {{line-height: {i}px;}}
+            .line-height-{i} {{line-height: {i * self.default_dimension_value}px;}}
             """
             self.line_height_css_classes.append(line_height_css)
 
@@ -1396,7 +1489,7 @@ class Squares:
         """:Date: inherit"""
         for i in range(1, 13, 1):
             square_css = f"""
-            .square-{i} {{width: {i * self.default_square_value}px;}}
+            .square-{i} {{width: {i * self.default_square_value}px; height: {i * self.default_square_value}px;}}
             """
             self.square_css_classes.append(square_css)
         # return self.square_css_classes
@@ -1691,100 +1784,100 @@ class Backgrounds(Root):
     def white_bg(self):
         """ :Date: July 1, 2022. """
         white_bg = f"""
-        .bg-white {{color: {self.default_color_white};}}
-        .bg-white-solid {{color: {self.default_color_white_solid};}}
-        .bg-white-transparent {{color: {self.default_color_white_transparent};}}
-        .bg-white-disabled {{color: {self.default_color_white_disabled};}}
+        .bg-white {{background-color: {self.default_color_white};}}
+        .bg-white-solid {{background-color: {self.default_color_white_solid};}}
+        .bg-white-transparent {{background-color: {self.default_color_white_transparent};}}
+        .bg-white-disabled {{background-color: {self.default_color_white_disabled};}}
         """
         self.bg_css_classes.append(white_bg)
 
     def light_bg(self):
         """ :Date: July 1, 2022. """
         light_bg = f"""
-        .bg-light {{color: {self.default_color_light};}}
-        .bg-light-solid {{color: {self.default_color_light_solid};}}
-        .bg-light-hover {{color: {self.default_color_light_hover};}}
-        .bg-light-disabled {{color: {self.default_color_light_disabled};}}
+        .bg-light {{background-color: {self.default_color_light};}}
+        .bg-light-solid {{background-color: {self.default_color_light_solid};}}
+        .bg-light-hover {{background-color: {self.default_color_light_hover};}}
+        .bg-light-disabled {{background-color: {self.default_color_light_disabled};}}
         """
         self.bg_css_classes.append(light_bg)
 
     def lighter_bg(self):
         """ :Date: July 1, 2022. """
         lighter_bg = f"""
-        .bg-lighter {{color: {self.default_color_lighter};}}
-        .bg-lighter-solid {{color: {self.default_color_lighter_solid};}}
-        .bg-lighter-hover {{color: {self.default_color_lighter_hover};}}
-        .bg-lighter-disabled {{color: {self.default_color_lighter_disabled};}}
+        .bg-lighter {{background-color: {self.default_color_lighter};}}
+        .bg-lighter-solid {{background-color: {self.default_color_lighter_solid};}}
+        .bg-lighter-hover {{background-color: {self.default_color_lighter_hover};}}
+        .bg-lighter-disabled {{background-color: {self.default_color_lighter_disabled};}}
         """
         self.bg_css_classes.append(lighter_bg)
 
     def green_bg(self):
         """ :Date: July 1, 2022. """
         green_bg = f"""
-        .bg-green {{color: {self.default_color_green};}}
-        .bg-green-solid {{color: {self.default_color_green_solid};}}
-        .bg-green-hover {{color: {self.default_color_green_hover};}}
-        .bg-green-disabled {{color: {self.default_color_green_disabled};}}
-        .bg-green-dark {{color: {self.default_color_green_dark};}}
-        .bg-green-border {{color: {self.default_color_green_border};}}
-        .bg-green-inverse {{color: {self.default_color_green_inverse};}}
-        .bg-green-inverse-hover {{color: {self.default_color_green_inverse_hover};}}
+        .bg-green {{background-color: {self.default_color_green};}}
+        .bg-green-solid {{background-color: {self.default_color_green_solid};}}
+        .bg-green-hover {{background-color: {self.default_color_green_hover};}}
+        .bg-green-disabled {{background-color: {self.default_color_green_disabled};}}
+        .bg-green-dark {{background-color: {self.default_color_green_dark};}}
+        .bg-green-border {{background-color: {self.default_color_green_border};}}
+        .bg-green-inverse {{background-color: {self.default_color_green_inverse};}}
+        .bg-green-inverse-hover {{background-color: {self.default_color_green_inverse_hover};}}
         """
         self.bg_css_classes.append(green_bg)
 
     def blue_bg(self):
         """ :Date: July 1, 2022. """
         blue_bg = f"""
-        .bg-blue {{color: {self.default_color_blue};}}
-        .bg-blue-solid {{color: {self.default_color_blue_solid};}}
-        .bg-blue-hover {{color: {self.default_color_blue_hover};}}
-        .bg-blue-disabled {{color: {self.default_color_blue_disabled};}}
-        .bg-blue-dark {{color: {self.default_color_blue_dark};}}
-        .bg-blue-border {{color: {self.default_color_blue_border};}}
-        .bg-blue-inverse {{color: {self.default_color_blue_inverse};}}
-        .bg-blue-inverse-hover {{color: {self.default_color_blue_inverse_hover};}}
+        .bg-blue {{background-color: {self.default_color_blue};}}
+        .bg-blue-solid {{background-color: {self.default_color_blue_solid};}}
+        .bg-blue-hover {{background-color: {self.default_color_blue_hover};}}
+        .bg-blue-disabled {{background-color: {self.default_color_blue_disabled};}}
+        .bg-blue-dark {{background-color: {self.default_color_blue_dark};}}
+        .bg-blue-border {{background-color: {self.default_color_blue_border};}}
+        .bg-blue-inverse {{background-color: {self.default_color_blue_inverse};}}
+        .bg-blue-inverse-hover {{background-color: {self.default_color_blue_inverse_hover};}}
         """
         self.bg_css_classes.append(blue_bg)
 
     def red_bg(self):
         """ :Date: July 1, 2022. """
         red_bg = f"""
-        .bg-red {{color: {self.default_color_red};}}
-        .bg-red-solid {{color: {self.default_color_red_solid};}}
-        .bg-red-hover {{color: {self.default_color_red_hover};}}
-        .bg-red-disabled {{color: {self.default_color_red_disabled};}}
-        .bg-red-dark {{color: {self.default_color_red_dark};}}
-        .bg-red-border {{color: {self.default_color_red_border};}}
-        .bg-red-inverse {{color: {self.default_color_red_inverse};}}
-        .bg-red-inverse-hover {{color: {self.default_color_red_inverse_hover};}}
+        .bg-red {{background-color: {self.default_color_red};}}
+        .bg-red-solid {{background-color: {self.default_color_red_solid};}}
+        .bg-red-hover {{background-color: {self.default_color_red_hover};}}
+        .bg-red-disabled {{background-color: {self.default_color_red_disabled};}}
+        .bg-red-dark {{background-color: {self.default_color_red_dark};}}
+        .bg-red-border {{background-color: {self.default_color_red_border};}}
+        .bg-red-inverse {{background-color: {self.default_color_red_inverse};}}
+        .bg-red-inverse-hover {{background-color: {self.default_color_red_inverse_hover};}}
         """
         self.bg_css_classes.append(red_bg)
 
     def purple_bg(self):
         """ :Date: July 1, 2022. """
         purple_bg = f"""
-        .bg-purple {{color: {self.default_color_purple};}}
-        .bg-purple-solid {{color: {self.default_color_purple_solid};}}
-        .bg-purple-hover {{color: {self.default_color_purple_hover};}}
-        .bg-purple-disabled {{color: {self.default_color_purple_disabled};}}
-        .bg-purple-dark {{color: {self.default_color_purple_dark};}}
-        .bg-purple-border {{color: {self.default_color_purple_border};}}
-        .bg-purple-inverse {{color: {self.default_color_purple_inverse};}}
-        .bg-purple-inverse-hover {{color: {self.default_color_purple_inverse_hover};}}
+        .bg-purple {{background-color: {self.default_color_purple};}}
+        .bg-purple-solid {{background-color: {self.default_color_purple_solid};}}
+        .bg-purple-hover {{background-color: {self.default_color_purple_hover};}}
+        .bg-purple-disabled {{background-color: {self.default_color_purple_disabled};}}
+        .bg-purple-dark {{background-color: {self.default_color_purple_dark};}}
+        .bg-purple-border {{background-color: {self.default_color_purple_border};}}
+        .bg-purple-inverse {{background-color: {self.default_color_purple_inverse};}}
+        .bg-purple-inverse-hover {{background-color: {self.default_color_purple_inverse_hover};}}
         """
         self.bg_css_classes.append(purple_bg)
 
     def itheirs_bg(self):
         """ :Date: July 1, 2022. """
         itheirs_bg = f"""
-        .bg-itheirs {{color: {self.default_color_itheirs};}}
-        .bg-itheirs-solid {{color: {self.default_color_itheirs_solid};}}
-        .bg-itheirs-hover {{color: {self.default_color_itheirs_hover};}}
-        .bg-itheirs-disabled {{color: {self.default_color_itheirs_disabled};}}
-        .bg-itheirs-dark {{color: {self.default_color_itheirs_dark};}}
-        .bg-itheirs-border {{color: {self.default_color_itheirs_border};}}
-        .bg-itheirs-inverse {{color: {self.default_color_itheirs_inverse};}}
-        .bg-itheirs-inverse-hover {{color: {self.default_color_itheirs_inverse_hover};}}
+        .bg-itheirs {{background-color: {self.default_color_itheirs};}}
+        .bg-itheirs-solid {{background-color: {self.default_color_itheirs_solid};}}
+        .bg-itheirs-hover {{background-color: {self.default_color_itheirs_hover};}}
+        .bg-itheirs-disabled {{background-color: {self.default_color_itheirs_disabled};}}
+        .bg-itheirs-dark {{background-color: {self.default_color_itheirs_dark};}}
+        .bg-itheirs-border {{background-color: {self.default_color_itheirs_border};}}
+        .bg-itheirs-inverse {{background-color: {self.default_color_itheirs_inverse};}}
+        .bg-itheirs-inverse-hover {{background-color: {self.default_color_itheirs_inverse_hover};}}
         """
         self.bg_css_classes.append(itheirs_bg)
 
@@ -1797,12 +1890,25 @@ class Borders:
 
     def __init__(self) -> None:
         self.border_css_classes = list()
+        self.border_defaults()
         self.border_width()
         self.border_color()
 
     @property
     def css_properties(self):
         return self.border_css_classes
+
+    def border_defaults(self):
+        """:Date: july 1, 2022."""
+        border_defaults_css = f"""
+        .border-0 {{border: 0;}}
+        .border-initial {{border: initial;}}
+        .border-inherit {{border: inherit;}}
+        .border-inset {{border: inset;}}
+        .border-transparent {{border: transparent;}}
+        .border-unset {{border: unset;}}
+        """
+        return self.border_css_classes.append(border_defaults_css)
 
     def border_width(self):
         """
