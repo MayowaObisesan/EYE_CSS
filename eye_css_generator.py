@@ -120,13 +120,13 @@ class Root:
     def __init__(self) -> None:
         self.root_css_classes = list()
         # self.colors_dict = dict()
-        self.default_color_white = "hsla(0, 0 %, 100 %, .9)"
-        self.default_color_white_solid = "hsla(0, 0 %, 100 %, 1)"
-        self.default_color_white_disabled = "hsla(0, 0 %, 60 %, 0.2)"
-        self.default_color_white_transparent = "hsla(0, 0 %, 100 %, .8)"
+        self.default_color_white = "hsla(0, 0%, 100%, .9)"
+        self.default_color_white_solid = "hsla(0, 0%, 100%, 1)"
+        self.default_color_white_disabled = "hsla(0, 0%, 60%, 0.2)"
+        self.default_color_white_transparent = "hsla(0, 0%, 100%, .8)"
 
         self.default_color_black = "hsla(0, 0 %, 0 %, 1)"
-        self.default_color_black_transparent = "hsla(0, 0 %, 0 %, .9)"
+        self.default_color_black_transparent = "hsla(0, 0%, 0%, .9)"
 
         self.default_color_light = "hsla(0, 0%, 82.7%, 0.9)"
         self.default_color_light_hover = "hsla(0, 0%, 72.7%, 0.9)"
@@ -282,9 +282,9 @@ class Positions:
         .abs-x2 {left: (1/12) * 100%;}
         :return:
         """
-        for i in range(1, self.default_x_grid_value, 1):
+        for i in range(1, self.default_x_grid_value + 1, 1):
             abs_x_css = f"""
-            .abs-x{i} {{left: {i / self.default_x_grid_value * 100}%;}}
+            .abs-x{i} {{left: {i / self.default_x_grid_value + 1 * 100}%;}}
             """
             self.position_css_classes.append(abs_x_css)
 
@@ -321,9 +321,9 @@ class Positions:
         .fixed-x2 {left: (1/12) * 100%;}
         :return:
         """
-        for i in range(1, self.default_x_grid_value, 1):
+        for i in range(1, self.default_x_grid_value + 1, 1):
             fixed_x_css = f"""
-            .fixed-x{i} {{left: {i / self.default_x_grid_value * 100}%;}}
+            .fixed-x{i} {{left: {i / self.default_x_grid_value + 1 * 100}%;}}
             """
             self.position_css_classes.append(fixed_x_css)
 
@@ -360,9 +360,9 @@ class Positions:
         .relative-x2 {left: (1/12) * 100%;}
         :return:
         """
-        for i in range(1, self.default_x_grid_value, 1):
+        for i in range(1, self.default_x_grid_value + 1, 1):
             relative_x_css = f"""
-            .relative-x{i} {{left: {i / self.default_x_grid_value * 100}%;}}
+            .relative-x{i} {{left: {i / self.default_x_grid_value + 1 * 100}%;}}
             """
             self.position_css_classes.append(relative_x_css)
 
@@ -532,7 +532,7 @@ class FlexBox:
         self.flex_css_classes.append(flex_basis_auto)
         for i in range(0, 101, 1):
             flex_basis_css = f"""
-            .flex-basis-{i}: {{flex-basis: {i / 12 * 100}%;}}
+            .pct\:flex-basis-{i}: {{flex-basis: {i}%;}}
             """
             self.flex_css_classes.append(flex_basis_css)
 
@@ -1284,7 +1284,7 @@ class ZIndex:
         """
         for i in range(0, 11, 1):
             zindex_helper_css = f"""
-            z-index-{i} {{z-index: {i}}}
+            .z-index-{i} {{z-index: {i}}}
             """
             self.zindex_css_classes.append(zindex_helper_css)
 
