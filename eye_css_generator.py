@@ -75,7 +75,24 @@ class CSSGenerator:
             text-rendering: auto;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: antialiased; /* | grayscale*/
+            font-family: "system-ui"
         }}
+        *::-webkit-scrollbar {{
+            width: 8px;
+            height: 100%;
+            min-height: 8px;    /* For horizontal scrollbar to display. */
+            max-height: 8px;    /* For horizontal scrollbar to display. */
+            background-color: #EEEEEE;
+        }}
+        *::-webkit-scrollbar-thumb {{
+            background-color: #D7D7D7;
+        }}
+        *::-webkit-scrollbar-track {{
+            background-color: #F3F3F3;
+        }}
+        *::-webkit-scrollbar-track-piece {{}}
+        *::-webkit-scrollbar-corner {{}}
+        *::-webkit-resizer {{}}
         """
         return [eye_init_css]
 
@@ -695,23 +712,33 @@ class Widths:
         self.gen_width_2x_helpers()
         self.gen_width_3x_helpers()
         self.gen_width_safe_helpers()
+        self.gen_percent_width_helpers(constraint="min-")
+        self.gen_width_helpers(constraint="min-")
+        self.gen_width_2x_helpers(constraint="min-")
+        self.gen_width_3x_helpers(constraint="min-")
+        self.gen_width_safe_helpers(constraint="min-")
+        self.gen_percent_width_helpers(constraint="max-")
+        self.gen_width_helpers(constraint="max-")
+        self.gen_width_2x_helpers(constraint="max-")
+        self.gen_width_3x_helpers(constraint="max-")
+        self.gen_width_safe_helpers(constraint="max-")
 
     @property
     def css_properties(self):
         return self.width_css_classes
 
-    def default_width_helpers(self):
+    def default_width_helpers(self, constraint=""):
         """:Date: July 1, 2022."""
         default_width_css = f"""
-        .w-auto {{width: auto;}}
-        .w-initial {{width: initial;}}
-        .w-inherit {{width: inherit;}}
-        .w-unset {{width: unset;}}
-        .w-0 {{width: 0;}}
+        .{constraint}w-auto {{{constraint}width: auto;}}
+        .{constraint}w-initial {{{constraint}width: initial;}}
+        .{constraint}w-inherit {{{constraint}width: inherit;}}
+        .{constraint}w-unset {{{constraint}width: unset;}}
+        .{constraint}w-0 {{{constraint}width: 0;}}
         """
         self.width_css_classes.append(default_width_css)
 
-    def gen_percent_width_helpers(self, percent_prefix_string="pct"):
+    def gen_percent_width_helpers(self, percent_prefix_string="pct", constraint=""):
         """
         This function generates percent width helpers.
         FORMAT GENERATED:
@@ -722,10 +749,10 @@ class Widths:
         :return: percentage Width helper css classes
         """
         for i in range(0, 101, 1):
-            percent_width_css = f".{percent_prefix_string}\:w-{i} {{width: {i}%;}}"
+            percent_width_css = f".{percent_prefix_string}\:{constraint}w-{i} {{{constraint}width: {i}%;}}"
             self.width_css_classes.append(percent_width_css)
 
-    def gen_width_helpers(self):
+    def gen_width_helpers(self, constraint=""):
         """
         Generates eye.css width helpers.
         Format to be returned is:
@@ -734,10 +761,10 @@ class Widths:
         :return: 1x width helper css classes
         """
         for i in range(1, 13, 1):
-            width_css = f".w-{i} {{width: {i * self.default_dimension_value}px}}"
+            width_css = f".{constraint}w-{i} {{{constraint}width: {i * self.default_dimension_value}px}}"
             self.width_css_classes.append(width_css)
 
-    def gen_width_2x_helpers(self):
+    def gen_width_2x_helpers(self, constraint=""):
         """
         Generates eye.css width 2x helpers.
         Format to be returned is:
@@ -746,10 +773,10 @@ class Widths:
         :return: 2x width helper css classes
         """
         for i in range(1, 13, 1):
-            width_2x_css = f".w2-{i} {{width: {(i + 12) * self.default_dimension_value}px}}"
+            width_2x_css = f".{constraint}w2-{i} {{{constraint}width: {(i + 12) * self.default_dimension_value}px}}"
             self.width_css_classes.append(width_2x_css)
 
-    def gen_width_3x_helpers(self):
+    def gen_width_3x_helpers(self, constraint=""):
         """
         Generates eye.css width 3x helpers.
         Format to be returned is:
@@ -758,10 +785,10 @@ class Widths:
         :return: 3x width helper css classes
         """
         for i in range(1, 13, 1):
-            width_3x_css = f".w3-{i} {{width: {(i + 12 + 12) * self.default_dimension_value}px}}"
+            width_3x_css = f".{constraint}w3-{i} {{{constraint}width: {(i + 12 + 12) * self.default_dimension_value}px}}"
             self.width_css_classes.append(width_3x_css)
 
-    def gen_width_safe_helpers(self):
+    def gen_width_safe_helpers(self, constraint=""):
         """
         Generates eye.css width helpers.
         Format to be returned is:
@@ -771,7 +798,7 @@ class Widths:
         """
         for i in range(1, 13, 1):
             width_safe_css = (
-                f".w-safe-{i} {{width: {i * self.default_dimension_value}%}}"
+                f".{constraint}w-safe-{i} {{{constraint}width: {i * self.default_dimension_value}%}}"
             )
             self.width_css_classes.append(width_safe_css)
 
@@ -791,23 +818,33 @@ class Heights:
         self.gen_height_2x_helpers()
         self.gen_height_3x_helpers()
         self.gen_height_safe_helpers()
+        self.gen_percent_height_helpers(constraint="min-")
+        self.gen_height_helpers(constraint="min-")
+        self.gen_height_2x_helpers(constraint="min-")
+        self.gen_height_3x_helpers(constraint="min-")
+        self.gen_height_safe_helpers(constraint="min-")
+        self.gen_percent_height_helpers(constraint="max-")
+        self.gen_height_helpers(constraint="max-")
+        self.gen_height_2x_helpers(constraint="max-")
+        self.gen_height_3x_helpers(constraint="max-")
+        self.gen_height_safe_helpers(constraint="max-")
 
     @property
     def css_properties(self):
         return self.height_css_classes
 
-    def default_height_helpers(self):
+    def default_height_helpers(self, constraint=""):
         """:Date: July 1, 2022."""
         default_height_css = f"""
-        .h-auto {{height: auto;}}
-        .h-initial {{height: initial;}}
-        .h-inherit {{height: inherit;}}
-        .h-unset {{height: unset;}}
-        .h-0 {{height: 0;}}
+        .{constraint}h-auto {{{constraint}height: auto;}}
+        .{constraint}h-initial {{{constraint}height: initial;}}
+        .{constraint}h-inherit {{{constraint}height: inherit;}}
+        .{constraint}h-unset {{{constraint}height: unset;}}
+        .{constraint}h-0 {{{constraint}height: 0;}}
         """
         self.height_css_classes.append(default_height_css)
 
-    def gen_percent_height_helpers(self, percent_prefix_string="pct"):
+    def gen_percent_height_helpers(self, percent_prefix_string="pct", constraint=""):
         """
         This function generates percent height helpers.
         FORMAT GENERATED:
@@ -818,12 +855,12 @@ class Heights:
         :return: percentage Width helper css classes
         """
         for i in range(0, 101, 1):
-            percent_height_css = f".{percent_prefix_string}\:h-{i} {{height: {i}%;}}"
+            percent_height_css = f".{percent_prefix_string}\:{constraint}h-{i} {{{constraint}height: {i}%;}}"
             self.height_css_classes.append(percent_height_css)
 
         # gen_percent_height_helpers()
 
-    def gen_height_helpers(self):
+    def gen_height_helpers(self, constraint=""):
         """
         Generates eye.css height helpers.
         Format to be returned is:
@@ -832,10 +869,10 @@ class Heights:
         :return: 1x height helper css classes
         """
         for i in range(1, 13, 1):
-            height_css = f".h-{i} {{height: {i * self.default_dimension_value}px}}"
+            height_css = f".{constraint}h-{i} {{{constraint}height: {i * self.default_dimension_value}px;}}"
             self.height_css_classes.append(height_css)
 
-    def gen_height_2x_helpers(self):
+    def gen_height_2x_helpers(self, constraint=""):
         """
         Generates eye.css height 2x helpers.
         Format to be returned is:
@@ -844,10 +881,10 @@ class Heights:
         :return: 2x height helper css classes
         """
         for i in range(1, 13, 1):
-            height_2x_css = f".h2-{i} {{height: {(i + 12) * self.default_dimension_value}px}}"
+            height_2x_css = f".{constraint}h2-{i} {{{constraint}height: {(i + 12) * self.default_dimension_value}px;}}"
             self.height_css_classes.append(height_2x_css)
 
-    def gen_height_3x_helpers(self):
+    def gen_height_3x_helpers(self, constraint=""):
         """
         Generates eye.css height 3x helpers.
         Format to be returned is:
@@ -856,10 +893,10 @@ class Heights:
         :return: 3x height helper css classes
         """
         for i in range(1, 13, 1):
-            height_3x_css = f".h3-{i} {{height: {(i + 12 + 12) * self.default_dimension_value}px}}"
+            height_3x_css = f".{constraint}h3-{i} {{{constraint}height: {(i + 12 + 12) * self.default_dimension_value}px;}}"
             self.height_css_classes.append(height_3x_css)
 
-    def gen_height_safe_helpers(self):
+    def gen_height_safe_helpers(self, constraint=""):
         """
         Generates eye.css height helpers.
         Format to be returned is:
@@ -869,7 +906,7 @@ class Heights:
         """
         for i in range(1, 13, 1):
             height_safe_css = (
-                f".h-safe-{i} {{height: {i * self.default_dimension_value}%}}"
+                f".{constraint}h-safe-{i} {{{constraint}height: {i * self.default_dimension_value}%;}}"
             )
             self.height_css_classes.append(height_safe_css)
 
@@ -1021,11 +1058,16 @@ class Margins:
         """
         for i in range(1, 13, 1):
             mg_left_css = f"""
-            .mg-left{i}, .mg-l{i} {{margin-left: {self.default_dimension_value * i}px;}}
-            .mg-left{i}-sm, .mg-l{i}-sm {{margin-left: {(self.default_dimension_value * i) - 2}px;}}
-            .mg-left{i}-smr, .mg-l{i}-smr {{margin-left: {(self.default_dimension_value * i) - 4}px;}}
-            .mg-left{i}-smt, .mg-l{i}-smt {{margin-left: {(self.default_dimension_value * i) - 6}px;}}
-            .mg-left{i}-xs, .mg-l{i}-xs {{margin-left: {(self.default_dimension_value * i) - 7}px;}}
+            .mg-left{i} {{margin-left: {self.default_dimension_value * i}px;}}
+            .mg-l{i} {{margin-left: {self.default_dimension_value * i}px;}}
+            .mg-left{i}-sm {{margin-left: {(self.default_dimension_value * i) - 2}px;}}
+            .mg-l{i}-sm {{margin-left: {(self.default_dimension_value * i) - 2}px;}}
+            .mg-left{i}-smr {{margin-left: {(self.default_dimension_value * i) - 4}px;}}
+            .mg-l{i}-smr {{margin-left: {(self.default_dimension_value * i) - 4}px;}}
+            .mg-left{i}-smt {{margin-left: {(self.default_dimension_value * i) - 6}px;}}
+            .mg-l{i}-smt {{margin-left: {(self.default_dimension_value * i) - 6}px;}}
+            .mg-left{i}-xs {{margin-left: {(self.default_dimension_value * i) - 7}px;}}
+            .mg-l{i}-xs {{margin-left: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(mg_left_css, end="")
             self.margin_css_classes.append(mg_left_css)
@@ -1038,11 +1080,16 @@ class Margins:
         """
         for i in range(1, 13, 1):
             mg_right_css = f"""
-            .mg-right{i}, .mg-r{i} {{margin-right: {self.default_dimension_value * i}px;}}
-            .mg-right{i}-sm, .mg-r{i}-sm {{margin-right: {(self.default_dimension_value * i) - 2}px;}}
-            .mg-right{i}-smr, .mg-r{i}-smr {{margin-right: {(self.default_dimension_value * i) - 4}px;}}
-            .mg-right{i}-smt, .mg-r{i}-smt {{margin-right: {(self.default_dimension_value * i) - 6}px;}}
-            .mg-right{i}-xs, .mg-r{i}-xs {{margin-right: {(self.default_dimension_value * i) - 7}px;}}
+            .mg-right{i} {{margin-right: {self.default_dimension_value * i}px;}}
+            .mg-r{i} {{margin-right: {self.default_dimension_value * i}px;}}
+            .mg-right{i}-sm {{margin-right: {(self.default_dimension_value * i) - 2}px;}}
+            .mg-r{i}-sm {{margin-right: {(self.default_dimension_value * i) - 2}px;}}
+            .mg-right{i}-smr {{margin-right: {(self.default_dimension_value * i) - 4}px;}}
+            .mg-r{i}-smr {{margin-right: {(self.default_dimension_value * i) - 4}px;}}
+            .mg-right{i}-smt {{margin-right: {(self.default_dimension_value * i) - 6}px;}}
+            .mg-r{i}-smt {{margin-right: {(self.default_dimension_value * i) - 6}px;}}
+            .mg-right{i}-xs {{margin-right: {(self.default_dimension_value * i) - 7}px;}}
+            .mg-r{i}-xs {{margin-right: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(mg_right_css, end="")
             self.margin_css_classes.append(mg_right_css)
@@ -1055,11 +1102,16 @@ class Margins:
         """
         for i in range(1, 13, 1):
             mg_top_css = f"""
-            .mg-top{i}, .mg-t{i} {{margin-top: {self.default_dimension_value * i}px;}}
-            .mg-top{i}-sm, .mg-t{i}-sm {{margin-top: {(self.default_dimension_value * i) - 2}px;}}
-            .mg-top{i}-smr, .mg-t{i}-smr {{margin-top: {(self.default_dimension_value * i) - 4}px;}}
-            .mg-top{i}-smt, .mg-t{i}-smt {{margin-top: {(self.default_dimension_value * i) - 6}px;}}
-            .mg-top{i}-xs, .mg-t{i}-xs {{margin-top: {(self.default_dimension_value * i) - 7}px;}}
+            .mg-top{i} {{margin-top: {self.default_dimension_value * i}px;}}
+            .mg-t{i} {{margin-top: {self.default_dimension_value * i}px;}}
+            .mg-top{i}-sm {{margin-top: {(self.default_dimension_value * i) - 2}px;}}
+            .mg-t{i}-sm {{margin-top: {(self.default_dimension_value * i) - 2}px;}}
+            .mg-top{i}-smr {{margin-top: {(self.default_dimension_value * i) - 4}px;}}
+            .mg-t{i}-smr {{margin-top: {(self.default_dimension_value * i) - 4}px;}}
+            .mg-top{i}-smt {{margin-top: {(self.default_dimension_value * i) - 6}px;}}
+            .mg-t{i}-smt {{margin-top: {(self.default_dimension_value * i) - 6}px;}}
+            .mg-top{i}-xs {{margin-top: {(self.default_dimension_value * i) - 7}px;}}
+            .mg-t{i}-xs {{margin-top: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(mg_top_css, end="")
             self.margin_css_classes.append(mg_top_css)
@@ -1072,11 +1124,16 @@ class Margins:
         """
         for i in range(1, 13, 1):
             mg_bottom_css = f"""
-            .mg-bottom{i}, .mg-b{i} {{margin-bottom: {self.default_dimension_value * i}px;}}
-            .mg-bottom{i}-sm, .mg-b{i}-sm {{margin-bottom: {(self.default_dimension_value * i) - 2}px;}}
-            .mg-bottom{i}-smr, .mg-b{i}-smr {{margin-bottom: {(self.default_dimension_value * i) - 4}px;}}
-            .mg-bottom{i}-smt, .mg-b{i}-smt {{margin-bottom: {(self.default_dimension_value * i) - 6}px;}}
-            .mg-bottom{i}-xs, .mg-b{i}-xs {{margin-bottom: {(self.default_dimension_value * i) - 7}px;}}
+            .mg-bottom{i} {{margin-bottom: {self.default_dimension_value * i}px;}}
+            .mg-b{i} {{margin-bottom: {self.default_dimension_value * i}px;}}
+            .mg-bottom{i}-sm {{margin-bottom: {(self.default_dimension_value * i) - 2}px;}}
+            .mg-b{i}-sm {{margin-bottom: {(self.default_dimension_value * i) - 2}px;}}
+            .mg-bottom{i}-smr {{margin-bottom: {(self.default_dimension_value * i) - 4}px;}}
+            .mg-b{i}-smr {{margin-bottom: {(self.default_dimension_value * i) - 4}px;}}
+            .mg-bottom{i}-smt {{margin-bottom: {(self.default_dimension_value * i) - 6}px;}}
+            .mg-b{i}-smt {{margin-bottom: {(self.default_dimension_value * i) - 6}px;}}
+            .mg-bottom{i}-xs {{margin-bottom: {(self.default_dimension_value * i) - 7}px;}}
+            .mg-b{i}-xs {{margin-bottom: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(mg_bottom_css, end="")
             self.margin_css_classes.append(mg_bottom_css)
@@ -1220,11 +1277,16 @@ class Paddings:
         """
         for i in range(1, 13, 1):
             pad_left_css = f"""
-            .pad-left{i}, .pad-l{i} {{padding-left: {self.default_dimension_value * i}px;}}
-            .pad-left{i}-sm, .pad-l{i}-sm {{padding-left: {(self.default_dimension_value * i) - 2}px;}}
-            .pad-left{i}-smr, .pad-l{i}-smr {{padding-left: {(self.default_dimension_value * i) - 4}px;}}
-            .pad-left{i}-smt, .pad-l{i}-smt {{padding-left: {(self.default_dimension_value * i) - 6}px;}}
-            .pad-left{i}-xs, .pad-l{i}-xs {{padding-left: {(self.default_dimension_value * i) - 7}px;}}
+            .pad-l{i} {{padding-left: {self.default_dimension_value * i}px;}}
+            .pad-left{i} {{padding-left: {self.default_dimension_value * i}px;}}
+            .pad-left{i}-sm {{padding-left: {(self.default_dimension_value * i) - 2}px;}}
+            .pad-l{i}-sm {{padding-left: {(self.default_dimension_value * i) - 2}px;}}
+            .pad-left{i}-smr {{padding-left: {(self.default_dimension_value * i) - 4}px;}}
+            .pad-l{i}-smr {{padding-left: {(self.default_dimension_value * i) - 4}px;}}
+            .pad-left{i}-smt {{padding-left: {(self.default_dimension_value * i) - 6}px;}}
+            .pad-l{i}-smt {{padding-left: {(self.default_dimension_value * i) - 6}px;}}
+            .pad-left{i}-xs {{padding-left: {(self.default_dimension_value * i) - 7}px;}}
+            .pad-l{i}-xs {{padding-left: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(pad_left_css, end="")
             self.padding_css_classes.append(pad_left_css)
@@ -1237,11 +1299,16 @@ class Paddings:
         """
         for i in range(1, 13, 1):
             pad_right_css = f"""
-            .pad-right{i}, .pad-r{i} {{padding-right: {self.default_dimension_value * i}px;}}
-            .pad-right{i}-sm, .pad-r{i}-sm {{padding-right: {(self.default_dimension_value * i) - 2}px;}}
-            .pad-right{i}-smr, .pad-r{i}-smr {{padding-right: {(self.default_dimension_value * i) - 4}px;}}
-            .pad-right{i}-smt, .pad-r{i}-smt {{padding-right: {(self.default_dimension_value * i) - 6}px;}}
-            .pad-right{i}-xs, .pad-r{i}-xs {{padding-right: {(self.default_dimension_value * i) - 7}px;}}
+            .pad-right{i} {{padding-right: {self.default_dimension_value * i}px;}}
+            .pad-r{i} {{padding-right: {self.default_dimension_value * i}px;}}
+            .pad-right{i}-sm {{padding-right: {(self.default_dimension_value * i) - 2}px;}}
+            .pad-r{i}-sm {{padding-right: {(self.default_dimension_value * i) - 2}px;}}
+            .pad-right{i}-smr {{padding-right: {(self.default_dimension_value * i) - 4}px;}}
+            .pad-r{i}-smr {{padding-right: {(self.default_dimension_value * i) - 4}px;}}
+            .pad-right{i}-smt {{padding-right: {(self.default_dimension_value * i) - 6}px;}}
+            .pad-r{i}-smt {{padding-right: {(self.default_dimension_value * i) - 6}px;}}
+            .pad-right{i}-xs {{padding-right: {(self.default_dimension_value * i) - 7}px;}}
+            .pad-r{i}-xs {{padding-right: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(pad_right_css, end="")
             self.padding_css_classes.append(pad_right_css)
@@ -1254,11 +1321,16 @@ class Paddings:
         """
         for i in range(1, 13, 1):
             pad_top_css = f"""
-            .pad-top{i}, .pad-t{i} {{padding-top: {self.default_dimension_value * i}px;}}
-            .pad-top{i}-sm, .pad-t{i}-sm {{padding-top: {(self.default_dimension_value * i) - 2}px;}}
-            .pad-top{i}-smr, .pad-t{i}-smr {{padding-top: {(self.default_dimension_value * i) - 4}px;}}
-            .pad-top{i}-smt, .pad-t{i}-smt {{padding-top: {(self.default_dimension_value * i) - 6}px;}}
-            .pad-top{i}-xs, .pad-t{i}-xs {{padding-top: {(self.default_dimension_value * i) - 7}px;}}
+            .pad-top{i} {{padding-top: {self.default_dimension_value * i}px;}}
+            .pad-t{i} {{padding-top: {self.default_dimension_value * i}px;}}
+            .pad-top{i}-sm {{padding-top: {(self.default_dimension_value * i) - 2}px;}}
+            .pad-t{i}-sm {{padding-top: {(self.default_dimension_value * i) - 2}px;}}
+            .pad-top{i}-smr {{padding-top: {(self.default_dimension_value * i) - 4}px;}}
+            .pad-t{i}-smr {{padding-top: {(self.default_dimension_value * i) - 4}px;}}
+            .pad-top{i}-smt {{padding-top: {(self.default_dimension_value * i) - 6}px;}}
+            .pad-t{i}-smt {{padding-top: {(self.default_dimension_value * i) - 6}px;}}
+            .pad-top{i}-xs {{padding-top: {(self.default_dimension_value * i) - 7}px;}}
+            .pad-t{i}-xs {{padding-top: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(pad_top_css, end="")
             self.padding_css_classes.append(pad_top_css)
@@ -1271,11 +1343,16 @@ class Paddings:
         """
         for i in range(1, 13, 1):
             pad_bottom_css = f"""
-            .pad-bottom{i}, .pad-b{i} {{padding-bottom: {self.default_dimension_value * i}px;}}
-            .pad-bottom{i}-sm, .pad-b{i}-sm {{padding-bottom: {(self.default_dimension_value * i) - 2}px;}}
-            .pad-bottom{i}-smr, .pad-b{i}-smr {{padding-bottom: {(self.default_dimension_value * i) - 4}px;}}
-            .pad-bottom{i}-smt, .pad-b{i}-smt {{padding-bottom: {(self.default_dimension_value * i) - 6}px;}}
-            .pad-bottom{i}-xs, .pad-b{i}-xs {{padding-bottom: {(self.default_dimension_value * i) - 7}px;}}
+            .pad-bottom{i} {{padding-bottom: {self.default_dimension_value * i}px;}}
+            .pad-b{i} {{padding-bottom: {self.default_dimension_value * i}px;}}
+            .pad-bottom{i}-sm {{padding-bottom: {(self.default_dimension_value * i) - 2}px;}}
+            .pad-b{i}-sm {{padding-bottom: {(self.default_dimension_value * i) - 2}px;}}
+            .pad-bottom{i}-smr {{padding-bottom: {(self.default_dimension_value * i) - 4}px;}}
+            .pad-b{i}-smr {{padding-bottom: {(self.default_dimension_value * i) - 4}px;}}
+            .pad-bottom{i}-smt {{padding-bottom: {(self.default_dimension_value * i) - 6}px;}}
+            .pad-b{i}-smt {{padding-bottom: {(self.default_dimension_value * i) - 6}px;}}
+            .pad-bottom{i}-xs {{padding-bottom: {(self.default_dimension_value * i) - 7}px;}}
+            .pad-b{i}-xs {{padding-bottom: {(self.default_dimension_value * i) - 7}px;}}
             """
             # print(pad_bottom_css, end="")
             self.padding_css_classes.append(pad_bottom_css)
@@ -2070,6 +2147,7 @@ class Overflows:
 
     def __init__(self) -> None:
         self.overflow_css_classes = list()
+        self.overflow_helpers()
 
     @property
     def css_properties(self):
@@ -2095,6 +2173,102 @@ class Overflows:
         .overflow-y-auto {{overflow-y: auto}}
         """
         self.overflow_css_classes.append(overflow_css)
+
+
+class Legacys:
+    """
+    These are the legacy css properties which do not have collections, just one-off properties,
+    but very important to the working properly of other css properties.
+    Theese class is called Legacy because there are substitutes for this css properties,
+    but they are still very much supported across browsers, devices and platforms
+    e.g., float, clear, white-space, etc.
+    :Date: July 2, 2022."""
+
+    def __init__(self) -> None:
+        self.legacy_css_classes = list()
+        self.legacy_whitespace_helpers()
+
+    @property
+    def css_properties(self):
+        return self.legacy_css_classes
+
+    def legacy_whitespace_helpers(self):
+        legacy_whitespace_css = f"""
+        .white-space-nowrap: {{white-space: nowrap;}}
+        .white-space-pre: {{white-space: pre;}}
+        .white-space-prewrap: {{white-space: pre-wrap;}}
+        .white-space-preline: {{white-space: pre-line;}}
+        .white-space-normal: {{white-space: normal;}}
+        .white-space-unset: {{white-space: unset;}}
+        .white-space-initial: {{white-space: initial;}}
+        .white-space-inherit: {{white-space: inherit;}}
+        """
+        self.legacy_css_classes.append(legacy_whitespace_css)
+
+    def legacy_clear_helpers(self):
+        legacy_clear_css = f"""
+        .clear-unset: {{clear: unset;}}
+        .clear-initial: {{clear: initial;}}
+        .clear-inherit: {{clear: inherit;}}
+        .clear-both: {{clear: both;}}
+        .clear-left: {{clear: left;}}
+        .clear-right: {{clear: right;}}
+        .clear-none: {{clear: none;}}
+        """
+        self.legacy_css_classes.append(legacy_clear_css)
+
+    def legacy_float_helpers(self):
+        legacy_float_css = f"""
+        .float-unset: {{float: unset;}}
+        .float-initial: {{float: initial;}}
+        .float-inherit: {{float: inherit;}}
+        .float-left: {{float: left;}}
+        .float-right: {{float: right;}}
+        .float-none: {{float: none;}}
+        """
+        self.legacy_css_classes.append(legacy_float_css)
+
+    def legacy_cursor(self):
+        """:Date:July 2, 2022."""
+        cursor_css = f"""
+        .cursor-auto {{cursor: auto;}}
+        .cursor-inherit {{cursor: inherit;}}
+        .cursor-none {{cursor: none;}}
+        .cursor-unset {{cursor: unset;}}
+        .cursor-initial {{cursor: initial;}}
+        .cursor-default {{cursor: default;}}
+        .cursor-pointer {{cursor: pointer;}}
+        .cursor-not-allowed {{cursor: not-allowed;}}
+        .cursor-move {{cursor: move;}}
+        .cursor-n-resize {{cursor: n-resize;}}
+        .cursor-e-resize {{cursor: e-resize;}}
+        .cursor-ne-resize {{cursor: ne-resize;}}
+        .cursor-nw-resize {{cursor: nw-resize;}}
+        .cursor-ns-resize {{cursor: ns-resize;}}
+        .cursor-w-resize {{cursor: w-resize;}}
+        .cursor-s-resize {{cursor: s-resize;}}
+        .cursor-sw-resize {{cursor: sw-resize;}}
+        .cursor-se-resize {{cursor: se-resize;}}
+        .cursor-ew-resize {{cursor: ew-resize;}}
+        .cursor-nesw-resize {{cursor: nesw-resize;}}
+        .cursor-nwse-resize {{cursor: nwse-resize;}}
+        .cursor-row-resize {{cursor: row-resize;}}
+        .cursor-col-resize {{cursor: col-resize;}}
+        .cursor-all-scroll {{cursor: all-scroll;}}
+        .cursor-zoom-in {{cursor: zoom-in;}}
+        .cursor-zoom-out {{cursor: zoom-out;}}
+        .cursor-progress {{cursor: progress;}}
+        .cursor-text {{cursor: text;}}
+        .cursor-context-menu {{cursor: context-menu;}}
+        .cursor-help {{cursor: help;}}
+        .cursor-wait {{cursor: wait;}}
+        .cursor-cell {{cursor: cell;}}
+        .cursor-crosshair {{cursor: crosshair;}}
+        .cursor-vertical-text {{cursor: vertical-text;}}
+        .cursor-alias {{cursor: alias;}}
+        .cursor-copy {{cursor: copy;}}
+        .cursor-no-drop {{cursor: no-drop;}}
+        """
 
 
 if "__main__" == __name__:
