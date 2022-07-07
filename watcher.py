@@ -20,7 +20,8 @@ class EyeWatcher:
     def create_sm_media_query(sm_css_classes):
         media_queries_css = ""
         for k, v in sm_css_classes.items():
-            media_queries_css += f"{k} {v}"
+            # Prepend ".sm" to the media_query css class key and strip the "." existing before any existing class e.g., .pct
+            media_queries_css += f".sm\:{k.lstrip('.')} {v}"
         sm_media_query_definition = f"@media (min-width: 640px) {{{media_queries_css}}}"
         print(f"SM MEDIA QUERY DEFINITION: {sm_media_query_definition}")
         return sm_media_query_definition
