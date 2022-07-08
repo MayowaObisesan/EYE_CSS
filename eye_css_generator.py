@@ -27,6 +27,13 @@
 #   --font-size--large: 2.4rem; /* 24px */
 # }
 
+# MEDIA QUERIES - DEFINITIONS
+# @media (min-width: 640px) { ... } - sm
+# @media (min-width: 768px) { ... } - md
+# @media (min-width: 1024px) { ... } - lg
+# @media (min-width: 1280px) { ... } - xl
+# @media (min-width: 1536px) { ... } - 2xl
+
 class CSSGenerator:
     """
     This class generates eye.css file
