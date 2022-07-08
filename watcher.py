@@ -187,7 +187,7 @@ class EyeWatcher:
                     elif len(j_conv) > 1:
                         j_conv[0] = f"{j_conv[0]}"
                         media_css = f".{j_conv[0]}\:{j_conv[-1]}"
-                    self.sm_media_query_css_classes_list.append(media_css)
+                    self.md_media_query_css_classes_list.append(media_css)
         # print(f"FORMATTED HTML CSS CLASSES LIST: {css_classes}")
         return css_classes
 
