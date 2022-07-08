@@ -137,7 +137,9 @@ class EyeWatcher:
                     media_css = j.split(':', 1)[-1]
                     j_conv = j.split(':')[1:]
                     print(f"J CONV : {j_conv}")
-                    if len(j_conv) > 1:
+                    if len(j_conv) == 1:
+                        media_css = f".{j_conv[-1]}"
+                    elif len(j_conv) > 1:
                         j_conv[0] = f"{j_conv[0]}"
                         media_css = f".{j_conv[0]}\:{j_conv[-1]}"
                     self.media_query_css_classes_list.append(media_css)
