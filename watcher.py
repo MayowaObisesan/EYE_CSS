@@ -12,7 +12,11 @@ class EyeWatcher:
 
     def __init__(self) -> None:
         self.eye_css_name = "eye_gen.css"
-        self.media_query_css_classes_list: list = list()
+        self.sm_media_query_css_classes_list: list = list()
+        self.md_media_query_css_classes_list: list = list()
+        self.lg_media_query_css_classes_list: list = list()
+        self.xl_media_query_css_classes_list: list = list()
+        self.xxl_media_query_css_classes_list: list = list()
         self.css_list: list = list()
         self.css_content_list: list = list()  # made a list so that we can use the writelines file method.
 
@@ -26,18 +30,29 @@ class EyeWatcher:
         print(f"SM MEDIA QUERY DEFINITION: {sm_media_query_definition}")
         return sm_media_query_definition
 
+    @staticmethod
+    def create_md_media_query(md_css_classes):
+        media_queries_css = ""
+        for k, v in md_css_classes.items():
+            # Prepend ".md" to the media_query css class key and strip the "." existing before any existing class e.g., .pct
+            media_queries_css += f".md\:{k.lstrip('.')} {v}"
+        md_media_query_definition = f"@media (min-width: 768px) {{{media_queries_css}}}"
+        print(f"MD MEDIA QUERY DEFINITION: {md_media_query_definition}")
+        return md_media_query_definition
+
     def parse_eye_css(self):
         with open(self.eye_css_name, "r") as opened_file:
             # css_list = opened_file.readlines()
             css_str = opened_file.read()
             opened_file.close()
 
-            print(f"MEDIA QUERY CSS CLASSES LIST: {self.media_query_css_classes_list}")
+            print(f"MEDIA QUERY CSS CLASSES LIST: {self.sm_media_query_css_classes_list}")
 
-            # if self.media_query_css_classes_list:
-            # print(f"MEDIA QUERY CSS CLASSES LIST: {self.media_query_css_classes_list}")
+            # if self.sm_media_query_css_classes_list:
+            # print(f"MEDIA QUERY CSS CLASSES LIST: {self.sm_media_query_css_classes_list}")
             self.find_intersection_css_classes(css_str)
-            self.find_intersection_css_media_query_classes(css_str)
+            self.find_intersection_css_sm_media_query_classes(css_str)
+            self.find_intersection_css_md_media_query_classes(css_str)
 
             self.write_watched_css_file()
 
@@ -59,10 +74,10 @@ class EyeWatcher:
         self.write_watched_css(res.items())
         # return
 
-    def find_intersection_css_media_query_classes(self, css_str):
+    def find_intersection_css_sm_media_query_classes(self, css_str):
         # Attach the method to a class to avoid a continuous function re-run
         css_to_dict = self.convert_eye_css_to_dict(css_str)
-        collected_html_classes = self.media_query_css_classes_list
+        collected_html_classes = self.sm_media_query_css_classes_list
 
         # print(set(css_to_dict).intersection(set(collected_html_classes)))
         # print("CONVERT")
@@ -75,8 +90,30 @@ class EyeWatcher:
         res = {k: f"{{{css_to_dict[k]};}}" for k in watched_media_query_css_classes}
         # print(f"RES: {res}")
         sm_media_query = self.create_sm_media_query(res)
+        md_media_query = self.create_md_media_query(res)
         # self.write_watched_css_file(sm_media_query)
-        self.write_watched_media_query_css(sm_media_query)
+        self.write_watched_sm_media_query_css(sm_media_query)
+        self.write_watched_md_media_query_css(md_media_query)
+        # return
+
+    def find_intersection_css_md_media_query_classes(self, css_str):
+        # Attach the method to a class to avoid a continuous function re-run
+        css_to_dict = self.convert_eye_css_to_dict(css_str)
+        collected_html_classes = self.md_media_query_css_classes_list
+
+        # print(set(css_to_dict).intersection(set(collected_html_classes)))
+        # print("CONVERT")
+        print(f"SET CSS TO DICT: {set(css_to_dict)}")
+        print(f"COLLECTED HTML CLASSES: {set(collected_html_classes)}")
+        watched_media_query_css_classes = sorted(set(css_to_dict).intersection(set(collected_html_classes)))
+        print(f"WATCHED MEDIA CSS CLASSES: {watched_media_query_css_classes}")
+
+        # get the values of the watched css classes. use the watched_media_query_css_classes as keys for the eye_css_dict.
+        res = {k: f"{{{css_to_dict[k]};}}" for k in watched_media_query_css_classes}
+        # print(f"RES: {res}")
+        md_media_query = self.create_md_media_query(res)
+        # self.write_watched_css_file(sm_media_query)
+        self.write_watched_md_media_query_css(md_media_query)
         # return
 
     # def write_watched_css_to_file(self):
@@ -142,7 +179,17 @@ class EyeWatcher:
                     elif len(j_conv) > 1:
                         j_conv[0] = f"{j_conv[0]}"
                         media_css = f".{j_conv[0]}\:{j_conv[-1]}"
-                    self.media_query_css_classes_list.append(media_css)
+                    self.sm_media_query_css_classes_list.append(media_css)
+                if j.startswith("md:"):
+                    media_css = j.split(':', 1)[-1]
+                    j_conv = j.split(':')[1:]
+                    print(f"J CONV : {j_conv}")
+                    if len(j_conv) == 1:
+                        media_css = f".{j_conv[-1]}"
+                    elif len(j_conv) > 1:
+                        j_conv[0] = f"{j_conv[0]}"
+                        media_css = f".{j_conv[0]}\:{j_conv[-1]}"
+                    self.sm_media_query_css_classes_list.append(media_css)
         # print(f"FORMATTED HTML CSS CLASSES LIST: {css_classes}")
         return css_classes
 
@@ -175,11 +222,11 @@ class EyeWatcher:
         """)
         with open(watched_css_file_name, "w") as opened_file:
             # opened_file.write("""""")
-            # if self.media_query_css_classes_list:
-            #     for each_media_style_property in self.media_query_css_classes_list:
+            # if self.sm_media_query_css_classes_list:
+            #     for each_media_style_property in self.sm_media_query_css_classes_list:
             #         pass
             # css_content += (
-            #         self.write_watched_media_query_css(opened_file, sm_media_query_css) + self.write_watched_css(
+            #         self.write_watched_sm_media_query_css(opened_file, sm_media_query_css) + self.write_watched_css(
             #     opened_file, css_list))
             #
             # opened_file.write(css_content)
@@ -199,13 +246,22 @@ class EyeWatcher:
         # return css_text
         # print("Closing eye_final_output.css")
 
-    def write_watched_media_query_css(self, sm_media_query_css):
+    def write_watched_sm_media_query_css(self, sm_media_query_css):
         self.css_content_list.append(sm_media_query_css)
-        print(f"WRITING WATCHED MEDIA QUERY CSS: {self.css_content_list}")
+        print(f"WRITING WATCHED SM MEDIA QUERY CSS: {self.css_content_list}")
         # if sm_media_query_css != "":
         #     # file.write(sm_media_query_css)
         #     # return the css_text instead of writing to the file from here.
         #     return sm_media_query_css
+        # return ""
+
+    def write_watched_md_media_query_css(self, md_media_query_css):
+        self.css_content_list.append(md_media_query_css)
+        print(f"WRITING WATCHED MD MEDIA QUERY CSS: {self.css_content_list}")
+        # if md_media_query_css != "":
+        #     # file.write(md_media_query_css)
+        #     # return the css_text instead of writing to the file from here.
+        #     return md_media_query_css
         # return ""
 
 
