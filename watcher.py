@@ -6,8 +6,34 @@
 # get all the class or className from the file being watched.
 # The class and className represents all the defined inline styles available within an html, jsx or tsx page.
 
+# Have imports here.
+import os
+# from watchdog.observers import Observer
+# from watchdog.events import FileSystemEventHandler
+
 
 class EyeWatcher:
+    DIRECTORY_TO_WATCH = os.getcwd()
+
+    def __init__(self):
+        self.files_to_watch = ["main.html"]
+
+        self.files_watched_data = dict()
+
+    def file_os_stats(self, file):
+        return os.stat(file).sm_mtime
+
+    def get_files_stats_data(self):
+        for each_file in self.files_to_watch:
+            self.files_watched_data[each_file] = each_file
+
+    def watch(self):
+        current_modified_time = os.path.getmtime(os.path.join(self.DIRECTORY_TO_WATCH, "main.html"))
+        if current_modified_time > former_modified_time:
+            print("File has been modified.")
+
+
+class EyeWriter:
     """ Eye.css Watcher script. """
 
     def __init__(self) -> None:
