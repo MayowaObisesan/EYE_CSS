@@ -82,18 +82,16 @@ class EyeWatcher:
         # print(set(css_to_dict).intersection(set(collected_html_classes)))
         # print("CONVERT")
         print(f"SET CSS TO DICT: {set(css_to_dict)}")
-        print(f"COLLECTED HTML CLASSES: {set(collected_html_classes)}")
+        print(f"COLLECTED SM: HTML CLASSES: {set(collected_html_classes)}")
         watched_media_query_css_classes = sorted(set(css_to_dict).intersection(set(collected_html_classes)))
-        print(f"WATCHED MEDIA CSS CLASSES: {watched_media_query_css_classes}")
+        print(f"WATCHED SM MEDIA CSS CLASSES: {watched_media_query_css_classes}")
 
         # get the values of the watched css classes. use the watched_media_query_css_classes as keys for the eye_css_dict.
         res = {k: f"{{{css_to_dict[k]};}}" for k in watched_media_query_css_classes}
         # print(f"RES: {res}")
         sm_media_query = self.create_sm_media_query(res)
-        md_media_query = self.create_md_media_query(res)
         # self.write_watched_css_file(sm_media_query)
         self.write_watched_sm_media_query_css(sm_media_query)
-        self.write_watched_md_media_query_css(md_media_query)
         # return
 
     def find_intersection_css_md_media_query_classes(self, css_str):
@@ -104,9 +102,9 @@ class EyeWatcher:
         # print(set(css_to_dict).intersection(set(collected_html_classes)))
         # print("CONVERT")
         print(f"SET CSS TO DICT: {set(css_to_dict)}")
-        print(f"COLLECTED HTML CLASSES: {set(collected_html_classes)}")
+        print(f"COLLECTED MD: HTML CLASSES: {set(collected_html_classes)}")
         watched_media_query_css_classes = sorted(set(css_to_dict).intersection(set(collected_html_classes)))
-        print(f"WATCHED MEDIA CSS CLASSES: {watched_media_query_css_classes}")
+        print(f"WATCHED MD MEDIA CSS CLASSES: {watched_media_query_css_classes}")
 
         # get the values of the watched css classes. use the watched_media_query_css_classes as keys for the eye_css_dict.
         res = {k: f"{{{css_to_dict[k]};}}" for k in watched_media_query_css_classes}
