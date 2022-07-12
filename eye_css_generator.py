@@ -78,7 +78,7 @@ class CSSGenerator:
         """:Date: July 1, 2022."""
         eye_init_css = f"""
         * {{
-            --webkit-box-sizing: border-box; --moz-box-sizing: border-box; box-sizing: border-box;
+            -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
             text-rendering: auto;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: antialiased; /* | grayscale*/
@@ -129,6 +129,8 @@ class CSSGenerator:
             *Colors().css_properties,
             *Backgrounds().css_properties,
             *Overflows().css_properties,
+            *Legacys().css_properties,
+            *BoxShadows().css_properties,
         ]
         # print(css_properties_list)
         return css_properties_list
@@ -1502,17 +1504,17 @@ class Radius:
     def radius(self):
         """:Date: inherit"""
         radius_css = f"""
-        .radius {{border-radius: {self.default_radius}px;}}   /* =8px */
-        .radius-sm {{border-radius: {self.default_radius - (2 * 1)}px;}}   /* =6px */
-        .radius-smr {{border-radius: {self.default_radius - (2 * 2)}px;}}  /* =4px */
-        .radius-smt {{border-radius: {self.default_radius - (2 * 3)}px;}}  /* =2px */
-        .radius-xs {{border-radius: {self.default_radius - (2 * 4) + 1}px;}}  /* =1px */
+        .radius {{border-radius: {self.default_radius}px;}}
+        .radius-sm {{border-radius: {self.default_radius - (2 * 1)}px;}}
+        .radius-smr {{border-radius: {self.default_radius - (2 * 2)}px;}}
+        .radius-smt {{border-radius: {self.default_radius - (2 * 3)}px;}}
+        .radius-xs {{border-radius: {self.default_radius - (2 * 4) + 1}px;}}
         
-        .radius2 {{border-radius: {self.default_radius * 2};}}   /* =8px * 2 */
-        .radius2-sm {{border-radius: {(self.default_radius * 2) - (2 * 1)}px;}}   /* =14px i.e., (16 - 2)px */
-        .radius2-smr {{border-radius: {(self.default_radius * 2) - (2 * 2)}px;}}  /* =12px i.e., (16 - 4)px */
-        .radius2-smt {{border-radius: {(self.default_radius * 2) - (2 * 3)}px;}}  /* =10px i.e., (16 - 6)px */
-        .radius2-xs {{border-radius: {(self.default_radius * 2) - (2 * 4) + 1}px;}}  /* =9px i.e., (16 - 8 + 1)px */
+        .radius2 {{border-radius: {self.default_radius * 2}px;}}
+        .radius2-sm {{border-radius: {(self.default_radius * 2) - (2 * 1)}px;}}
+        .radius2-smr {{border-radius: {(self.default_radius * 2) - (2 * 2)}px;}}
+        .radius2-smt {{border-radius: {(self.default_radius * 2) - (2 * 3)}px;}}
+        .radius2-xs {{border-radius: {(self.default_radius * 2) - (2 * 4) + 1}px;}}
         """
         self.radius_css_classes.append(radius_css)
 
@@ -2201,39 +2203,45 @@ class Legacys:
 
     def legacy_whitespace_helpers(self):
         legacy_whitespace_css = f"""
-        .white-space-nowrap: {{white-space: nowrap;}}
-        .white-space-pre: {{white-space: pre;}}
-        .white-space-prewrap: {{white-space: pre-wrap;}}
-        .white-space-preline: {{white-space: pre-line;}}
-        .white-space-normal: {{white-space: normal;}}
-        .white-space-unset: {{white-space: unset;}}
-        .white-space-initial: {{white-space: initial;}}
-        .white-space-inherit: {{white-space: inherit;}}
+        .white-space-nowrap {{white-space: nowrap;}}
+        .white-space-pre {{white-space: pre;}}
+        .white-space-prewrap {{white-space: pre-wrap;}}
+        .white-space-preline {{white-space: pre-line;}}
+        .white-space-normal {{white-space: normal;}}
+        .white-space-unset {{white-space: unset;}}
+        .white-space-initial {{white-space: initial;}}
+        .white-space-inherit {{white-space: inherit;}}
         """
         self.legacy_css_classes.append(legacy_whitespace_css)
 
     def legacy_clear_helpers(self):
         legacy_clear_css = f"""
-        .clear-unset: {{clear: unset;}}
-        .clear-initial: {{clear: initial;}}
-        .clear-inherit: {{clear: inherit;}}
-        .clear-both: {{clear: both;}}
-        .clear-left: {{clear: left;}}
-        .clear-right: {{clear: right;}}
-        .clear-none: {{clear: none;}}
+        .clear-unset {{clear: unset;}}
+        .clear-initial {{clear: initial;}}
+        .clear-inherit {{clear: inherit;}}
+        .clear-both {{clear: both;}}
+        .clear-left {{clear: left;}}
+        .clear-right {{clear: right;}}
+        .clear-none {{clear: none;}}
         """
         self.legacy_css_classes.append(legacy_clear_css)
 
     def legacy_float_helpers(self):
         legacy_float_css = f"""
-        .float-unset: {{float: unset;}}
-        .float-initial: {{float: initial;}}
-        .float-inherit: {{float: inherit;}}
-        .float-left: {{float: left;}}
-        .float-right: {{float: right;}}
-        .float-none: {{float: none;}}
+        .float-unset {{float: unset;}}
+        .float-initial {{float: initial;}}
+        .float-inherit {{float: inherit;}}
+        .float-left {{float: left;}}
+        .float-right {{float: right;}}
+        .float-none {{float: none;}}
         """
         self.legacy_css_classes.append(legacy_float_css)
+
+    def legacy_content_helpers(self):
+        legacy_content_css = f"""
+        .content {{content: '';}}
+        """
+        self.legacy_css_classes.append(legacy_content_css)
 
     def legacy_cursor(self):
         """:Date:July 2, 2022."""
@@ -2276,6 +2284,78 @@ class Legacys:
         .cursor-copy {{cursor: copy;}}
         .cursor-no-drop {{cursor: no-drop;}}
         """
+        self.legacy_css_classes.append(cursor_css)
+
+
+class BoxShadows(Root):
+    """ Date: July 12, 2022. """
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.box_shadow_default_dimen = 8
+        self.box_shadow_css_classes = list()
+        self.box_shadow_helpers()
+        self.box_shadow_bottom_helpers()
+
+    @property
+    def css_properties(self):
+        return self.box_shadow_css_classes
+
+    def box_shadow_helpers(self):
+        box_shadow_css = f"""
+        .shadow {{box-shadow: 0px 0px {self.box_shadow_default_dimen}px 0px {self.default_color_light};}}
+        .shadow-sm {{box-shadow: 0px 0px {self.box_shadow_default_dimen - 2}px 0px {self.default_color_light};}}
+        .shadow-smr {{box-shadow: 0px 0px {self.box_shadow_default_dimen - 4}px 0px {self.default_color_light};}}
+        .shadow-smt {{box-shadow: 0px 0px {self.box_shadow_default_dimen - 6}px 0px {self.default_color_light};}}
+        .shadow-xs {{box-shadow: 0px 0px {self.box_shadow_default_dimen - 7}px 0px {self.default_color_light};}}
+        
+        .shadow2 {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*2)}px 0px {self.default_color_light};}}
+        .shadow2-sm {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*2) - 2}px 0px {self.default_color_light};}}
+        .shadow2-smr {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*2) - 4}px 0px {self.default_color_light};}}
+        .shadow2-smt {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*2) - 6}px 0px {self.default_color_light};}}
+        .shadow2-xs {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*2) - 7}px 0px {self.default_color_light};}}
+        
+        .shadow3 {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*3)}px 0px {self.default_color_light};}}
+        .shadow3-sm {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*3) - 2}px 0px {self.default_color_light};}}
+        .shadow3-smr {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*3) - 4}px 0px {self.default_color_light};}}
+        .shadow3-smt {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*3) - 6}px 0px {self.default_color_light};}}
+        .shadow3-xs {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*3) - 7}px 0px {self.default_color_light};}}
+        
+        .shadow4 {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*4)}px 0px {self.default_color_light};}}
+        .shadow4-sm {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*4) - 2}px 0px {self.default_color_light};}}
+        .shadow4-smr {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*4) - 4}px 0px {self.default_color_light};}}
+        .shadow4-smt {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*4) - 6}px 0px {self.default_color_light};}}
+        .shadow4-xs {{box-shadow: 0px 0px {(self.box_shadow_default_dimen*4) - 7}px 0px {self.default_color_light};}}
+        """
+        self.box_shadow_css_classes.append(box_shadow_css)
+
+    def box_shadow_bottom_helpers(self):
+        box_shadow_css = f"""
+        .shadow-b {{box-shadow: 0px {self.box_shadow_default_dimen}px {self.box_shadow_default_dimen}px 0px {self.default_color_light};}}
+        .shadow-b-sm {{box-shadow: 0px {self.box_shadow_default_dimen - 2}px {self.box_shadow_default_dimen - 2}px 0px {self.default_color_light};}}
+        .shadow-b-smr {{box-shadow: 0px {self.box_shadow_default_dimen - 4}px {self.box_shadow_default_dimen - 4}px 0px {self.default_color_light};}}
+        .shadow-b-smt {{box-shadow: 0px {self.box_shadow_default_dimen - 6}px {self.box_shadow_default_dimen - 6}px 0px {self.default_color_light};}}
+        .shadow-b-xs {{box-shadow: 0px {self.box_shadow_default_dimen - 8}px {self.box_shadow_default_dimen - 7}px 0px {self.default_color_light};}}
+        
+        .shadow-b2 {{box-shadow: 0px {(self.box_shadow_default_dimen * 2)}px {(self.box_shadow_default_dimen*2)}px 0px {self.default_color_light};}}
+        .shadow-b2-sm {{box-shadow: 0px {(self.box_shadow_default_dimen * 2) - 2}px {(self.box_shadow_default_dimen*2) - 2}px 0px {self.default_color_light};}}
+        .shadow-b2-smr {{box-shadow: 0px {(self.box_shadow_default_dimen * 2) - 4}px {(self.box_shadow_default_dimen*2) - 4}px 0px {self.default_color_light};}}
+        .shadow-b2-smt {{box-shadow: 0px {(self.box_shadow_default_dimen * 2) - 6}px {(self.box_shadow_default_dimen*2) - 6}px 0px {self.default_color_light};}}
+        .shadow-b2-xs {{box-shadow: 0px {(self.box_shadow_default_dimen * 2) - 8}px {(self.box_shadow_default_dimen*2) - 7}px 0px {self.default_color_light};}}
+        
+        .shadow-b3 {{box-shadow: 0px {(self.box_shadow_default_dimen*3)}px {(self.box_shadow_default_dimen*3)}px 0px {self.default_color_light};}}
+        .shadow-b3-sm {{box-shadow: 0px {(self.box_shadow_default_dimen*3) - 2}px {(self.box_shadow_default_dimen*3) - 2}px 0px {self.default_color_light};}}
+        .shadow-b3-smr {{box-shadow: 0px {(self.box_shadow_default_dimen*3) - 4}px {(self.box_shadow_default_dimen*3) - 4}px 0px {self.default_color_light};}}
+        .shadow-b3-smt {{box-shadow: 0px {(self.box_shadow_default_dimen*3) - 6}px {(self.box_shadow_default_dimen*3) - 6}px 0px {self.default_color_light};}}
+        .shadow-b3-xs {{box-shadow: 0px {(self.box_shadow_default_dimen*3) - 7}px {(self.box_shadow_default_dimen*3) - 7}px 0px {self.default_color_light};}}
+        
+        .shadow-b4 {{box-shadow: 0px {(self.box_shadow_default_dimen*4)}px {(self.box_shadow_default_dimen*4)}px 0px {self.default_color_light};}}
+        .shadow-b4-sm {{box-shadow: 0px {(self.box_shadow_default_dimen*4) - 2}px {(self.box_shadow_default_dimen*4) - 2}px 0px {self.default_color_light};}}
+        .shadow-b4-smr {{box-shadow: 0px {(self.box_shadow_default_dimen*4) - 4}px {(self.box_shadow_default_dimen*4) - 4}px 0px {self.default_color_light};}}
+        .shadow-b4-smt {{box-shadow: 0px {(self.box_shadow_default_dimen*4) - 6}px {(self.box_shadow_default_dimen*4) - 6}px 0px {self.default_color_light};}}
+        .shadow-b4-xs {{box-shadow: 0px {(self.box_shadow_default_dimen*4) - 7}px {(self.box_shadow_default_dimen*4) - 7}px 0px {self.default_color_light};}}
+        """
+        self.box_shadow_css_classes.append(box_shadow_css)
 
 
 if "__main__" == __name__:
