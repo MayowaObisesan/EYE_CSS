@@ -442,6 +442,8 @@ class EyeWriter:
             for j in i:
                 if j.startswith("pct:"):
                     j = f"pct\:{j.split(':')[-1]}"
+                if j.startswith("neg:"):
+                    j = f"neg\:{j.split(':')[-1]}"
                 css_classes.append(f".{j}")
 
                 # Test for hover classes.

@@ -431,6 +431,7 @@ class Positions:
         for i in range(0, 101, 1):
             left_css = f"""
             .left-{i} {{left: {i}%;}}
+            .neg\:left-{i} {{left: {-i}%;}}
             """
             self.position_css_classes.append(left_css)
 
@@ -439,6 +440,7 @@ class Positions:
         for i in range(0, 101, 1):
             right_css = f"""
             .right-{i} {{right: {i}%;}}
+            .neg\:right-{i} {{right: {-i}%;}}
             """
             self.position_css_classes.append(right_css)
 
@@ -447,6 +449,7 @@ class Positions:
         for i in range(0, 101, 1):
             top_css = f"""
             .top-{i} {{top: {i}%;}}
+            .neg\:top-{i} {{top: {-i}%;}}
             """
             self.position_css_classes.append(top_css)
 
@@ -455,6 +458,7 @@ class Positions:
         for i in range(0, 101, 1):
             bottom_css = f"""
             .bottom-{i} {{bottom: {i}%;}}
+            .neg\:bottom-{i} {{bottom: {-i}%;}}
             """
             self.position_css_classes.append(bottom_css)
 
@@ -757,7 +761,7 @@ class Widths:
         .pct\:w-100 {width: 100%;}
         :return: percentage Width helper css classes
         """
-        for i in range(0, 101, 1):
+        for i in range(0, 201, 1):
             percent_width_css = f".{percent_prefix_string}\:{constraint}w-{i} {{{constraint}width: {i}%;}}"
             self.width_css_classes.append(percent_width_css)
 
@@ -863,7 +867,7 @@ class Heights:
         .pct\:h-100 {height: 100%;}
         :return: percentage Width helper css classes
         """
-        for i in range(0, 101, 1):
+        for i in range(0, 201, 1):
             percent_height_css = f".{percent_prefix_string}\:{constraint}h-{i} {{{constraint}height: {i}%;}}"
             self.height_css_classes.append(percent_height_css)
 
