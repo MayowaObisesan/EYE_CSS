@@ -1,5 +1,5 @@
 * {
-            --webkit-box-sizing: border-box; --moz-box-sizing: border-box; box-sizing: border-box;
+            -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
             text-rendering: auto;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: antialiased; /* | grayscale*/
@@ -2359,6 +2359,43 @@
         .white-space-unset {white-space: unset;}
         .white-space-initial {white-space: initial;}
         .white-space-inherit {white-space: inherit;}
+.cursor-auto {cursor: auto;}
+        .cursor-inherit {cursor: inherit;}
+        .cursor-none {cursor: none;}
+        .cursor-unset {cursor: unset;}
+        .cursor-initial {cursor: initial;}
+        .cursor-default {cursor: default;}
+        .cursor-pointer {cursor: pointer;}
+        .cursor-not-allowed {cursor: not-allowed;}
+        .cursor-move {cursor: move;}
+        .cursor-n-resize {cursor: n-resize;}
+        .cursor-e-resize {cursor: e-resize;}
+        .cursor-ne-resize {cursor: ne-resize;}
+        .cursor-nw-resize {cursor: nw-resize;}
+        .cursor-ns-resize {cursor: ns-resize;}
+        .cursor-w-resize {cursor: w-resize;}
+        .cursor-s-resize {cursor: s-resize;}
+        .cursor-sw-resize {cursor: sw-resize;}
+        .cursor-se-resize {cursor: se-resize;}
+        .cursor-ew-resize {cursor: ew-resize;}
+        .cursor-nesw-resize {cursor: nesw-resize;}
+        .cursor-nwse-resize {cursor: nwse-resize;}
+        .cursor-row-resize {cursor: row-resize;}
+        .cursor-col-resize {cursor: col-resize;}
+        .cursor-all-scroll {cursor: all-scroll;}
+        .cursor-zoom-in {cursor: zoom-in;}
+        .cursor-zoom-out {cursor: zoom-out;}
+        .cursor-progress {cursor: progress;}
+        .cursor-text {cursor: text;}
+        .cursor-context-menu {cursor: context-menu;}
+        .cursor-help {cursor: help;}
+        .cursor-wait {cursor: wait;}
+        .cursor-cell {cursor: cell;}
+        .cursor-crosshair {cursor: crosshair;}
+        .cursor-vertical-text {cursor: vertical-text;}
+        .cursor-alias {cursor: alias;}
+        .cursor-copy {cursor: copy;}
+        .cursor-no-drop {cursor: no-drop;}
 .shadow {box-shadow: 0px 0px 8px 0px hsla(0, 0%, 82.7%, 0.9);}
         .shadow-sm {box-shadow: 0px 0px 6px 0px hsla(0, 0%, 82.7%, 0.9);}
         .shadow-smr {box-shadow: 0px 0px 4px 0px hsla(0, 0%, 82.7%, 0.9);}

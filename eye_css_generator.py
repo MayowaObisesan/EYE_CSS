@@ -28,7 +28,7 @@
 # }
 
 # MEDIA QUERIES - DEFINITIONS
-# @media (min-width: 640px) { ... } - sm
+# @media (max-width: 640px) { ... } - sm
 # @media (min-width: 768px) { ... } - md
 # @media (min-width: 1024px) { ... } - lg
 # @media (min-width: 1280px) { ... } - xl
@@ -255,7 +255,7 @@ class Root:
             --default_font_h5: {(13.28 / 16) * 1}rem;
             --default_font_h6: {(10.72 / 16) * 1}rem;
             
-            // Define css colors variables - July 1, 2022.
+            /* Define css colors variables - July 1, 2022. */
             --default_color_white: hsla(0, 0 %, 100 %, .9);
             --default_color_white_solid: hsla(0, 0 %, 100 %, 1);
             --default_color_white_disabled: hsla(0, 0 %, 60 %, 0.2);
@@ -2196,6 +2196,9 @@ class Legacys:
     def __init__(self) -> None:
         self.legacy_css_classes = list()
         self.legacy_whitespace_helpers()
+        # self.legacy_clear_helpers()
+        # self.legacy_float_helpers()
+        self.legacy_cursor_helpers()
 
     @property
     def css_properties(self):
@@ -2243,7 +2246,7 @@ class Legacys:
         """
         self.legacy_css_classes.append(legacy_content_css)
 
-    def legacy_cursor(self):
+    def legacy_cursor_helpers(self):
         """:Date:July 2, 2022."""
         cursor_css = f"""
         .cursor-auto {{cursor: auto;}}

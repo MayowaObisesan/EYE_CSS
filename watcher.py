@@ -101,7 +101,7 @@ class EyeWriter:
         for k, v in sm_css_classes.items():
             # Prepend ".sm" to the media_query css class key and strip the "." existing before any existing class e.g., .pct
             media_queries_css += f".sm\:{k.lstrip('.')} {v}"
-        sm_media_query_definition = f"@media (min-width: 640px) {{{media_queries_css}}}"
+        sm_media_query_definition = f"@media (max-width: 639px) {{{media_queries_css}}}"
         print(f"SM MEDIA QUERY DEFINITION: {sm_media_query_definition}")
         return sm_media_query_definition
 
