@@ -1,9 +1,5 @@
 .idea
+.git
 *.html
 *.css
 *.yml
-watcher_file.py
-eye_gen.css
-watched_eye.css
-nine_index.html
-test.css
