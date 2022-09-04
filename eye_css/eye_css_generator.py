@@ -4877,7 +4877,3 @@ class List:
         .list-position-unset {{list-style-position: unset;}}
         """
         self.list_style_css_classes.append(list_style_position_css)
-
-
-if "__main__" == __name__:
-    CSSGenerator().write_styles()
