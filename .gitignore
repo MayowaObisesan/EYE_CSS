@@ -1,4 +1,7 @@
 .idea
+*.html
+*.css
+*.yml
 watcher_file.py
 eye_gen.css
 watched_eye.css
