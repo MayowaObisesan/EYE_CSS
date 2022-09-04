@@ -16,18 +16,6 @@ import yaml
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-
-# TODO: JULY 12, 2022.
-# after:[{content: 'This element is empty.'}]:color-green
-# Create something like this, for html files which eye will parse into the below:
-# Because the class starts with after, split the 'after' class, and continue parsing the other end of the split.
-# If the second part of the split begins with a '[', a custom inline-css is defined, so, split the other end of the
-# 'after' split with the end of the square bracket ']' which then gives another split.
-# Check the square bracket split and see if the second split of the 'square bracket' split contains a colon ':',
-# if it does, get the value of the class after the ':' and append to the value inside the square bracket,
-# then append inside the after pseudo class and like that to generate an enclosed css-class definition all
-# from one html inline-css.
-# NOTE: THIS WORKS FOR ONLY PSEUDO-ELEMENT AND NOT ALL CLASSES AND DEFINITELY NOT PSEUDO-CLASSES
 from eye_css_generator import CSSGenerator
 
 
