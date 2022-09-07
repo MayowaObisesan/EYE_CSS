@@ -1,0 +1,20 @@
+[project]
+name = "eye_css_1"
+version = "0.1.1"
+authors = [
+    { name = "Mayowa Obisesan", email = "mayowaobi74@gmail.com" },
+]
+description = "A dynamic utility-first css framework written in python"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.7"
+#install_requires = ['watchdog~=2.1.9', 'PyYAML']
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/EYE_CSS"
+"Bug Tracker" = "https://github.com/EYE_CSS/issues"

@@ -12,11 +12,15 @@ import os
 import re
 import time
 
-import yaml
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-from eye_css_generator import CSSGenerator
+from eye_css.__main__ import Eye
+from eye_css.eye_css_generator import CSSGenerator
+
+
+# from .eye_css_generator import CSSGenerator
+# from .__main__ import Eye
 
 
 class EyeWriter:
@@ -34,7 +38,7 @@ class EyeWriter:
         self.eye_css_name = "eye_gen.css"
         # self.watched_css_file_name = r"C:\Users\Mayowa Obisesan\Desktop\Blessed\nine\frontend\src\watched_eye.css"
         # self.watched_css_file_name = rf"{os.getcwd()}\{EyeWatcher.EYE_CSS_OUTPUT}"
-        self.watched_css_file_name = EyeWatcher.EYE_CSS_OUTPUT
+        self.watched_css_file_name = Eye.EYE_CSS_OUTPUT
         # self.file_to_watch = r"C:\Users\Mayowa Obisesan\Blessed\BMayowa.github.io\index.html"
         # self.file_to_watch = r"C:\Users\Mayowa Obisesan\Desktop\Blessed\nine\frontend\public\index.html"
         self.files_to_watch = Handler.FILES_TO_WATCH
@@ -466,53 +470,13 @@ class EyeWriter:
 
 
 class EyeWatcher:
-    eye_css_config_data = dict()
-
-    import argparse
-    parser = argparse.ArgumentParser(description="Eye CSS - A Dynamic CSS Utility-first library.")
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument("-v", "--verbose", action="help", help="A Dynamic CSS Utility-first library. Just run this file with a configuration file, or define where to save the css for you. Also gives you a CSS cheatsheet for your projects, no need to memorize the css definitions.")
-    group.add_argument("-q", "--quiet", action="help", help="A Dynamic CSS Utility-first library.")
-
-    parser.add_argument("file", nargs="?", default="", type=str, help="Eye.css config file")
-    args = parser.parse_args()
-
-    if args.file:
-        with open(args.file, "r") as eye_config_file:
-            eye_css_config_data = yaml.safe_load(eye_config_file)
-            eye_config_file.close()
-
-    if eye_css_config_data.get("eye") is not None:
-        # we do not make provision for multiple directories to be watched because the watcher library being used
-        # does not support multiple directories being watched. - August 25, 2022.
-        # There are alternatives to the watcher library but not using the alternatives yet. - September 4, 2022.
-        DIRECTORY_TO_WATCH = eye_css_config_data.get("eye").get("input_directory", "")
-        if not os.path.isabs(DIRECTORY_TO_WATCH):
-            watched_directory_path = os.path.dirname(args.file)
-            DIRECTORY_TO_WATCH = os.path.realpath(os.path.join(watched_directory_path, DIRECTORY_TO_WATCH))
-        EXTENSIONS_TO_WATCH = eye_css_config_data.get("eye").get("input_extensions", "").split(",")
-
-        OUTPUT_PATH = eye_css_config_data.get("eye").get("output_path", "") or os.path.dirname(args.file)
-        OUTPUT_NAME = eye_css_config_data.get("eye").get("output_name", "")
-        EYE_CSS_OUTPUT = os.path.join(OUTPUT_PATH, OUTPUT_NAME)
-
-        EXACT_FILE = eye_css_config_data.get("eye").get("input_exact_files", "")
-
-        EXCLUDE_DIRECTORY = eye_css_config_data.get("eye").get("exclude_directory", "")
-        EXCLUDE_FILES = eye_css_config_data.get("eye").get("exclude_files", "")
-    else:
-        DIRECTORY_TO_WATCH = eye_css_config_data.get("input_directory", "")
-        EXTENSIONS_TO_WATCH = eye_css_config_data.get("input_extensions", "")
-        EYE_CSS_OUTPUT = eye_css_config_data.get("output_name", "")
-
-    assert len(eye_css_config_data.keys()) > 0, "Error processing eye_css config File. Check the file once more."
 
     def __init__(self):
         self.observer = Observer()
 
     def run(self):
         event_handler = Handler()
-        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
+        self.observer.schedule(event_handler, Eye.DIRECTORY_TO_WATCH, recursive=True)
         self.observer.start()
         try:
             while True:
@@ -529,26 +493,19 @@ class Handler(FileSystemEventHandler):
     FILES_TO_WATCH = []
 
     def __init__(self):
-        # directory_to_watch = "C:/Users/Mayowa Obisesan/Desktop/Blessed/nine/frontend/src"
-        # file_to_watch_extensions = ("*.js", "*.jsx", "*.html")
-        directory_to_watch = EyeWatcher.DIRECTORY_TO_WATCH
-        file_to_watch_extensions = EyeWatcher.EXTENSIONS_TO_WATCH
-        exact_file_to_watch = EyeWatcher.EXACT_FILE
+        directory_to_watch = Eye.DIRECTORY_TO_WATCH
+        file_to_watch_extensions = Eye.EXTENSIONS_TO_WATCH
+        exact_file_to_watch = Eye.EXACT_FILE
         if exact_file_to_watch != "":
             self.FILES_TO_WATCH.append(exact_file_to_watch) if os.path.isabs(exact_file_to_watch) else self.FILES_TO_WATCH.append(os.path.join(directory_to_watch, exact_file_to_watch))
         elif exact_file_to_watch == "":
             for ext in file_to_watch_extensions:
                 self.FILES_TO_WATCH.extend(glob.glob(f"{directory_to_watch}/**/{ext}", recursive=True))
-        # self.files_to_watch = [r"C:\Users\Mayowa Obisesan\Blessed\BMayowa.github.io\index.html"]
-        # self.files_to_watch = [r"C:\Users\Mayowa Obisesan\Desktop\Blessed\nine\frontend\public\index.html"]
-        # self.files_to_watch = [r"C:\Users\Mayowa Obisesan\Desktop\Blessed\nine\frontend\src\**\*.js"]
         print(f"Hello, I am EYE. \nI am WATCHING: {','.join(self.FILES_TO_WATCH)}")
 
     def on_any_event(self, event):
-        # DIRECTORY_TO_IGNORE = [".git"]
-        # FILES_TO_EXCLUDE = [".gitignore"]
-        DIRECTORY_TO_IGNORE = EyeWatcher.EXCLUDE_DIRECTORY
-        FILES_TO_IGNORE = EyeWatcher.EXCLUDE_FILES
+        DIRECTORY_TO_IGNORE = Eye.EXCLUDE_DIRECTORY
+        FILES_TO_IGNORE = Eye.EXCLUDE_FILES
 
         if event.src_path not in FILES_TO_IGNORE:
             if event.is_directory:
