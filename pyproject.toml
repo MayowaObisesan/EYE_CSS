@@ -4,9 +4,10 @@ version = "0.1.1"
 authors = [
     { name = "Mayowa Obisesan", email = "mayowaobi74@gmail.com" },
 ]
-description = "A dynamic utility-first css framework written in python"
+description = "A dynamic utility-first css library written in python"
 readme = "README.md"
-license = { file = "LICENSE" }
+license = { file = "LICENSE", text = "" }
+
 requires-python = ">=3.7"
 #install_requires = ['watchdog~=2.1.9', 'PyYAML']
 classifiers = [
