@@ -1,27 +1,16 @@
 # EYE CSS
 
 Eye css is a **dynamic utility-first css library** which aims to be usable across every design project.
-It is similar to tailwind in its approach.
+It is similar to tailwind css.
+
+Eye css is a powerful, css library to create truly dynamic styles while still simple to use and learn.
 
 Eye css is responsive, dynamic, detailed and familiar. Similar to tailwind css in both syntax and operation.
-The **utility-first** syntax you are used to is available in eye css with additional features.
 
-With eye css, you can create:
-* complex gradients of any type: (Radial, Linear, Conic),
-* single and multiple box-shadows,
-* drop-shadows,
-* simple and complex transitions,
-* animations,
-* dynamic dimension unit types for width and height.
-    * **pct:w-60** _== {width: 60%;}_
-    * **vh:w-100** _== {width: 100vh;}_
-    * **em:h-13** _== {height: 13em;}_
-* dynamic width and height using any dimension unit type. e.g., pct:w-60, vh:w-100, em:h-13, etc.
-* dynamic inline colors with alpha values. e.g., bg-D34B6166, bg-orange, bg-4B3, bg-A762 etc.
-* flexible styling with _almost_ no constraint to any existing css styling property.
+[//]: # (The **utility-first** syntax you are used to is available in eye css with additional features.)
 
-Eye css can be used in small and large web projects. From a single static html file, to most javascript framework
-projects.
+Eye css can be used in small and large web projects. Eye css can be used with your single static html file, to dynamic
+large web projects.
 
 [//]: # (Eye css is a truly dynamic css library. With support for almost all tailwind css properties, eye.css gives you extra )
 
@@ -32,13 +21,14 @@ projects.
 [//]: # (for defined css styles which it creates for you on the fly.)
 
 [//]: # ()
+
 [//]: # (Though Eye css library is written in python, it can work with your existing web projects. Whether Angular, react, vue,)
 
 [//]: # (svelte, etc.)
 
-Once you have a python interpreter, Eye css works.
+[//]: # (Once you have a python interpreter, Eye css works.)
 
-Eye css works on all platform, windows, mac, linux.
+[//]: # (Eye css works on all platform, windows, mac, linux.)
 
 Just download Eye css or install Eye css and let **Eye** watch your defined files for defined styles.
 
@@ -78,10 +68,9 @@ eye:
   output_name: "watched_eye.css"
 ```
 
-Next, Add "watched_eye.css" to the head section of your base html file
+Next, Add "watched_eye.css" to the head tag of your base html file.
 
 ```html
-
 <link rel="stylesheet" href="watched_eye.css"/>
 ```
 
