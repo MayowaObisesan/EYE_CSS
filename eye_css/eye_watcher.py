@@ -4,19 +4,20 @@
 
 # Get a file to watch.
 # get all the class or className from the file being watched.
-# The class and className represents all the defined inline styles available within a html, jsx or tsx page.
+# The class and className represents all the defined inline styles available within a html, js(x) or ts(x) file.
 
 # Have imports here.
 import glob
+import logging
 import os
 import re
 import time
 
-import yaml
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 
-from eye_css_generator import CSSGenerator
+from eye_css.__main__ import Eye
+from eye_css.eye_css_generator import CSSGenerator
 
 
 class EyeWriter:
@@ -32,11 +33,7 @@ class EyeWriter:
     """
     def __init__(self) -> None:
         self.eye_css_name = "eye_gen.css"
-        # self.watched_css_file_name = r"C:\Users\Mayowa Obisesan\Desktop\Blessed\nine\frontend\src\watched_eye.css"
-        # self.watched_css_file_name = rf"{os.getcwd()}\{EyeWatcher.EYE_CSS_OUTPUT}"
-        self.watched_css_file_name = EyeWatcher.EYE_CSS_OUTPUT
-        # self.file_to_watch = r"C:\Users\Mayowa Obisesan\Blessed\BMayowa.github.io\index.html"
-        # self.file_to_watch = r"C:\Users\Mayowa Obisesan\Desktop\Blessed\nine\frontend\public\index.html"
+        self.watched_css_file_name = Eye.EYE_CSS_OUTPUT
         self.files_to_watch = Handler.FILES_TO_WATCH
         self.watched_base_classes_list: list = list()
         self.watched_pseudo_classes_list: list = list()
@@ -225,21 +222,20 @@ class EyeWriter:
                             replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("()", "-width").replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}px")
                             dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class)}": replaced_dynamic_css_dict_value})
                     elif CSSGenerator().is_dimensionless_css_property(dynamic_css_class_key):
-                        print("DIMENSIONLESS PROPERTY DETECTED.")
                         if "".join(re.findall(r'(\b^z$\b|opacity\b|scale\b)', each_dynamic_css_class)) == "z":
                             if CSSGenerator().is_zindex_dimension_valid(each_dynamic_base_css_class.rsplit('-', 1)[-1]):
                                 replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}")
                                 dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class)}": replaced_dynamic_css_dict_value})
                             else:
-                                print(f"{dynamic_css_class_key} - {each_dynamic_base_css_class.rsplit('-', 1)[-1]} is not a valid eye.css z_index value")
+                                logging.info(f"{dynamic_css_class_key} - {each_dynamic_base_css_class.rsplit('-', 1)[-1]} is not a valid eye.css z_index value")
                         if "".join(re.findall(r'(\b^z$\b|opacity\b|scale\b)', each_dynamic_css_class)) == "scale":
                             replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}")
                             escaped_reconstructed_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace(".", "\.")
                             dynamic_watched_css_dict.update({f".{escaped_reconstructed_css_class}": replaced_dynamic_css_dict_value})
-                            print(f"TRANSFORM: SCALE FOUND: {EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class)}: {replaced_dynamic_css_dict_value}")
                         if "".join(re.findall(r'(\b^z$\b|opacity\b|scale\b)', each_dynamic_css_class)) == "opacity":
-                            print(f"Parsed an opacity class: {dynamic_css_class_key}")
-            # elif each_dynamic_css_class.startswith("shadow\:"):   # using the dynamic_css_class_key below because of pseudo nested classes.
+                            pass
+            # using the dynamic_css_class_key below because of pseudo nested classes.
+            # elif each_dynamic_css_class.startswith("shadow\:"):
             elif dynamic_css_class_key.startswith("shadow\:"):
                 """
                 Algorithm for performing dynamic shadow parsing.
@@ -449,7 +445,7 @@ class EyeWriter:
         Helper Function to process dynamic gradients
         :Date: August 14, 2022.
         """
-        print(f"Dynamic {gradient_name} Gradient class found.")
+        logging.info(f"Dynamic {gradient_name} Gradient class found.")
 
         gradient_style_split = css_class.split(":")
         gradient_style = gradient_style_split[0]
@@ -466,53 +462,13 @@ class EyeWriter:
 
 
 class EyeWatcher:
-    eye_css_config_data = dict()
-
-    import argparse
-    parser = argparse.ArgumentParser(description="Eye CSS - A Dynamic CSS Utility-first library.")
-    group = parser.add_mutually_exclusive_group()
-    group.add_argument("-v", "--verbose", action="help", help="A Dynamic CSS Utility-first library. Just run this file with a configuration file, or define where to save the css for you. Also gives you a CSS cheatsheet for your projects, no need to memorize the css definitions.")
-    group.add_argument("-q", "--quiet", action="help", help="A Dynamic CSS Utility-first library.")
-
-    parser.add_argument("file", nargs="?", default="", type=str, help="Eye.css config file")
-    args = parser.parse_args()
-
-    if args.file:
-        with open(args.file, "r") as eye_config_file:
-            eye_css_config_data = yaml.safe_load(eye_config_file)
-            eye_config_file.close()
-
-    if eye_css_config_data.get("eye") is not None:
-        # we do not make provision for multiple directories to be watched because the watcher library being used
-        # does not support multiple directories being watched. - August 25, 2022.
-        # There are alternatives to the watcher library but not using the alternatives yet. - September 4, 2022.
-        DIRECTORY_TO_WATCH = eye_css_config_data.get("eye").get("input_directory", "")
-        if not os.path.isabs(DIRECTORY_TO_WATCH):
-            watched_directory_path = os.path.dirname(args.file)
-            DIRECTORY_TO_WATCH = os.path.realpath(os.path.join(watched_directory_path, DIRECTORY_TO_WATCH))
-        EXTENSIONS_TO_WATCH = eye_css_config_data.get("eye").get("input_extensions", "").split(",")
-
-        OUTPUT_PATH = eye_css_config_data.get("eye").get("output_path", "") or os.path.dirname(args.file)
-        OUTPUT_NAME = eye_css_config_data.get("eye").get("output_name", "")
-        EYE_CSS_OUTPUT = os.path.join(OUTPUT_PATH, OUTPUT_NAME)
-
-        EXACT_FILE = eye_css_config_data.get("eye").get("input_exact_files", "")
-
-        EXCLUDE_DIRECTORY = eye_css_config_data.get("eye").get("exclude_directory", "")
-        EXCLUDE_FILES = eye_css_config_data.get("eye").get("exclude_files", "")
-    else:
-        DIRECTORY_TO_WATCH = eye_css_config_data.get("input_directory", "")
-        EXTENSIONS_TO_WATCH = eye_css_config_data.get("input_extensions", "")
-        EYE_CSS_OUTPUT = eye_css_config_data.get("output_name", "")
-
-    assert len(eye_css_config_data.keys()) > 0, "Error processing eye_css config File. Check the file once more."
 
     def __init__(self):
         self.observer = Observer()
 
     def run(self):
         event_handler = Handler()
-        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
+        self.observer.schedule(event_handler, Eye.DIRECTORY_TO_WATCH, recursive=True)
         self.observer.start()
         try:
             while True:
@@ -521,7 +477,7 @@ class EyeWatcher:
             #     self.observer.join(1)
         except RuntimeError as err:
             self.observer.stop()
-            print("Error")
+            print("Error watching file")
         self.observer.join()
 
 
@@ -529,26 +485,19 @@ class Handler(FileSystemEventHandler):
     FILES_TO_WATCH = []
 
     def __init__(self):
-        # directory_to_watch = "C:/Users/Mayowa Obisesan/Desktop/Blessed/nine/frontend/src"
-        # file_to_watch_extensions = ("*.js", "*.jsx", "*.html")
-        directory_to_watch = EyeWatcher.DIRECTORY_TO_WATCH
-        file_to_watch_extensions = EyeWatcher.EXTENSIONS_TO_WATCH
-        exact_file_to_watch = EyeWatcher.EXACT_FILE
+        directory_to_watch = Eye.DIRECTORY_TO_WATCH
+        file_to_watch_extensions = Eye.EXTENSIONS_TO_WATCH
+        exact_file_to_watch = Eye.EXACT_FILE
         if exact_file_to_watch != "":
             self.FILES_TO_WATCH.append(exact_file_to_watch) if os.path.isabs(exact_file_to_watch) else self.FILES_TO_WATCH.append(os.path.join(directory_to_watch, exact_file_to_watch))
         elif exact_file_to_watch == "":
             for ext in file_to_watch_extensions:
                 self.FILES_TO_WATCH.extend(glob.glob(f"{directory_to_watch}/**/{ext}", recursive=True))
-        # self.files_to_watch = [r"C:\Users\Mayowa Obisesan\Blessed\BMayowa.github.io\index.html"]
-        # self.files_to_watch = [r"C:\Users\Mayowa Obisesan\Desktop\Blessed\nine\frontend\public\index.html"]
-        # self.files_to_watch = [r"C:\Users\Mayowa Obisesan\Desktop\Blessed\nine\frontend\src\**\*.js"]
         print(f"Hello, I am EYE. \nI am WATCHING: {','.join(self.FILES_TO_WATCH)}")
 
     def on_any_event(self, event):
-        # DIRECTORY_TO_IGNORE = [".git"]
-        # FILES_TO_EXCLUDE = [".gitignore"]
-        DIRECTORY_TO_IGNORE = EyeWatcher.EXCLUDE_DIRECTORY
-        FILES_TO_IGNORE = EyeWatcher.EXCLUDE_FILES
+        DIRECTORY_TO_IGNORE = Eye.EXCLUDE_DIRECTORY
+        FILES_TO_IGNORE = Eye.EXCLUDE_FILES
 
         if event.src_path not in FILES_TO_IGNORE:
             if event.is_directory:
@@ -556,11 +505,11 @@ class Handler(FileSystemEventHandler):
 
             elif event.event_type == 'created':
                 # Take any action here when a file is first created.
-                print("Received created event - %s." % event.src_path)
+                logging.info("Received created event - %s." % event.src_path)
 
             elif event.event_type == 'modified':
                 # Take any action here when a file is modified.
-                print("Received modified event - %s." % event.src_path)
+                logging.info("Received modified event - %s." % event.src_path)
 
                 if event.src_path in self.FILES_TO_WATCH:
                     EyeWriter().create_watched_css()
@@ -588,13 +537,9 @@ class EyeMarkupParser:
         3.  Minification: Removing spaces and tabs.
         """
         collapse_markup_string = markup_string.replace("\n", "")
-        # substring_markup_string = re.sub(r"""((\{/\*)([\w*-<:|/\d*]\s*)(\*/}))""", "", collapse_markup_string)
         substring_markup_string = re.sub(r"""\{/\*[<:-|/]*\s*\w*\d*[<:-|/]*\*/}""", "", collapse_markup_string)
-        # substring_markup_string = re.sub(r"""(\{/\*.+<.+\*/})""", "", collapse_markup_string)
-        # substring_markup_string = re.sub(r"""(\{/\*.+<.+\*/}|<!--.+<.+-->)""", "", collapse_markup_string)
         minify_markup_string = re.sub(r""">\s+<""", "><", substring_markup_string)
         cleaned_markup_string = minify_markup_string
-        # print(f"CLEANED MARKUP STRING: {cleaned_markup_string}")
         return cleaned_markup_string
 
     def get_attr_class_data_from_markup(self, markup_string: str) -> list:
@@ -602,26 +547,16 @@ class EyeMarkupParser:
         Gets all the class="..." in the markup string.
         :Date: inherit
         """
-        # attr_list = re.match(r"""class(Name)?=(["']).*(['"])""", markup_string)
-        # attr_list = re.findall(r"""((class|className)=["|'].*['|"])""", markup_string)
-        # attr_list = re.findall(r"""<.+(class[Name]+=["|'].*['|"])""", markup_string)
         cleaned_markup_string = self.clean_markup(markup_string)
         attr_class_data = re.findall(r"""((class\b|className)="([\w*-:|/]\s*)+")""", cleaned_markup_string)
-        # attr_class_script_data = re.findall(r"""(|((\bclassList\.add\b)"([\w*-:|/]\s*)+"))""", cleaned_markup_string)
 
-        # print(f"ATTR CLASS LIST: {attr_class_data}")
         return attr_class_data
 
     def get_attr_class_list_from_markup(self, markup_string: str) -> list:
-        # attr_classes = [
-        #     re.sub(r"((class\b|className)=)", "", each_attr[0]).replace("'", "").replace('"', '').split(" ")
-        #     for each_attr in self.get_attr_class_data_from_markup(markup_string)
-        # ]
         attr_classes = [
             each_attr[0].split("=")[-1].replace("'", "").replace('"', '').split(" ")
             for each_attr in self.get_attr_class_data_from_markup(markup_string)
         ]
-        # print(attr_classes)
         return attr_classes
 
     def get_attr_class_data_from_file(self, file_str: str) -> list:
@@ -631,18 +566,9 @@ class EyeMarkupParser:
         :return: A list of class attributes from markup files and from scripts.
         :Date: August 13, 2022.
         """
-        # js_css_classes_data = re.findall("""(classList.add)\(['"](([\w+-:|]+\s*)+)['"]\)""",
-        #                                  "button.classList.add('bg-green pct:w-100')")
-        # markups_css_classes_data = re.findall(r"""(class\b|className\b)=\"(([\w*-:|/]\s*)+)\"""",
-        #                                       """<section class="working-css-parts check-validity
-        #                                       is-it-working"></section><div name="color"
-        #                                       className="bg-green relative d-block"></div>""")
-
         js_css_classes_data = re.findall("""(classList.add)\(['"](([\w+-:|#()%]+\s*)+)['"]\)""", file_str, re.MULTILINE)
         markups_css_classes_data = re.findall(r"""(class\b|className\b)=\"\s*(([\w*-:|#()%/]\s*)+)\"""", file_str)
 
-        # print(js_css_classes_data)
-        # print(markups_css_classes_data)
         watched_files_css_classes_data = [*markups_css_classes_data, *js_css_classes_data]
         return watched_files_css_classes_data
 
@@ -686,12 +612,6 @@ class EyeMarkupParser:
         :return: True or False
         :Date: August 7, 2022.
         """
-        # res_match = re.match(r"((\bneg:\b|\bpct:\b)+[\w-]+)", css_class_str)
-        # re.findall(r"\b[^0-9][\w-]+\s*", "radius mg-blue pad-y3 4gft")
-        # re.findall(r"\bpct:\b[^0-9][\w-]+\s*", "radius mg-blue pad-y3 4gft")
-        # re.findall(r"\bneg:\b[^0-9][\w-]+\s*", "radius mg-blue pad-y3 4gft")
-        # re.findall(r"\bneg:pct:\b[^0-9][\w-]+\s*", "radius mg-blue pad-y3 4gft")
-        # return res_match is None
         pseudo_classes = CSSGenerator().default_pseudo_class_list
         pseudo_elements = CSSGenerator().default_pseudo_element_list
         media_queries = CSSGenerator().default_media_query_list
@@ -743,13 +663,6 @@ class EyeMarkupParser:
         :Date: August 5, 2022.
         """
         # Is there a pseudo class or a pseudo-element?
-        # base_class_list = re.findall(r"\w*:*([neg|pct:]+[\w+-]+)", css_class_str)
-        # base_class_list = re.findall(r"\w*:*((\bneg:\b|\bpct:\b)*[\w+-]+)", css_class_str)
-        # base_class_list = re.findall(r"((\bneg:\b|\bpct:\b)*\b[a-z]+[\w-]+)\s*", css_class_str)
-        # return "".join(base_class_list)
-        # if css_class_str.startswith(("pct:", "neg:", "pct\:", "neg\:")):
-        # return css_class_str.rpartition(":")[-1]
-        # print(f'{css_class_str.partition(":")[-1]}:::{css_class_str.partition(":")}')
         if css_class_str.__contains__(":"):
             if css_class_str.startswith(CSSGenerator().first_level_base_class_pseudo):
                 return css_class_str
@@ -785,9 +698,6 @@ class EyeMarkupParser:
                                      "indeterminate", "default", "required", "valid", "invalid", "in-range",
                                      "out-of-range", "placeholder-shown", "autofill", "read-only")
         matched_pseudo_class_list = re.findall(r"(\w+):", css_class_str)
-        # print(f"MATCHED PSEUDO CLASS LIST: {matched_pseudo_class_list}")
-        # pseudo_class = set(default_pseudo_class_list).intersection(set(matched_pseudo_class_list))
-        # return "".join(pseudo_class)
         return "".join(matched_pseudo_class_list) if "".join(matched_pseudo_class_list) in default_pseudo_class_list else ""
 
     @classmethod
@@ -820,7 +730,9 @@ class EyeMarkupParser:
         :Date: July 25, 2022.
         """
         css_class_name, css_digit, after_css_digit = self.digit_extractor(eye_css_class_name)
-        return True if re.search(rf"{css_class_name}*", ",".join(CSSGenerator().css_dictionary().keys())) is not None else False
+        return True if re.search(
+            rf"{css_class_name}*", ",".join(CSSGenerator().css_dictionary().keys())
+        ) is not None else False
 
     @staticmethod
     def ends_with_digit(eye_css_class_name: str) -> bool:
