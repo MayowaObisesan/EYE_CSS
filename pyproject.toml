@@ -1,15 +1,15 @@
 [project]
-name = "eye_css_1"
-version = "0.1.1"
+name = "eye_css"
+version = "0.1.2"
 authors = [
     { name = "Mayowa Obisesan", email = "mayowaobi74@gmail.com" },
 ]
 description = "A dynamic utility-first css library written in python"
 readme = "README.md"
-license = { file = "LICENSE", text = "" }
-
-requires-python = ">=3.7"
-#install_requires = ['watchdog~=2.1.9', 'PyYAML']
+license = { text = "LICENSE" }
+keywords = ["CSS", "CSS Library", "Utility-First CSS", "Python CSS"]
+#requires-python = "3"
+dependencies = ['watchdog~=2.1.9', 'PyYAML']
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
