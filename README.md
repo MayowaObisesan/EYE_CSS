@@ -1,54 +1,173 @@
-# EYE_CSS
-For design Perfectionist.
-#### Hi, This is Eye CSS Official Repository.
+# EYE CSS
 
-
-Eye.css is a utility-first css library which aims to be usable across every design project.
+Eye css is a **dynamic utility-first css library** which aims to be usable across every design project.
 It is similar to tailwind in its approach.
 
-Eye.css is responsive, dynamic, detailed and makes available every utility-style approach you are used to and even more.
-Eye.css needs no npm to work, and certainly needs no external library.
-Once you have a python interpreter, eye.css works.
+Eye css is responsive, dynamic, detailed and familiar. Similar to tailwind css in both syntax and operation.
+The **utility-first** syntax you are used to is available in eye css with additional features.
 
-Just download eye package and let **Eye** watch your defined files for defined styles.
+With eye css, you can create:
+* complex gradients of any type: (Radial, Linear, Conic),
+* single and multiple box-shadows,
+* drop-shadows,
+* simple and complex transitions,
+* animations,
+* dynamic dimension unit types for width and height.
+    * **pct:w-60** _== {width: 60%;}_
+    * **vh:w-100** _== {width: 100vh;}_
+    * **em:h-13** _== {height: 13em;}_
+* dynamic width and height using any dimension unit type. e.g., pct:w-60, vh:w-100, em:h-13, etc.
+* dynamic inline colors with alpha values. e.g., bg-D34B6166, bg-orange, bg-4B3, bg-A762 etc.
+* flexible styling with _almost_ no constraint to any existing css styling property.
+
+Eye css can be used in small and large web projects. From a single static html file, to most javascript framework
+projects.
+
+[//]: # (Eye css is a truly dynamic css library. With support for almost all tailwind css properties, eye.css gives you extra )
+
+[//]: # (flexibility and dynamism. )
+
+[//]: # (Eye css works similar to tailwind css. Eye css watches your *.html, *.js, *.jsx, *.ts, *.tsx files)
+
+[//]: # (for defined css styles which it creates for you on the fly.)
+
+[//]: # ()
+[//]: # (Though Eye css library is written in python, it can work with your existing web projects. Whether Angular, react, vue,)
+
+[//]: # (svelte, etc.)
+
+Once you have a python interpreter, Eye css works.
+
+Eye css works on all platform, windows, mac, linux.
+
+Just download Eye css or install Eye css and let **Eye** watch your defined files for defined styles.
 
 It's as simple as that.
 
+## How to use eye css:
 
+### Installation
 
-[//]: # (<img alt="Proudly Nigeria" height="24px" src="https://img.shields.io/badge/proudly-Nigerian-008751.svg?style=flat&labelColor=FFFFFF" title="Proudly Nigerian Image" width="auto"/>)
+```commandline
+pip install eye-css
+```
 
+### Create an eye_config.yml file and add the following:
 
-[//]: # (HOW EYE CSS WORKS)
-EYE.css parsing follows a defined approach for proper, effective and desirable result.
-The Order of Precedence for declaring inline-css is:
+```yaml
+eye:
+  input_directory: "./"
+  input_extensions: "*.html"
 
-_**`.media-queries:pseudo-classes:pseudo-selectors:bare-css-classes`**_
+  exclude_directory: ".git"
+  exclude_files: ".gitignore"
+```
 
-**Example:**
+_**Remember to name the file: eye_config.yml**_
 
-* **.sm:placeholder:hover:color-blue**
-* **.md:after:hover:bg-light**
-* **.md:placeholder:focus:pct:w-100**
-* **.lg:pct:w-100**
+#### To use it with a single javascript file or your favorite javascript library:
 
+```yaml
+eye:
+  input_directory: "./"
+  input_extensions: "*.html, *.js, *.jsx, *.ts, *.tsx"
 
-[//]: # (JULY 25, 2022.)
+  exclude_directory: ".git"
+  exclude_files: ".gitignore"
 
-## The First Dynamic CSS Framework.
+  output_name: "watched_eye.css"
+```
 
-It checks, It Parses, It creates your css files.
+Next, Add "watched_eye.css" to the head section of your base html file
 
-Just declare the css-strings. Leave the rest to eye.
+```html
 
-How it works.
+<link rel="stylesheet" href="watched_eye.css"/>
+```
 
+Once installed,
+run the following command in your terminal
 
-## Understanding when to use pipe in pseudo-base-css-classes.
-[//]: # (- August 16, 2022.)
-To use pipe in pseudo-base-css-classes means a new complete property of the defined style is being parsed.
-e.g., 
-1. **transform:translate-x-15px|rotate-z-30deg|perspective-35px**; means translate-x-15px is a complete property of transform pseudo-base-css-class
-2. **shadow:10px-3px-4px-ABCDEB|-15px--3px-8px-2px-yellowgreen|inset-3px--4px-14px-12px-E7E7E7**; means that 10px-3px-4px-ABCDEF is a complete box-shadow property,-15px--3px-8px-2px-yellowgreen is another complete box-shadow property, and so on.
-3. **conic-gradient:red_0deg-_orange_90deg-_yellow_180deg-_green_270deg-_blue_360deg**; means that **red_0deg-_orange_90deg-_yellow_180deg-_green_270deg-_blue_360deg** is a complete conic-gradient property and so on.
-4. **transition:width_2s_linear_1s|height_2s|background-color_4s_ease-in-out_3s** means that width_2s is a complete transition property i.e., **transition: width 2s linear 1s, height 2s, background-color 4s ease-in-out 3s;**
+```commandline
+python -m eye_css "path to eye_config.yml"
+```
+
+Eye css will automatically watch and style your file once you make changes to the defined extensions from
+eye_config.yml.
+
+_Note: eye css will not automatically reload your browser or web page on file change,
+it leaves that functionality to existing implementation of such._
+
+[//]: # ()
+
+[//]: # ([//]: # &#40;<img alt="Proudly Nigeria" height="24px" src="https://img.shields.io/badge/proudly-Nigerian-008751.svg?style=flat&labelColor=FFFFFF" title="Proudly Nigerian Image" width="auto"/>&#41;)
+
+[//]: # ()
+
+[//]: # ()
+
+[//]: # ([//]: # &#40;HOW EYE CSS WORKS&#41;)
+
+[//]: # (EYE.css parsing follows a defined approach for proper, effective and desirable result.)
+
+[//]: # (The Order of Precedence for declaring inline-css is:)
+
+[//]: # ()
+
+[//]: # (_**`.media-queries:pseudo-classes:pseudo-selectors:bare-css-classes`**_)
+
+[//]: # ()
+
+[//]: # (**Example:**)
+
+[//]: # ()
+
+[//]: # (* **.sm:placeholder:hover:color-blue**)
+
+[//]: # (* **.md:after:hover:bg-light**)
+
+[//]: # (* **.md:placeholder:focus:pct:w-100**)
+
+[//]: # (* **.lg:pct:w-100**)
+
+[//]: # ()
+
+[//]: # ()
+
+[//]: # ([//]: # &#40;JULY 25, 2022.&#41;)
+
+[//]: # ()
+
+[//]: # (## The First Dynamic CSS Framework.)
+
+[//]: # ()
+
+[//]: # (It checks, It Parses, It creates your css files.)
+
+[//]: # ()
+
+[//]: # (Just declare the css-strings. Leave the rest to eye.)
+
+[//]: # ()
+
+[//]: # (How it works.)
+
+[//]: # ()
+
+[//]: # ()
+
+[//]: # (## Understanding when to use pipe in pseudo-base-css-classes.)
+
+[//]: # ([//]: # &#40;- August 16, 2022.&#41;)
+
+[//]: # (To use pipe in pseudo-base-css-classes means a new complete property of the defined style is being parsed.)
+
+[//]: # (e.g., )
+
+[//]: # (1. **transform:translate-x-15px|rotate-z-30deg|perspective-35px**; means translate-x-15px is a complete property of transform pseudo-base-css-class)
+
+[//]: # (2. **shadow:10px-3px-4px-ABCDEB|-15px--3px-8px-2px-yellowgreen|inset-3px--4px-14px-12px-E7E7E7**; means that 10px-3px-4px-ABCDEF is a complete box-shadow property,-15px--3px-8px-2px-yellowgreen is another complete box-shadow property, and so on.)
+
+[//]: # (3. **conic-gradient:red_0deg-_orange_90deg-_yellow_180deg-_green_270deg-_blue_360deg**; means that **red_0deg-_orange_90deg-_yellow_180deg-_green_270deg-_blue_360deg** is a complete conic-gradient property and so on.)
+
+[//]: # (4. **transition:width_2s_linear_1s|height_2s|background-color_4s_ease-in-out_3s** means that width_2s is a complete transition property i.e., **transition: width 2s linear 1s, height 2s, background-color 4s ease-in-out 3s;**)
