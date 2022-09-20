@@ -1150,6 +1150,27 @@ class VerticalAlign:
         return self.vertical_align_css_classes.append(vertical_align_css)
 
 
+class Grid:
+    """
+    Eye.css Grid Implementation
+    :Date: September 20, 2022.
+    """
+    def __init__(self) -> None:
+        self.grid_css_classes = list()
+
+    @property
+    def css_properties(self):
+        return self.grid_css_classes
+
+    @property
+    def css_template(self):
+        grid_template = [".grid- {grid: [];}"]
+        return grid_template
+
+    def grid_rows(self):
+        pass
+
+
 class FlexBox:
     """
     This class generates flexbox helpers.

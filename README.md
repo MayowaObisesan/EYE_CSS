@@ -42,7 +42,7 @@ It's as simple as that.
 pip install eye-css
 ```
 
-### Create an eye_config.yml file and add the following:
+#### Create an eye_config.yml file and add the following:
 
 ```yaml
 eye:
