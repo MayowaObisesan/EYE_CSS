@@ -1,6 +1,6 @@
 # EYE CSS
 
-Eye css is a **dynamic utility-first css library** which aims to be usable across every design project.
+Eye css is a **dynamic utility-first css library written in python** which aims to be usable across every design project.
 It is similar to tailwind css.
 
 Eye css is a powerful, css library to create truly dynamic styles while still simple to use and learn.
