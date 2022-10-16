@@ -1,9 +1,11 @@
+<img src="C:\Users\Mayowa Obisesan\Blessed\EYE_CSS\assets\EYE_CSS_ICON.png" width="256" height="256" title="Eye CSS icon" alt="This is Eye CSS Official Icon. It is displayed in Eye CSS official github repo."/>
+
 # EYE CSS
 
 Eye css is a **dynamic utility-first css library** which aims to be usable across every design project.
 It is similar to tailwind css.
 
-Eye css is a powerful, css library to create truly dynamic styles while still simple to use and learn.
+Eye css is a dynamic and powerful css library to create truly dynamic styles while still simple to use and learn.
 
 Eye css is responsive, dynamic, detailed and familiar. Similar to tailwind css in both syntax and operation.
 
@@ -85,7 +87,8 @@ Eye css will automatically watch and style your file once you make changes to th
 eye_config.yml.
 
 _Note: eye css will not automatically reload your browser or web page on file change,
-it leaves that functionality to existing implementation of such._
+it leaves that functionality to existing implementation of such. Examples: htmx, angular, react, vue, svelte and other 
+existing web frameworks._
 
 [//]: # ()
 
