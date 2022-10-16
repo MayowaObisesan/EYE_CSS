@@ -1,4 +1,4 @@
-<img src="C:\Users\Mayowa Obisesan\Blessed\EYE_CSS\assets\EYE_CSS_ICON.png" width="256" height="256" title="Eye CSS icon" alt="This is Eye CSS Official Icon. It is displayed in Eye CSS official github repo."/>
+<img src="assets\EYE_CSS_ICON.png" width="256" height="256" title="Eye CSS icon" alt="This is Eye CSS Official Icon. It is displayed in Eye CSS official github repo."/>
 
 # EYE CSS
 
@@ -87,8 +87,8 @@ Eye css will automatically watch and style your file once you make changes to th
 eye_config.yml.
 
 _Note: eye css will not automatically reload your browser or web page on file change,
-it leaves that functionality to existing implementation of such. Examples: htmx, angular, react, vue, svelte and other 
-existing web frameworks._
+it leaves that functionality to existing implementation of such. Examples: **htmx, angular, react, vue, svelte and other 
+existing web frameworks**._
 
 [//]: # ()
 
