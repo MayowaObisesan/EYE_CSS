@@ -1,4 +1,4 @@
-<img src="C:\Users\Mayowa Obisesan\Blessed\EYE_CSS\assets\EYE_CSS_ICON.png" width="256" height="256" title="Eye CSS icon" alt="This is Eye CSS Official Icon. It is displayed in Eye CSS official github repo."/>
+<img src="assets\EYE_CSS_ICON.png" width="256" height="256" title="Eye CSS icon" alt="This is Eye CSS Official Icon. It is displayed in Eye CSS official github repo."/>
 
 # EYE CSS
 
