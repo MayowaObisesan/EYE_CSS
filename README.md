@@ -69,6 +69,7 @@ eye:
 
   output_name: "watched_eye.css"
 ```
+Note that there is no space when adding file extensions in input_extensions.
 
 Next, Add "watched_eye.css" to the head tag of your base html file.
 
