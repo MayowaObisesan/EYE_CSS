@@ -51,6 +51,25 @@ class CSSGenerator:
         self.xl_media_query_definition = "@media (min-width: 1280px)"
         self.xxl_media_query_definition = "@media (min-width: 1536px)"
 
+        """
+        NOVEMBER 07, 2022.
+        Based on w3schools media breakpoints
+        /* Extra small devices (phones, 600px and down) */
+        @media only screen and (max-width: 600px) {...}
+        
+        /* Small devices (portrait tablets and large phones, 600px and up) */
+        @media only screen and (min-width: 600px) {...}
+        
+        /* Medium devices (landscape tablets, 768px and up) */
+        @media only screen and (min-width: 768px) {...}
+        
+        /* Large devices (laptops/desktops, 992px and up) */
+        @media only screen and (min-width: 992px) {...}
+        
+        /* Extra large devices (large laptops and desktops, 1200px and up) */
+        @media only screen and (min-width: 1200px) {...}
+        """
+
         self.default_media_query_dict = {
             "sm": "@media (min-width: 640px)",
             "md": "@media (min-width: 768px)",
@@ -176,7 +195,7 @@ class CSSGenerator:
         css_templates_list = [
             *Widths().css_template,
             *Heights().css_template,
-            *Paddings().css_template,
+            # *Paddings().css_template,
             *LineHeights().css_template,
             *ZIndex().css_template,
             *Opacity().css_template,
@@ -2530,7 +2549,7 @@ class Radius:
     def __init__(self) -> None:
         self.default_dimension_value = 8
         self.radius_css_classes = list()
-        self.default_dimension_value = 8
+        self.default_dimension_value = 8    
         self.default_radius = 8
         self.default_radius_circle = "50% 50%"
         self.default_radius_round = "100px 100px"
