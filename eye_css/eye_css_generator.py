@@ -195,7 +195,8 @@ class CSSGenerator:
         css_templates_list = [
             *Widths().css_template,
             *Heights().css_template,
-            # *Paddings().css_template,
+            *Paddings().css_template,
+            *Margins().css_template,
             *LineHeights().css_template,
             *ZIndex().css_template,
             *Opacity().css_template,

@@ -62,7 +62,7 @@ _**Remember to name the file: eye_config.yml**_
 ```yaml
 eye:
   input_directory: "./"
-  input_extensions: "*.html, *.js, *.jsx, *.ts, *.tsx"
+  input_extensions: "*.html,*.js,*.jsx,*.ts,*.tsx"
 
   exclude_directory: ".git"
   exclude_files: ".gitignore"
@@ -70,6 +70,7 @@ eye:
   output_name: "watched_eye.css"
 ```
 
+Note that there is not space between the file extensions to parse
 Next, Add "watched_eye.css" to the head tag of your base html file.
 
 ```html
