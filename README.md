@@ -71,6 +71,7 @@ eye:
 ```
 Note that there is no space when adding file extensions in input_extensions.
 
+Note that there is not space between the file extensions to parse
 Next, Add "watched_eye.css" to the head tag of your base html file.
 
 ```html
