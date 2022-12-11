@@ -566,7 +566,20 @@ class EyeMarkupParser:
         :return: A list of class attributes from markup files and from scripts.
         :Date: August 13, 2022.
         """
-        js_css_classes_data = re.findall("""(classList.add)\(['"](([\w+-:|#()%]+\s*)+)['"]\)""", file_str, re.MULTILINE)
+        # js_css_classes_data = re.findall("""(classList.add)\(['"](([\w+-:|#()%]+\s*)+)['"]\)""", file_str, re.MULTILINE)
+        """
+        # DECEMBER 12, 2022.
+        # The above js_css_classes_data action is insufficient when dealing with enterprise programming.
+        One limitation experienced with this was when working on Summary.
+        The custom methods I wrote to process CSS-class-styles did not work because eye_css could not process those
+        custom methods as I have already defined the rule for finding the CSS files from external files aside from
+        markup files.
+        SOLUTION 1: The Solution found by INSPIRATION is to search through external files for strings that contain "-"
+        (dash) between them and use those strings as css files and then process from there.
+        SOLUTION 2: Solution 1 will not work because of eye_css pseudo-elements and pseudo-classes. So only contents
+        in a string delimiter will be fetched. i.e., strings contained within (', ", `) will be fetched
+        """
+        js_css_classes_data = re.findall(r"['\"`]\b[\s\w:|-]+\b[`\"']", "file_str")
         markups_css_classes_data = re.findall(r"""(class\b|className\b)=\"\s*(([\w*-:|#()%/]\s*)+)\"""", file_str)
 
         watched_files_css_classes_data = [*markups_css_classes_data, *js_css_classes_data]
@@ -790,6 +803,9 @@ class EyeMarkupParser:
         :return: the reconstructed base css class
         :Date: August 5, 2022.
         """
+        # TODO: November 13, 2022. Add :empty selector to padding and margin by default. i.e.,
+        if re.match(r"^pad-*", css_class):
+          css_class = css_class+":empty"
         return css_class.replace("\:", ":").replace(":", "\:")
 
     @staticmethod
