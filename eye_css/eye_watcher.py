@@ -579,7 +579,7 @@ class EyeMarkupParser:
         SOLUTION 2: Solution 1 will not work because of eye_css pseudo-elements and pseudo-classes. So only contents
         in a string delimiter will be fetched. i.e., strings contained within (', ", `) will be fetched
         """
-        js_css_classes_data = re.findall(r"['\"`](\b[\s\w:|-]+\b)[`\"']", "file_str")
+        js_css_classes_data = re.findall(r"""['\"`](\b[\s\w:|-]+\b)[`\"']""", file_str)
         markups_css_classes_data = re.findall(r"""(class\b|className\b)=\"\s*(([\w*-:|#()%/]\s*)+)\"""", file_str)
 
         watched_files_css_classes_data = [*markups_css_classes_data, *js_css_classes_data]
