@@ -62,7 +62,7 @@ _**Remember to name the file: eye_config.yml**_
 ```yaml
 eye:
   input_directory: "./"
-  input_extensions: "*.html, *.js, *.jsx, *.ts, *.tsx"
+  input_extensions: "*.html,*.js,*.jsx,*.ts,*.tsx"
 
   exclude_directory: ".git"
   exclude_files: ".gitignore"
