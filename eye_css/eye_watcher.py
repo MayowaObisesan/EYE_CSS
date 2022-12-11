@@ -804,8 +804,8 @@ class EyeMarkupParser:
         :Date: August 5, 2022.
         """
         # TODO: November 13, 2022. Add :empty selector to padding and margin by default. i.e.,
-        if re.match(r"^pad-*", css_class):
-          css_class = css_class+":empty"
+        # if re.match(r"^pad-*", css_class):
+        #   css_class = css_class+":empty"
         return css_class.replace("\:", ":").replace(":", "\:")
 
     @staticmethod
