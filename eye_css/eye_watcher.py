@@ -51,7 +51,7 @@ class EyeWriter:
         for _ in list_to_flatten:
             if isinstance(_, list):
                 cls.flatten_list(_)
-            flat_list.extend(_)
+            flat_list.extend(_) if isinstance(_, list) else flat_list.append(_)
         return flat_list
 
     @staticmethod
@@ -82,6 +82,7 @@ class EyeWriter:
         return self.categorize_markup_css_classes_list(watched_css_class_list)
 
     def categorize_markup_css_classes_list(self, css_classes_list: list):
+        # print(css_classes_list)
         eye_css_dictionary = CSSGenerator().css_dictionary()
         flat_css_list = self.flatten_list(css_classes_list)
         for each_css_class in flat_css_list:
@@ -470,15 +471,21 @@ class EyeWatcher:
         event_handler = Handler()
         self.observer.schedule(event_handler, Eye.DIRECTORY_TO_WATCH, recursive=True)
         self.observer.start()
+        # try:
+        #     while True:
+        #         time.sleep(5)
+        #     # while self.observer.is_alive():
+        #     #     self.observer.join(1)
+        # except RuntimeError as err:
+        #     self.observer.stop()
+        #     print("Error watching file")
+        # self.observer.join()
         try:
-            while True:
-                time.sleep(5)
-            # while self.observer.is_alive():
-            #     self.observer.join(1)
-        except RuntimeError as err:
+            while self.observer.is_alive():
+                self.observer.join(1)
+        finally:
             self.observer.stop()
-            print("Error watching file")
-        self.observer.join()
+            self.observer.join()
 
 
 class Handler(FileSystemEventHandler):
@@ -493,7 +500,13 @@ class Handler(FileSystemEventHandler):
         elif exact_file_to_watch == "":
             for ext in file_to_watch_extensions:
                 self.FILES_TO_WATCH.extend(glob.glob(f"{directory_to_watch}/**/{ext}", recursive=True))
-        print(f"Hello, I am EYE. \nI am WATCHING: {','.join(self.FILES_TO_WATCH)}")
+
+        # Remove all paths in the excluded directory from the list of FILES_TO_WATCH
+        for _ in self.FILES_TO_WATCH:
+            for each_ignored_directory in Eye.EXCLUDE_DIRECTORY:
+                if each_ignored_directory in os.path.dirname(os.path.splitdrive(_)[-1]).split(os.path.sep):
+                    self.FILES_TO_WATCH.remove(_)
+        print(f"Hello, I am EYE (CSS). \nI am WATCHING: {','.join(self.FILES_TO_WATCH)}")
 
     def on_any_event(self, event):
         DIRECTORY_TO_IGNORE = Eye.EXCLUDE_DIRECTORY
@@ -517,6 +530,17 @@ class Handler(FileSystemEventHandler):
     # def on_modified(self, event):
     #     if event.src_path in self.files_to_watch:
     #         EyeWriter().parse_eye_css()
+
+
+class CSSFinder:
+    """
+    Class to perform all operations of finding css in files.
+    :Date: December 14, 2022.
+    :remark: A Future-Feature.
+    :description: Will be a class for refactored and re-written EyeMarkupParser methods
+        e.g., get_attr_class_data_from_file(), get_attr_class_list_from_markup() etc.
+    :tag: TODO
+    """
 
 
 class EyeMarkupParser:
@@ -580,10 +604,13 @@ class EyeMarkupParser:
         in a string delimiter will be fetched. i.e., strings contained within (', ", `) will be fetched
         """
         js_css_classes_data = re.findall(r"""['\"`](\b[\s\w:|-]+\b)[`\"']""", file_str)
-        markups_css_classes_data = re.findall(r"""(class\b|className\b)=\"\s*(([\w*-:|#()%/]\s*)+)\"""", file_str)
+        # print(f"{file_str}:::{js_css_classes_data}")
+        # markups_css_classes_data = re.findall(r"""(class\b|className\b)=\"\s*(([\w*-:|#()%/]\s*)+)\"""", file_str)
+        # print(markups_css_classes_data)
 
-        watched_files_css_classes_data = [*markups_css_classes_data, *js_css_classes_data]
-        return watched_files_css_classes_data
+        # watched_files_css_classes_data = [*markups_css_classes_data, *js_css_classes_data]
+        # return watched_files_css_classes_data
+        return [*js_css_classes_data]
 
     def attr_class_list_from_file(self, file_str: str) -> list:
         """
@@ -592,10 +619,16 @@ class EyeMarkupParser:
         :return: A list of css classes.
         :Date: August 13, 2022.
         """
+        # print(self.get_attr_class_data_from_file(file_str))
+        # css_classes_list = [
+        #     each_css_class[1].split(" ")
+        #     for each_css_class in self.get_attr_class_data_from_file(file_str)
+        # ]
         css_classes_list = [
-            each_css_class[1].split(" ")
+            each_css_class.split(" ")
             for each_css_class in self.get_attr_class_data_from_file(file_str)
         ]
+        # print(css_classes_list)
         return css_classes_list
 
     def base_classes_list_from_attr_class_list(self, attr_class_list: list) -> list:
