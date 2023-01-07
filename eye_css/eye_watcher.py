@@ -61,15 +61,15 @@ class EyeWriter:
         css_dict = {css_key: f"{{{eye_css_to_dict[css_key]}}}"}
         return css_dict
 
-    def collect_markup_css_classes_from_files(self):
-        markup_css_classes_list = []
-        for each_watched_file in self.files_to_watch:
-            with open(each_watched_file, "r", encoding="utf-8") as opened_file:
-                file_string = opened_file.read()
-                opened_file.close()
-                attr_class_list = EyeMarkupParser().get_attr_class_list_from_markup(EyeMarkupParser().clean_markup(file_string))
-                markup_css_classes_list.extend(attr_class_list)
-        return self.categorize_markup_css_classes_list(markup_css_classes_list)
+    # def collect_markup_css_classes_from_files(self):
+    #     markup_css_classes_list = []
+    #     for each_watched_file in self.files_to_watch:
+    #         with open(each_watched_file, "r", encoding="utf-8") as opened_file:
+    #             file_string = opened_file.read()
+    #             opened_file.close()
+    #             attr_class_list = EyeMarkupParser().get_attr_class_list_from_markup(EyeMarkupParser().clean_markup(file_string))
+    #             markup_css_classes_list.extend(attr_class_list)
+    #     return self.categorize_markup_css_classes_list(markup_css_classes_list)
 
     def collect_watched_files_css_classes(self):
         watched_css_class_list = list()
@@ -85,6 +85,7 @@ class EyeWriter:
         # print(css_classes_list)
         eye_css_dictionary = CSSGenerator().css_dictionary()
         flat_css_list = self.flatten_list(css_classes_list)
+        # print(flat_css_list)
         for each_css_class in flat_css_list:
             if EyeMarkupParser().is_base_css_class(each_css_class):
                 reconstructed_base_css_class = f"{EyeMarkupParser().reconstruct_markup_base_css_class(each_css_class)}"
@@ -163,7 +164,7 @@ class EyeWriter:
         watched_css.update(self.process_dynamic_css_classes(self.watched_pseudo_classes_dynamic_list))
 
         for k, v in self.process_dynamic_css_classes(self.watched_media_query_dynamic_list).items():
-            media_query_dict[CSSGenerator().default_media_query_dict[k.split(":", 1)[0].strip(".").strip("\\")]].update({k: v})
+            media_query_dict[CSSGenerator().default_media_query_dict[k.split(":", 1)[0].strip(".").strip("\\").removeprefix('.')]].update({k: v})
 
         watched_css.update(CSSGenerator().convert_dict_to_css(media_query_dict, as_dict_str=True))
 
@@ -200,40 +201,56 @@ class EyeWriter:
                     if not CSSGenerator().is_dimensionless_css_property(dynamic_css_class_key):
                         if dynamic_css_class_key.startswith("pct"):
                             replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}%")
-                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class)}": replaced_dynamic_css_dict_value})
+                            # Added the .strip('.") to the reconstruct_css_class because without it, it generates a
+                            # double ".." css class for media queries. - January 7, 2022.
+                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).strip('.')}": replaced_dynamic_css_dict_value})
                         elif dynamic_css_class_key.startswith("em"):
                             replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("()", "-width").replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}em")
-                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class)}": replaced_dynamic_css_dict_value})
+                            # Added the .strip('.") to the reconstruct_css_class because without it, it generates a
+                            # double ".." css class for media queries. - January 7, 2022.
+                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).strip('.')}": replaced_dynamic_css_dict_value})
                         elif dynamic_css_class_key.startswith("rem"):
                             replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("()", "-width").replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}rem")
-                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class)}": replaced_dynamic_css_dict_value})
+                            # Added the .strip('.") to the reconstruct_css_class because without it, it generates a
+                            # double ".." css class for media queries. - January 7, 2022.
+                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).strip('.')}": replaced_dynamic_css_dict_value})
                         elif dynamic_css_class_key.startswith("pt"):
                             replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("()", "-width").replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}pt")
-                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class)}": replaced_dynamic_css_dict_value})
+                            # Added the .strip('.") to the reconstruct_css_class because without it, it generates a
+                            # double ".." css class for media queries. - January 7, 2022.
+                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).strip('.')}": replaced_dynamic_css_dict_value})
                         elif dynamic_css_class_key.startswith("pc"):
                             replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("()", "-width").replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}pc")
-                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class)}": replaced_dynamic_css_dict_value})
+                            # Added the .strip('.") to the reconstruct_css_class because without it, it generates a
+                            # double ".." css class for media queries. - January 7, 2022.
+                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).strip('.')}": replaced_dynamic_css_dict_value})
                         elif dynamic_css_class_key.startswith("vw"):
                             replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("()", "-width").replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}vw")
-                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class)}": replaced_dynamic_css_dict_value})
+                            # Added the .strip('.") to the reconstruct_css_class because without it, it generates a
+                            # double ".." css class for media queries. - January 7, 2022.
+                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).strip('.')}": replaced_dynamic_css_dict_value})
                         elif dynamic_css_class_key.startswith("vh"):
                             replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("()", "-width").replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}vh")
-                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class)}": replaced_dynamic_css_dict_value})
+                            # Added the .strip('.") to the reconstruct_css_class because without it, it generates a
+                            # double ".." css class for media queries. - January 7, 2022.
+                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).strip('.')}": replaced_dynamic_css_dict_value})
                         else:
                             replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("()", "-width").replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}px")
-                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class)}": replaced_dynamic_css_dict_value})
+                            # Added the .strip('.") to the reconstruct_css_class because without it, it generates a
+                            # double ".." css class for media queries. - January 7, 2022.
+                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).strip('.')}": replaced_dynamic_css_dict_value})
                     elif CSSGenerator().is_dimensionless_css_property(dynamic_css_class_key):
-                        if "".join(re.findall(r'(\b^z$\b|opacity\b|scale\b)', each_dynamic_css_class)) == "z":
+                        if "".join(re.findall(r'(\bz\b|opacity\b|scale\b)', each_dynamic_css_class)) == "z":
                             if CSSGenerator().is_zindex_dimension_valid(each_dynamic_base_css_class.rsplit('-', 1)[-1]):
                                 replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}")
                                 dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class)}": replaced_dynamic_css_dict_value})
                             else:
                                 logging.info(f"{dynamic_css_class_key} - {each_dynamic_base_css_class.rsplit('-', 1)[-1]} is not a valid eye.css z_index value")
-                        if "".join(re.findall(r'(\b^z$\b|opacity\b|scale\b)', each_dynamic_css_class)) == "scale":
+                        if "".join(re.findall(r'(\bz\b|opacity\b|scale\b)', each_dynamic_css_class)) == "scale":
                             replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}")
                             escaped_reconstructed_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace(".", "\.")
                             dynamic_watched_css_dict.update({f".{escaped_reconstructed_css_class}": replaced_dynamic_css_dict_value})
-                        if "".join(re.findall(r'(\b^z$\b|opacity\b|scale\b)', each_dynamic_css_class)) == "opacity":
+                        if "".join(re.findall(r'(\bz\b|opacity\b|scale\b)', each_dynamic_css_class)) == "opacity":
                             pass
             # using the dynamic_css_class_key below because of pseudo nested classes.
             # elif each_dynamic_css_class.startswith("shadow\:"):
@@ -541,6 +558,7 @@ class CSSFinder:
         e.g., get_attr_class_data_from_file(), get_attr_class_list_from_markup() etc.
     :tag: TODO
     """
+    pass
 
 
 class EyeMarkupParser:
@@ -603,7 +621,7 @@ class EyeMarkupParser:
         SOLUTION 2: Solution 1 will not work because of eye_css pseudo-elements and pseudo-classes. So only contents
         in a string delimiter will be fetched. i.e., strings contained within (', ", `) will be fetched
         """
-        js_css_classes_data = re.findall(r"""['\"`](\b[\s\w:|-]+\b)[`\"']""", file_str)
+        js_css_classes_data = re.findall(r"""['\"`](\b[\s\w:.|-]+\b)[`\"']""", file_str, re.ASCII)
         # print(f"{file_str}:::{js_css_classes_data}")
         # markups_css_classes_data = re.findall(r"""(class\b|className\b)=\"\s*(([\w*-:|#()%/]\s*)+)\"""", file_str)
         # print(markups_css_classes_data)
