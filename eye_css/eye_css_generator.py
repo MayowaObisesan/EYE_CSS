@@ -205,6 +205,7 @@ class CSSGenerator:
             *Backgrounds().css_template,
             *AccentColor().css_template,
             *Borders().css_template,
+            *Outlines().css_template,
             *Separator().css_template,
             *Transforms().css_template,
         ]
@@ -3040,6 +3041,11 @@ class Texts(Root):
     def font_family(self):
         """ :Date: July 18, 2022. """
         font_family_css = f"""
+        .font-family-inherit {{font-family: inherit}}
+        .font-family-initial {{font-family: initial}}
+        .font-family-unset {{font-family: unset}}
+        .font-family-revert {{font-family: revert}}
+        .font-family-revert-layer {{font-family: revert-layer}}
         .font-sans {{font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";}}
         .font-serif {{font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;}}
         .font-mono {{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}}
@@ -3889,6 +3895,10 @@ class Outlines(Root):
             ".em\:outline- {outline-width: [];}",
             ".outline-offset- {outline-offset: [];}",
             ".em\:outline-offset- {outline-offset: [];}"
+            ".neg\:outline- {outline(): -[];}",
+            ".neg\:em\:outline- {outline-width: -[];}",
+            ".neg\:outline-offset- {outline-offset: -[];}",
+            ".neg\:em\:outline-offset- {outline-offset-: [];}"
         ]
         return outline_template
 
