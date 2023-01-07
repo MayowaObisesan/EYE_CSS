@@ -2916,6 +2916,11 @@ class Texts(Root):
         self.text_decoration_style()
         self.text_decoration_color()
         self.text_decoration_thickness()
+        self.text_break()
+        self.text_underline_offset()
+        self.text_transform()
+        self.text_overflow_helpers()
+        self.text_indent()
 
     @property
     def css_properties(self):
@@ -3024,11 +3029,11 @@ class Texts(Root):
     def text_overflow(self):
         """:Date: July 1, 2022."""
         text_overflow_css = f"""
-        .text-overflow-unset {{text-overflow: unset;}}
-        .text-overflow-initial {{text-overflow: initial;}}
-        .text-overflow-inherit {{text-overflow: inherit;}}
-        .text-overflow-ellipsis {{text-overflow: ellipsis;}}
-        .text-overflow-clip {{text-overflow: clip;}}
+        .overflow-unset {{text-overflow: unset;}}
+        .overflow-initial {{text-overflow: initial;}}
+        .overflow-inherit {{text-overflow: inherit;}}
+        .overflow-ellipsis {{text-overflow: ellipsis;}}
+        .overflow-clip {{text-overflow: clip;}}
         """
         self.text_css_classes.append(text_overflow_css)
 
@@ -3092,10 +3097,77 @@ class Texts(Root):
     def text_decoration_thickness(self):
         """:Date: August 28, 2022."""
         text_decoration_css = f"""
-        .decoration-auto {{text-decoration-style: auto;}}
-        .decoration-from-font {{text-decoration-style: from-font;}}
+        .decoration-auto {{text-decoration-thickness: auto;}}
+        .decoration-from-font {{text-decoration-thickness: from-font;}}
         """
+        for i in range(1, 13, 1):
+            text_decoration_thickness_css = f"""
+            .decoration-{i} {{text-decoration-thickness: {i}px;}}
+            """
+            self.text_css_classes.append(text_decoration_thickness_css)
         self.text_css_classes.append(text_decoration_css)
+
+    def text_break(self):
+        """:Date: December 28, 2022."""
+        text_break_css = f"""
+        .break-normal {{overflow-wrap: normal; word-break: normal;}}
+        .break-word {{overflow-wrap: break-word;}}
+        .break-all {{word-break: break-all;}}
+        """
+        self.text_css_classes.append(text_break_css)
+
+    def text_underline_offset(self):
+        """:Date: December 28, 2022."""
+        text_underline_offset_default_css = f"""
+        .underline-offset-auto {{text-underline-offset: auto;}}
+        .underline-offset-0 {{text-underline-offset: 0;}}
+        .underline-offset-unset {{text-underline-offset: unset;}}
+        .underline-offset-initial {{text-underline-offset: initial;}}
+        .underline-offset-inherit {{text-underline-offset: inherit;}}
+        .underline-offset-revert {{text-underline-offset: revert;}}
+        .underline-offset-revert-layer {{text-underline-offset: revert-layer;}}
+        """
+        for i in range(1, 13, 1):
+            text_underline_offset_css = f"""
+            .underline-offset-{i} {{text-underline-offset: {i}px;}}
+            """
+            self.text_css_classes.append(text_underline_offset_css)
+        self.text_css_classes.append(text_underline_offset_default_css)
+
+    def text_transform(self):
+        """:Date: December 28, 2022."""
+        text_transform_css = f"""
+        .normal-case {{text-transform: none;}}
+        .uppercase {{text-transform: uppercase;}}
+        .lowercase {{text-transform: lowercase;}}
+        .capitalize {{text-transform: capitalize;}}
+        """
+        self.text_css_classes.append(text_transform_css)
+
+    def text_overflow_helpers(self):
+        """:Date: December 28, 2022."""
+        text_overflow_css = f"""
+        .text-ellipsis {{overflow-x: hidden; white-space: nowrap; text-overflow: ellipsis;}}
+        .text-clip {{overflow-x: hidden; white-space: nowrap; text-overflow: clip;}}
+        """
+        self.text_css_classes.append(text_overflow_css)
+
+    def text_indent(self):
+        """:Date: December 28, 2022."""
+        text_indent_default_css = f"""
+        .indent-initial {{text-indent: initial;}}
+        .indent-inherit {{text-indent: inherit;}}
+        .indent-unset {{text-indent: unset;}}
+        .indent-revert {{text-indent: revert;}}
+        .indent-revert-layer {{text-indent: revert-layer;}}
+        .indent-0 {{text-indent: 0;}}
+        """
+        for i in range(1, 13, 1):
+            for j in range(1, 13, 1):
+                text_indent_css = f"""
+                indent{i if i > 1 else ''}-{j} {{text-underline-offset: {i*j}px;}}
+                """
+                self.text_css_classes.append(text_indent_css)
 
 
 class Colors(Root):
