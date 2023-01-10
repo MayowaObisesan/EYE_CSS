@@ -1,5 +1,8 @@
 # Custom .ignored files.
 .pypirc
+eye_backup_file.py
+setup.py
+todos
 
 .idea
 .git

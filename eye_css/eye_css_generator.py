@@ -77,7 +77,9 @@ class CSSGenerator:
             "xl": "@media (min-width: 1280px)",
             "xxl": "@media (min-width: 1536px)"
         }
-        self.dimension_type_list = ("pct", "em", "rem", "pc", "pt", "vh", "vw", "vmin", "vmax")
+        self.dimension_type_list = ("px", "pct", "em", "rem", "pc", "pt", "vh", "vw", "vmin", "vmax")
+        self.positions_type_list = ("top", "right", "bottom", "left")
+        self.positions_abbreviation_type_list = ("x", "y", "t", "r", "b", "l")
 
     def create_css_generator_file(self):
         with open(self.eye_css_filename, "w+") as opened_file:
@@ -193,6 +195,7 @@ class CSSGenerator:
         :Date: August 9, 2022.
         """
         css_templates_list = [
+            *Positions().css_template,
             *Widths().css_template,
             *Heights().css_template,
             *Paddings().css_template,
@@ -893,15 +896,19 @@ class Positions:
     @property
     def css_template(self):
         position_template = [
-            ".t- {top: [];}",
-            ".neg\:t- {top: -[];}",
-            ".r- {right: [];}",
-            ".neg\:r- {right: -[];}",
-            ".b- {bottom: [];}",
-            ".neg\:b- {bottom: -[];}",
-            ".l- {left: [];}",
-            ".neg\:l- {left: -[];}"
+            ".top- {top: [];}",
+            ".neg\:top- {top: -[];}",
+            ".right- {right: [];}",
+            ".neg\:right- {right: -[];}",
+            ".bottom- {bottom: [];}",
+            ".neg\:bottom- {bottom: -[];}",
+            ".left- {left: [];}",
+            ".neg\:left- {left: -[];}"
         ]
+        # for _ in CSSGenerator().dimension_type_list:
+        for _ in CSSGenerator().dimension_type_list:
+            for j in CSSGenerator().positions_type_list:
+                position_template.extend([f".{_}\:{j}- {{{j}: [];}}", f".{_}\:neg\:{j}- {{{j}: -[];}}"])
         return position_template
 
     def css_to_dict(self):
@@ -1834,6 +1841,16 @@ class Margins:
             ".mg-b- {margin-bottom: [];}",
             ".mg-l- {margin-left: [];}"
         ]
+        # for _ in CSSGenerator().dimension_type_list:
+        #     margin_template.extend([
+        #         f".{_}\:mg- {{margin: [];}}",
+        #         f".{_}\:mg-x- {{margin-left: []; margin-right: [];}}",
+        #         f".{_}\:mg-y- {{margin-top: []; margin-bottom: [];}}",
+        #         f".{_}\:mg-t- {{margin-top: [];}}",
+        #         f".{_}\:mg-r- {{margin-right: [];}}",
+        #         f".{_}\:mg-b- {{margin-bottom: [];}}",
+        #         f".{_}\:mg-l- {{margin-left: [];}}"
+        #     ])
         return margin_template
 
     def gen_margin_small_helpers(self):
@@ -2126,6 +2143,16 @@ class Paddings:
             ".pad-b- {padding-bottom: [];}",
             ".pad-l- {padding-left: [];}"
         ]
+        # for _ in CSSGenerator().dimension_type_list:
+        #     padding_template.extend([
+        #         f".{_}\:pad- {{padding: [];}}",
+        #         f".{_}\:pad-x- {{padding-left: []; padding-right: [];}}",
+        #         f".{_}\:pad-y- {{padding-top: []; padding-bottom: [];}}",
+        #         f".{_}\:pad-t- {{padding-top: [];}}",
+        #         f".{_}\:pad-r- {{padding-right: [];}}",
+        #         f".{_}\:pad-b- {{padding-bottom: [];}}",
+        #         f".{_}\:pad-l- {{padding-left: [];}}"
+        #     ])
         return padding_template
 
     def gen_padding_default_helpers(self):

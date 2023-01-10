@@ -234,6 +234,11 @@ class EyeWriter:
                             # Added the .strip('.") to the reconstruct_css_class because without it, it generates a
                             # double ".." css class for media queries. - January 7, 2022.
                             dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).strip('.')}": replaced_dynamic_css_dict_value})
+                        elif dynamic_css_class_key.startswith("px"):
+                            replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("()", "-width").replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}px")
+                            # Added the .strip('.") to the reconstruct_css_class because without it, it generates a
+                            # double ".." css class for media queries. - January 7, 2022.
+                            dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).strip('.')}": replaced_dynamic_css_dict_value})
                         else:
                             replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("()", "-width").replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}px")
                             # Added the .strip('.") to the reconstruct_css_class because without it, it generates a
