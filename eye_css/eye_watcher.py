@@ -19,6 +19,8 @@ from watchdog.observers import Observer
 from eye_css.__main__ import Eye
 from eye_css.eye_css_generator import CSSGenerator
 
+# eye_template_dictionary = CSSGenerator().css_templates_dictionary()
+
 
 class EyeWriter:
     """ Eye.css Writer Class.
@@ -160,10 +162,12 @@ class EyeWriter:
         watched_css.update(pseudo_classes_watched_css)
         watched_css.update(pseudo_elements_watched_css)
 
-        watched_css.update(self.process_dynamic_css_classes(self.watched_base_classes_dynamic_list))
-        watched_css.update(self.process_dynamic_css_classes(self.watched_pseudo_classes_dynamic_list))
+        watched_css.update(self.process_dynamic_base_css_classes(self.watched_base_classes_dynamic_list))
+        watched_css.update(self.process_dynamic_base_css_classes(self.watched_pseudo_classes_dynamic_list))
+        watched_css.update(self.process_dynamic_pseudo_selector_css_classes(self.watched_pseudo_elements_dynamic_list))
+        # watched_css.update(self.process_dynamic_pseudo_selector_css_classes(self.watched_pseudo_classes_dynamic_list))
 
-        for k, v in self.process_dynamic_css_classes(self.watched_media_query_dynamic_list).items():
+        for k, v in self.process_dynamic_base_css_classes(self.watched_media_query_dynamic_list).items():
             media_query_dict[CSSGenerator().default_media_query_dict[k.split(":", 1)[0].strip(".").strip("\\").removeprefix('.')]].update({k: v})
 
         watched_css.update(CSSGenerator().convert_dict_to_css(media_query_dict, as_dict_str=True))
@@ -178,7 +182,7 @@ class EyeWriter:
                 opened_file.writelines(_)
             opened_file.close()
 
-    def process_dynamic_css_classes(self, dynamic_css_class_list: list):
+    def process_dynamic_base_css_classes(self, dynamic_css_class_list: list):
         """ A Function to process the dynamic css classes.
         :Date: August 10, 2022.
         """
@@ -187,6 +191,7 @@ class EyeWriter:
         eye_template_dictionary = CSSGenerator().css_templates_dictionary()
 
         for each_dynamic_css_class in dynamic_css_class_list:
+            # For dynamic Base CSS classes
             each_dynamic_base_css_class = EyeMarkupParser().get_base_class_from_pseudo_selector_str(each_dynamic_css_class)
             dynamic_css_class_key = each_dynamic_base_css_class.rsplit("-", 1)[0]
             if f".{dynamic_css_class_key}-" in eye_template_dictionary.keys():
@@ -230,7 +235,7 @@ class EyeWriter:
                             # double ".." css class for media queries. - January 7, 2022.
                             dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).strip('.')}": replaced_dynamic_css_dict_value})
                         elif dynamic_css_class_key.startswith("vh"):
-                            replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("()", "-width").replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}vh")
+                            replaced_dynamic_css_dict_value = dynamic_css_dict_value.replace("()", "-height").replace("[]", f"{each_dynamic_base_css_class.rsplit('-', 1)[-1]}vh")
                             # Added the .strip('.") to the reconstruct_css_class because without it, it generates a
                             # double ".." css class for media queries. - January 7, 2022.
                             dynamic_watched_css_dict.update({f".{EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).strip('.')}": replaced_dynamic_css_dict_value})
@@ -459,6 +464,42 @@ class EyeWriter:
                 animation_style_value = ", ".join(animation_variant_list)
                 reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%", "\%").replace("(", "\(").replace(")", "\)")
                 dynamic_watched_css_dict.update({f""".{reconstructed_dynamic_css_class}""": f"{{animation: {animation_style_value};}}"})
+            elif dynamic_css_class_key.startswith("border\:"):
+                border_style_split = each_dynamic_css_class.split(":")
+                _, border_style_definition = border_style_split[0], border_style_split[-1]
+
+                border_style_definition_variant = border_style_definition.split("|")
+                border_variant_list = list()
+                for each_variant in border_style_definition_variant:
+                    replaced_each_variant = each_variant.replace("_", " ")
+                    border_variant_list.append(replaced_each_variant)
+                border_style_value = "".join(border_variant_list)
+                reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%", "\%").replace("(", "\(").replace(")", "\)")
+                dynamic_watched_css_dict.update({f""".{reconstructed_dynamic_css_class}""": f"{{border: {border_style_value};}}"})
+            elif dynamic_css_class_key.startswith("outline\:"):
+                outline_style_split = each_dynamic_css_class.split(":")
+                _, outline_style_definition = outline_style_split[0], outline_style_split[-1]
+
+                outline_style_definition_variant = outline_style_definition.split("|")
+                outline_variant_list = list()
+                for each_variant in outline_style_definition_variant:
+                    replaced_each_variant = each_variant.replace("_", " ")
+                    outline_variant_list.append(replaced_each_variant)
+                outline_style_value = "".join(outline_variant_list)
+                reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%", "\%").replace("(", "\(").replace(")", "\)")
+                dynamic_watched_css_dict.update({f""".{reconstructed_dynamic_css_class}""": f"{{outline: {outline_style_value};}}"})
+            elif dynamic_css_class_key.startswith("child"):
+                child_style_split = each_dynamic_css_class.rsplit(":", 1)
+                print(child_style_split)
+                _, child_style_definition = child_style_split[0], child_style_split[-1]
+                parent_counterpart = f".parent-{_.split('-')[-1]}".replace("\\", "")
+
+                style_definition_variant = child_style_definition.split("|")
+                base_css_classes = {f".{k}": CSSGenerator().css_dictionary()[f'.{k}'] for k in style_definition_variant}
+                reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%", "\%").replace("(", "\(").replace(")", "\)")
+                css_result = ";".join([_.replace("{", "").replace("}", "").replace(";", "") for _ in base_css_classes.values()])
+                print(css_result)
+                dynamic_watched_css_dict.update({f"{parent_counterpart} .{reconstructed_dynamic_css_class}": f"{{{css_result}}}"})
 
         return dynamic_watched_css_dict
 
@@ -482,6 +523,35 @@ class EyeWriter:
         gradient_style_value = ", ".join(gradient_variant_list)
         reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%","\%").replace("(", "\(").replace(")", "\)")
         dynamic_watched_css_dict.update({f""".{reconstructed_dynamic_css_class}""": f"{{background: {gradient_style_value.replace('pct', '%')};}}"})
+
+    def process_dynamic_pseudo_selector_css_classes(self, dynamic_css_class_list: list):
+        """
+        Process dynamic pseudo selector CSS classes
+        date: January 28, 2023
+        description: e.g., placeholder:font-32|color-brown|font-italic
+        """
+        dynamic_watched_pseudo_selector_css_dict = dict()
+        for each_dynamic_css_class in dynamic_css_class_list:
+            if each_dynamic_css_class.startswith("placeholder"):
+                placeholder_style_split = each_dynamic_css_class.split(":")
+                _, style_definition = placeholder_style_split[0], placeholder_style_split[-1]
+
+                style_definition_variant = style_definition.split("|")
+                base_css_classes = {f".{k}": CSSGenerator().css_dictionary()[f'.{k}'] for k in style_definition_variant}
+                reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%", "\%").replace("(", "\(").replace(")", "\)")
+                css_result = ";".join([_.replace("{", "").replace("}", "").replace(";", "") for _ in base_css_classes.values()])
+                dynamic_watched_pseudo_selector_css_dict.update({f".{reconstructed_dynamic_css_class}": f"{{{css_result}}}"})
+
+        return dynamic_watched_pseudo_selector_css_dict
+
+    def process_dynamic_pseudo_class_css_classes(self, dynamic_css_class_list: list):
+        """
+        Process dynamic pseudo class CSS classes
+        date: January 27, 2023
+        description: e.g., focus:placeholder:font-32|color-gray|font-italic
+        """
+        dynamic_watched_pseudo_class_css_dict: dict = dict()
+        return dynamic_watched_pseudo_class_css_dict
 
 
 class EyeWatcher:
@@ -626,7 +696,7 @@ class EyeMarkupParser:
         SOLUTION 2: Solution 1 will not work because of eye_css pseudo-elements and pseudo-classes. So only contents
         in a string delimiter will be fetched. i.e., strings contained within (', ", `) will be fetched
         """
-        js_css_classes_data = re.findall(r"""['\"`](\b[\s\w:.|-]+\b)[`\"']""", file_str, re.ASCII)
+        js_css_classes_data = re.findall(r"""['\"`](\b[\s\w:.|/-]+\b)[`\"']""", file_str, re.ASCII)
         # print(f"{file_str}:::{js_css_classes_data}")
         # markups_css_classes_data = re.findall(r"""(class\b|className\b)=\"\s*(([\w*-:|#()%/]\s*)+)\"""", file_str)
         # print(markups_css_classes_data)
@@ -689,6 +759,30 @@ class EyeMarkupParser:
         return True
 
     @staticmethod
+    def is_pseudo_elements_class(css_class_str) -> bool:
+        """ A Function to check if a css class str is a pseudo-element css class.
+        :param css_class_str: the css class string to check.
+        :return: bool.
+        :Date: August 7, 2022.
+        """
+        pseudo_elements = CSSGenerator().default_pseudo_element_list
+        if css_class_str.startswith(pseudo_elements):
+            return True
+        return False
+
+    @staticmethod
+    def is_pseudo_group_class(css_class_str) -> bool:
+        """ A Function to check if a css class str is a pseudo group css class
+        :param css_class_str: the css class string to check.
+        :return: bool.
+        :Date: January 28, 2023.
+        """
+        pseudo_classes = CSSGenerator().default_pseudo_group_list
+        if css_class_str.startswith(pseudo_classes):
+            return True
+        return False
+
+    @staticmethod
     def is_pseudo_classes_class(css_class_str) -> bool:
         """ A Function to check if a css class str is a pseudo class css class
         :param css_class_str: the css class string to check.
@@ -701,14 +795,14 @@ class EyeMarkupParser:
         return False
 
     @staticmethod
-    def is_pseudo_elements_class(css_class_str) -> bool:
-        """ A Function to check if a css class str is a pseudo-element css class.
+    def is_pseudo_theme_class(css_class_str) -> bool:
+        """ A Function to check if a css class str is a pseudo theme css class
         :param css_class_str: the css class string to check.
         :return: bool.
-        :Date: August 7, 2022.
+        :Date: January 28, 2023.
         """
-        pseudo_elements = CSSGenerator().default_pseudo_element_list
-        if css_class_str.startswith(pseudo_elements):
+        pseudo_classes = CSSGenerator().default_pseudo_theme_list
+        if css_class_str.startswith(pseudo_classes):
             return True
         return False
 
@@ -876,6 +970,17 @@ class EyeMarkupParser:
         :return: the reconstructed pseudo_css_class
         :Date: August 5, 2022.
         """
+        # If the pseudo_class contains a child-, meaning it has a group_selector
+        if css_class.__contains__("child-"):
+            print(f"Child group encountered: {css_class}")
+            child_group = re.findall(r"(child-\w+)", css_class)
+            child_group_identifier = child_group[0].split("-")[-1]
+            pseudo_class = css_class.split(":", 1)[0]
+            replaced_css = css_class.replace(':', '\:')
+            # reconstructed_css = css_class.replace(":", "\:").replace(child_group[0], f"parent-{child_group_identifier}:{pseudo_class} .{child_group[0]}")
+            reconstructed_css = f"parent-{child_group_identifier}:{pseudo_class} .{replaced_css}"
+            print(reconstructed_css)
+            return reconstructed_css
         # Get the pseudo_classes from the markup css_classes and perform substitution and addition.
         replaced_css = css_class.replace(":", "\:")
         pseudo_class = css_class.split(":", 1)[0]
@@ -894,7 +999,8 @@ class EyeMarkupParser:
         """
         # Get the pseudo_classes from the markup css_classes and perform substitution and addition.
         replaced_css = css_class.replace(":", "\:")
-        pseudo_class = self.get_pseudo_element_from_pseudo_css_str(css_class)
+        # pseudo_class = self.get_pseudo_element_from_pseudo_css_str(css_class)
+        pseudo_class = css_class.split(":", 1)[0]
         return f"{replaced_css}::{pseudo_class}"
 
     def reconstruct_markup_media_query_css_class(self, css_class: str):

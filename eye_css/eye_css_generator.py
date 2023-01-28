@@ -33,15 +33,18 @@ class CSSGenerator:
                                               "drop-shadow", "gradient", "radial-gradient", "conic-gradient",
                                               "repeating-linear-gradient", "repeating-radial-gradient",
                                               "repeating-conic-gradient", "transform", "transform-origin",
-                                              "transition", "animation")
+                                              "transition", "animation", "border", "outline")
         self.default_pseudo_element_list = ("after", "before", "first-letter", "first-line", "marker", "placeholder",
-                                            "selection")
+                                            "selection", "motion-reduce", "motion-safe", "contrast-more", "print",
+                                            "portrait", "landscape")
+        self.default_pseudo_group_list = ("parent", "child", "every", "children", "sibling")
         self.default_pseudo_class_list = ('hover', 'focus', 'focus-within', 'focus-visible', 'active', 'visited',
                                           'target', 'first-child', 'last-child', 'only-child', 'nth-child(odd)',
                                           'nth-child(even)', 'first-of-type', 'last-of-type', 'only-of-type',
                                           'empty', 'disabled', 'checked', 'indeterminate', 'default', 'required',
                                           'valid', 'invalid', 'in-range', 'out-of-range', 'placeholder-shown',
                                           'autofill', 'read-only')
+        self.default_pseudo_theme_list = ("dark",)
         self.default_media_query_list = ("sm", "md", "lg", "xl", "xxl")
 
         # MEDIA QUERIES - DEFINITIONS
@@ -111,7 +114,7 @@ class CSSGenerator:
             text-rendering: auto;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: antialiased; /* | grayscale*/
-            font-family: "system-ui"
+            /* font-family: "system-ui" */
         }}
         *::-webkit-scrollbar {{
             width: 8px;
@@ -3014,7 +3017,7 @@ class Texts(Root):
         font_size_sequence_template = "0.08, 0.08, 0.08, 0.09"
         return font_size_sequence_template.replace(" ", "").split(",")
 
-    def gen_font_size(self, nth_size=20):
+    def gen_font_size(self, nth_size=40):
         """ :Date: July 1, 2022. """
         from decimal import Decimal
         prev_ = Decimal("0.01")
