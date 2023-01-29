@@ -181,6 +181,7 @@ class CSSGenerator:
             *ScrollSnaps().css_properties,
             *Transforms().css_properties,
             *List().css_properties,
+            *Visibility().css_properties,
         ]
         # print(css_properties_list)
         return css_properties_list
@@ -2581,7 +2582,7 @@ class Radius:
     def __init__(self) -> None:
         self.default_dimension_value = 8
         self.radius_css_classes = list()
-        self.default_dimension_value = 8    
+        self.default_dimension_value = 8
         self.default_radius = 8
         self.default_radius_circle = "50% 50%"
         self.default_radius_round = "100px 100px"
@@ -5030,3 +5031,29 @@ class List:
         .list-position-unset {{list-style-position: unset;}}
         """
         self.list_style_css_classes.append(list_style_position_css)
+
+
+class Visibility:
+    """
+    Visibility classes.
+    Date: January 29, 2023.
+    """
+    def __init__(self):
+        self.visibility_style_css_classes = list()
+        self.visibility_helpers()
+
+    @property
+    def css_properties(self):
+        return self.visibility_style_css_classes
+
+    def visibility_helpers(self):
+        pointer_events_css = f"""
+                .visible-inherit {{visibility: inherit;}}
+                .visible-auto {{visibility: auto;}}
+                .visible-unset {{visibility: unset;}}
+                .visible-revert {{visibility: revert;}}
+                .visible-revert-layer {{visibility: revert-layer;}}
+                .visible {{visibility: visible;}}
+                .invisible {{visibility: hidden;}}
+                """
+        self.visibility_style_css_classes.append(pointer_events_css)

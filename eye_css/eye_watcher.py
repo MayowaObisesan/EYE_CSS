@@ -38,12 +38,14 @@ class EyeWriter:
         self.watched_css_file_name = Eye.EYE_CSS_OUTPUT
         self.files_to_watch = Handler.FILES_TO_WATCH
         self.watched_base_classes_list: list = list()
-        self.watched_pseudo_classes_list: list = list()
         self.watched_pseudo_elements_list: list = list()
+        self.watched_pseudo_group_list: list = list()
+        self.watched_pseudo_classes_list: list = list()
         self.watched_media_query_list: list = list()
         self.watched_base_classes_dynamic_list: list = list()
-        self.watched_pseudo_classes_dynamic_list: list = list()
         self.watched_pseudo_elements_dynamic_list: list = list()
+        self.watched_pseudo_classes_dynamic_list: list = list()
+        self.watched_pseudo_group_dynamic_list: list = list()
         self.watched_media_query_dynamic_list: list = list()
 
     @classmethod
@@ -62,6 +64,47 @@ class EyeWriter:
 
         css_dict = {css_key: f"{{{eye_css_to_dict[css_key]}}}"}
         return css_dict
+
+    def generate_base_css_classes(self, eye_css_list: list):
+        """
+        Generates the css counterpart of inputted eye_css classes
+        eye_css_list: list
+        date: January 29, 2023.
+        return: A dictionary of eye_css and the generated counterpart.
+        example: [text-center, color-pink] => {
+            .text-center: {
+                text-align: center;
+            }
+            .color-pink: {
+                color: pink;
+            }
+        }
+        """
+        eye_css_dictionary = CSSGenerator().css_dictionary()
+        base_css_dict = dict()
+        for each_eye_css in eye_css_list:
+            # In case of classes such as sibling-*:bg-blue, clean each of the css from the eye_css_list
+            if each_eye_css.__contains__(":"):
+                grouper_key, grouper_value = each_eye_css.split(":")[0], each_eye_css.split(":")[-1]
+                if grouper_key not in CSSGenerator().first_level_base_class_pseudo:
+                    each_eye_css = grouper_value
+            if eye_css_dictionary.get(f".{each_eye_css}"):
+                # print(f"GENERATE BASE CSS FROM EYE CSS DICTIONARY: {each_eye_css}")
+                base_css_dict.update({f".{each_eye_css}": eye_css_dictionary[f".{each_eye_css}"]})
+            else:
+                base_css_dict.update(self.process_dynamic_base_css_classes([each_eye_css]))
+        # print(f"GENERATE PASSED LIST: {eye_css_list}")
+        # print(f"BASE CSS DICT: {base_css_dict}", end="\n\n")
+        return base_css_dict
+        # base_css_classes = {f".{k}": eye_css_dictionary[f'.{k}'] for k in eye_css_list}
+        # return base_css_classes
+
+    def group_generated_base_css_classes(self, css_dict: dict):
+        _css_list = list()
+        for _ in css_dict.values():
+            _css_list.extend(_.replace("{", "").replace("}", "").strip(" ").split(";"))
+        _css_list.remove("")
+        return ";".join(_css_list)
 
     # def collect_markup_css_classes_from_files(self):
     #     markup_css_classes_list = []
@@ -103,6 +146,7 @@ class EyeWriter:
                     self.watched_pseudo_classes_list.append(each_css_class)
                 else:
                     self.watched_pseudo_classes_dynamic_list.append(each_css_class)
+                    # print(f"PSEUDO CLASS DYNAMIC LIST: {self.watched_pseudo_classes_dynamic_list}")
             elif EyeMarkupParser().is_pseudo_elements_class(each_css_class):
                 reconstructed_base_css_class = f""".{EyeMarkupParser().reconstruct_markup_base_css_class(
                     EyeMarkupParser().get_base_class_from_pseudo_selector_str(each_css_class)
@@ -111,6 +155,15 @@ class EyeWriter:
                     self.watched_pseudo_elements_list.append(each_css_class)
                 else:
                     self.watched_pseudo_elements_dynamic_list.append(each_css_class)
+            elif EyeMarkupParser().is_pseudo_group_class(each_css_class):
+                # print(f"PSEUDO GROUP CLASS: {each_css_class}")
+                reconstructed_base_css_class = f""".{EyeMarkupParser().reconstruct_markup_base_css_class(
+                    EyeMarkupParser().get_base_class_from_pseudo_selector_str(each_css_class)
+                )}"""
+                if reconstructed_base_css_class in eye_css_dictionary.keys():
+                    self.watched_pseudo_group_list.append(each_css_class)
+                else:
+                    self.watched_pseudo_group_dynamic_list.append(each_css_class)
             elif EyeMarkupParser().is_media_query_class(each_css_class):
                 reconstructed_base_css_class = f""".{EyeMarkupParser().reconstruct_markup_base_css_class(
                     EyeMarkupParser().get_base_class_from_pseudo_selector_str(each_css_class)
@@ -143,6 +196,12 @@ class EyeWriter:
             for each_pseudo_class in self.watched_pseudo_elements_list
         }
 
+        pseudo_group_watched_css = {
+            f".{EyeMarkupParser().reconstruct_markup_pseudo_group_css_class(each_pseudo_class)}":
+                f"{eye_css_dictionary[f'.{EyeMarkupParser().get_base_class_from_pseudo_selector_str(each_pseudo_class)}']}"
+            for each_pseudo_class in self.watched_pseudo_group_list
+        }
+
         media_query_watched_css = {
             EyeMarkupParser().reconstruct_markup_media_query_css_class(each_pseudo_class):
                 f"{eye_css_dictionary[f'.{EyeMarkupParser().get_base_class_from_pseudo_selector_str(each_pseudo_class)}']}"
@@ -159,12 +218,14 @@ class EyeWriter:
                     })
 
         watched_css.update(base_classes_watched_css)
-        watched_css.update(pseudo_classes_watched_css)
         watched_css.update(pseudo_elements_watched_css)
+        watched_css.update(pseudo_classes_watched_css)
+        watched_css.update(pseudo_group_watched_css)
 
         watched_css.update(self.process_dynamic_base_css_classes(self.watched_base_classes_dynamic_list))
-        watched_css.update(self.process_dynamic_base_css_classes(self.watched_pseudo_classes_dynamic_list))
+        watched_css.update(self.process_dynamic_pseudo_class_css_classes(self.watched_pseudo_classes_dynamic_list))
         watched_css.update(self.process_dynamic_pseudo_selector_css_classes(self.watched_pseudo_elements_dynamic_list))
+        watched_css.update(self.process_dynamic_pseudo_group_css_classes(self.watched_pseudo_group_dynamic_list))
         # watched_css.update(self.process_dynamic_pseudo_selector_css_classes(self.watched_pseudo_classes_dynamic_list))
 
         for k, v in self.process_dynamic_base_css_classes(self.watched_media_query_dynamic_list).items():
@@ -551,6 +612,39 @@ class EyeWriter:
         description: e.g., focus:placeholder:font-32|color-gray|font-italic
         """
         dynamic_watched_pseudo_class_css_dict: dict = dict()
+        for each_dynamic_css_class in dynamic_css_class_list:
+            hover_style_split = each_dynamic_css_class.split(":", 1)
+            _pseudo_name, style_definition = hover_style_split[0], hover_style_split[-1]
+            # print(f"{_pseudo_name.upper()} SPLIT: {hover_style_split}")
+            style_definition_variant = style_definition.split("|")
+            base_css_classes = self.generate_base_css_classes(style_definition_variant)
+            reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%", "\%").replace("(", "\(").replace(")", "\)").replace(f"\.{_pseudo_name}", f".{_pseudo_name}")
+            css_result = ";".join([_.replace("{", "").replace("}", "").replace(";", "") for _ in base_css_classes.values()])
+            dynamic_watched_pseudo_class_css_dict.update({f".{reconstructed_dynamic_css_class}": f"{{{css_result}}}"})
+            # if each_dynamic_css_class.startswith("hover"):
+
+        return dynamic_watched_pseudo_class_css_dict
+
+    def process_dynamic_pseudo_group_css_classes(self, dynamic_css_class_list: list):
+        """
+        Process dynamic pseudo group CSS classes
+        date: January 29, 2023
+        description: e.g., every:placeholder:font-32|color-gray|font-italic
+        """
+        dynamic_watched_pseudo_class_css_dict: dict = dict()
+        for each_dynamic_css_class in dynamic_css_class_list:
+            if each_dynamic_css_class.startswith("every"):
+                hover_style_split = each_dynamic_css_class.split(":", 1)
+                _pseudo_name, style_definition = hover_style_split[0], hover_style_split[-1]
+                # print(f"{_pseudo_name.upper()} SPLIT: {hover_style_split}")
+                style_definition_variant = style_definition.split("|")
+                base_css_classes = self.generate_base_css_classes(style_definition_variant)
+                # print(base_css_classes)
+                reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%", "\%").replace("(", "\(").replace(")", "\)").replace(f"\.{_pseudo_name}", f".{_pseudo_name}")
+                # css_result = ";".join([_.replace("{", "").replace("}", "").replace(";", "") for _ in base_css_classes.values()])
+                css_result = self.group_generated_base_css_classes(base_css_classes)
+                dynamic_watched_pseudo_class_css_dict.update({f".{reconstructed_dynamic_css_class}": f"{{{css_result}}}"})
+
         return dynamic_watched_pseudo_class_css_dict
 
 
@@ -751,10 +845,11 @@ class EyeMarkupParser:
         :return: True or False
         :Date: August 7, 2022.
         """
-        pseudo_classes = CSSGenerator().default_pseudo_class_list
         pseudo_elements = CSSGenerator().default_pseudo_element_list
+        pseudo_group = CSSGenerator().default_pseudo_group_list
+        pseudo_classes = CSSGenerator().default_pseudo_class_list
         media_queries = CSSGenerator().default_media_query_list
-        if css_class_str.startswith((*pseudo_classes, *pseudo_elements, *media_queries)):
+        if css_class_str.startswith((*pseudo_group, *pseudo_classes, *pseudo_elements, *media_queries)):
             return False
         return True
 
@@ -826,16 +921,19 @@ class EyeMarkupParser:
         :Date: August 5, 2022.
         """
         # Is there a pseudo class or a pseudo-element?
+
         if css_class_str.__contains__(":"):
             if css_class_str.startswith(CSSGenerator().first_level_base_class_pseudo):
-                return css_class_str
+                # return css_class_str
+                return self.reconstruct_markup_base_css_class(css_class_str)
             natural_base_css_class = css_class_str.rsplit(":", 1)[-1]
             pseudo_css_class = css_class_str.rsplit(":", 1)[0]
-            pseudo_base_css_class_list = list()
+            nested_base_css_class_list = list()
             for _ in pseudo_css_class.split(":"):
                 if _ in CSSGenerator().first_level_base_class_pseudo:
-                    pseudo_base_css_class_list.append(f"{_}:")
-            base_css_class = "".join([*pseudo_base_css_class_list, *natural_base_css_class])
+                    nested_base_css_class_list.append(f"{_}:")
+            base_css_class = "".join([*nested_base_css_class_list, *natural_base_css_class])
+            # print(f"{css_class_str} :: {base_css_class} :: {pseudo_css_class}")
             return self.reconstruct_markup_base_css_class(base_css_class)
         return css_class_str
 
@@ -940,6 +1038,8 @@ class EyeMarkupParser:
             return self.reconstruct_markup_pseudo_classes_css_class(css_class)
         elif self.is_pseudo_elements_class(css_class):
             return self.reconstruct_markup_pseudo_elements_css_class(css_class)
+        elif self.is_pseudo_group_class(css_class):
+            return self.reconstruct_markup_pseudo_group_css_class(css_class)
         elif self.is_media_query_class(css_class):
             return self.reconstruct_markup_media_query_css_class(css_class)
 
@@ -959,6 +1059,23 @@ class EyeMarkupParser:
         return css_class.replace("\:", ":").replace(":", "\:")
 
     @staticmethod
+    def reconstruct_markup_pseudo_group_css_class(css_class: str) -> str:
+        """ A Function to reconstruct eye.css pseudo-group from markup file.
+        e.g., .every:pct:w-48 ==> .every\:pct\:w-48 {...}
+        .sm:every:bg-light ==> @media (max-width) {.every\:bg-light {...}}
+        How: ??
+        1.  Replace all ":" with "\:"
+        2.  Add pseudo group to end of the css class. e.g., .every:bg-lighter => .every\:bg-lighter:every {...}
+        :param css_class: the pseudo-css-class to reconstruct
+        :return: the reconstructed pseudo_css_class
+        :Date: August 5, 2022.
+        """
+        # Get the pseudo_group from the markup css_classes and perform substitution and addition.
+        replaced_css = css_class.replace(":", "\:")
+        pseudo_class = css_class.split(":", 1)[0]
+        return f"{replaced_css} > *"
+
+    @staticmethod
     def reconstruct_markup_pseudo_classes_css_class(css_class: str) -> str:
         """ A Function to reconstruct eye.css pseudo-classes from markup file.
         e.g., .hover:pct:w-48 ==> .hover\:pct\:w-48:hover {...}
@@ -972,14 +1089,20 @@ class EyeMarkupParser:
         """
         # If the pseudo_class contains a child-, meaning it has a group_selector
         if css_class.__contains__("child-"):
-            print(f"Child group encountered: {css_class}")
             child_group = re.findall(r"(child-\w+)", css_class)
             child_group_identifier = child_group[0].split("-")[-1]
             pseudo_class = css_class.split(":", 1)[0]
             replaced_css = css_class.replace(':', '\:')
-            # reconstructed_css = css_class.replace(":", "\:").replace(child_group[0], f"parent-{child_group_identifier}:{pseudo_class} .{child_group[0]}")
             reconstructed_css = f"parent-{child_group_identifier}:{pseudo_class} .{replaced_css}"
-            print(reconstructed_css)
+            return reconstructed_css
+        # If the pseudo_class contains a sibling-, meaning it has a group_selector
+        if css_class.__contains__("sibling-"):
+            sibling_group = re.findall(r"(sibling-\w+)", css_class)
+            sibling_group_identifier = sibling_group[0].split("-")[-1]
+            pseudo_class = css_class.split(":", 1)[0]
+            replaced_css = css_class.replace(':', '\:')
+            # print(f"{css_class} <> {replaced_css}")
+            reconstructed_css = f"sibling-{sibling_group_identifier}:{pseudo_class} ~ .{replaced_css}"
             return reconstructed_css
         # Get the pseudo_classes from the markup css_classes and perform substitution and addition.
         replaced_css = css_class.replace(":", "\:")
