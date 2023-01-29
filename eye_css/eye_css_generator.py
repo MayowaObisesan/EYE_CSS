@@ -33,15 +33,18 @@ class CSSGenerator:
                                               "drop-shadow", "gradient", "radial-gradient", "conic-gradient",
                                               "repeating-linear-gradient", "repeating-radial-gradient",
                                               "repeating-conic-gradient", "transform", "transform-origin",
-                                              "transition", "animation")
+                                              "transition", "animation", "border", "outline")
         self.default_pseudo_element_list = ("after", "before", "first-letter", "first-line", "marker", "placeholder",
-                                            "selection")
+                                            "selection", "motion-reduce", "motion-safe", "contrast-more", "print",
+                                            "portrait", "landscape")
+        self.default_pseudo_group_list = ("parent", "child", "every", "children", "sibling")
         self.default_pseudo_class_list = ('hover', 'focus', 'focus-within', 'focus-visible', 'active', 'visited',
                                           'target', 'first-child', 'last-child', 'only-child', 'nth-child(odd)',
                                           'nth-child(even)', 'first-of-type', 'last-of-type', 'only-of-type',
                                           'empty', 'disabled', 'checked', 'indeterminate', 'default', 'required',
                                           'valid', 'invalid', 'in-range', 'out-of-range', 'placeholder-shown',
                                           'autofill', 'read-only')
+        self.default_pseudo_theme_list = ("dark",)
         self.default_media_query_list = ("sm", "md", "lg", "xl", "xxl")
 
         # MEDIA QUERIES - DEFINITIONS
@@ -77,7 +80,9 @@ class CSSGenerator:
             "xl": "@media (min-width: 1280px)",
             "xxl": "@media (min-width: 1536px)"
         }
-        self.dimension_type_list = ("pct", "em", "rem", "pc", "pt", "vh", "vw", "vmin", "vmax")
+        self.dimension_type_list = ("px", "pct", "em", "rem", "pc", "pt", "vh", "vw", "vmin", "vmax")
+        self.positions_type_list = ("top", "right", "bottom", "left")
+        self.positions_abbreviation_type_list = ("x", "y", "t", "r", "b", "l")
 
     def create_css_generator_file(self):
         with open(self.eye_css_filename, "w+") as opened_file:
@@ -109,7 +114,7 @@ class CSSGenerator:
             text-rendering: auto;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: antialiased; /* | grayscale*/
-            font-family: "system-ui"
+            /* font-family: "system-ui" */
         }}
         *::-webkit-scrollbar {{
             width: 8px;
@@ -176,6 +181,7 @@ class CSSGenerator:
             *ScrollSnaps().css_properties,
             *Transforms().css_properties,
             *List().css_properties,
+            *Visibility().css_properties,
         ]
         # print(css_properties_list)
         return css_properties_list
@@ -193,6 +199,7 @@ class CSSGenerator:
         :Date: August 9, 2022.
         """
         css_templates_list = [
+            *Positions().css_template,
             *Widths().css_template,
             *Heights().css_template,
             *Paddings().css_template,
@@ -205,6 +212,7 @@ class CSSGenerator:
             *Backgrounds().css_template,
             *AccentColor().css_template,
             *Borders().css_template,
+            *Outlines().css_template,
             *Separator().css_template,
             *Transforms().css_template,
         ]
@@ -892,15 +900,19 @@ class Positions:
     @property
     def css_template(self):
         position_template = [
-            ".t- {top: [];}",
-            ".neg\:t- {top: -[];}",
-            ".r- {right: [];}",
-            ".neg\:r- {right: -[];}",
-            ".b- {bottom: [];}",
-            ".neg\:b- {bottom: -[];}",
-            ".l- {left: [];}",
-            ".neg\:l- {left: -[];}"
+            ".top- {top: [];}",
+            ".neg\:top- {top: -[];}",
+            ".right- {right: [];}",
+            ".neg\:right- {right: -[];}",
+            ".bottom- {bottom: [];}",
+            ".neg\:bottom- {bottom: -[];}",
+            ".left- {left: [];}",
+            ".neg\:left- {left: -[];}"
         ]
+        # for _ in CSSGenerator().dimension_type_list:
+        for _ in CSSGenerator().dimension_type_list:
+            for j in CSSGenerator().positions_type_list:
+                position_template.extend([f".{_}\:{j}- {{{j}: [];}}", f".{_}\:neg\:{j}- {{{j}: -[];}}"])
         return position_template
 
     def css_to_dict(self):
@@ -1833,6 +1845,16 @@ class Margins:
             ".mg-b- {margin-bottom: [];}",
             ".mg-l- {margin-left: [];}"
         ]
+        # for _ in CSSGenerator().dimension_type_list:
+        #     margin_template.extend([
+        #         f".{_}\:mg- {{margin: [];}}",
+        #         f".{_}\:mg-x- {{margin-left: []; margin-right: [];}}",
+        #         f".{_}\:mg-y- {{margin-top: []; margin-bottom: [];}}",
+        #         f".{_}\:mg-t- {{margin-top: [];}}",
+        #         f".{_}\:mg-r- {{margin-right: [];}}",
+        #         f".{_}\:mg-b- {{margin-bottom: [];}}",
+        #         f".{_}\:mg-l- {{margin-left: [];}}"
+        #     ])
         return margin_template
 
     def gen_margin_small_helpers(self):
@@ -2125,6 +2147,16 @@ class Paddings:
             ".pad-b- {padding-bottom: [];}",
             ".pad-l- {padding-left: [];}"
         ]
+        # for _ in CSSGenerator().dimension_type_list:
+        #     padding_template.extend([
+        #         f".{_}\:pad- {{padding: [];}}",
+        #         f".{_}\:pad-x- {{padding-left: []; padding-right: [];}}",
+        #         f".{_}\:pad-y- {{padding-top: []; padding-bottom: [];}}",
+        #         f".{_}\:pad-t- {{padding-top: [];}}",
+        #         f".{_}\:pad-r- {{padding-right: [];}}",
+        #         f".{_}\:pad-b- {{padding-bottom: [];}}",
+        #         f".{_}\:pad-l- {{padding-left: [];}}"
+        #     ])
         return padding_template
 
     def gen_padding_default_helpers(self):
@@ -2550,7 +2582,7 @@ class Radius:
     def __init__(self) -> None:
         self.default_dimension_value = 8
         self.radius_css_classes = list()
-        self.default_dimension_value = 8    
+        self.default_dimension_value = 8
         self.default_radius = 8
         self.default_radius_circle = "50% 50%"
         self.default_radius_round = "100px 100px"
@@ -2986,7 +3018,7 @@ class Texts(Root):
         font_size_sequence_template = "0.08, 0.08, 0.08, 0.09"
         return font_size_sequence_template.replace(" ", "").split(",")
 
-    def gen_font_size(self, nth_size=20):
+    def gen_font_size(self, nth_size=40):
         """ :Date: July 1, 2022. """
         from decimal import Decimal
         prev_ = Decimal("0.01")
@@ -3040,6 +3072,11 @@ class Texts(Root):
     def font_family(self):
         """ :Date: July 18, 2022. """
         font_family_css = f"""
+        .font-family-inherit {{font-family: inherit}}
+        .font-family-initial {{font-family: initial}}
+        .font-family-unset {{font-family: unset}}
+        .font-family-revert {{font-family: revert}}
+        .font-family-revert-layer {{font-family: revert-layer}}
         .font-sans {{font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";}}
         .font-serif {{font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;}}
         .font-mono {{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;}}
@@ -3889,6 +3926,10 @@ class Outlines(Root):
             ".em\:outline- {outline-width: [];}",
             ".outline-offset- {outline-offset: [];}",
             ".em\:outline-offset- {outline-offset: [];}"
+            ".neg\:outline- {outline(): -[];}",
+            ".neg\:em\:outline- {outline-width: -[];}",
+            ".neg\:outline-offset- {outline-offset: -[];}",
+            ".neg\:em\:outline-offset- {outline-offset-: [];}"
         ]
         return outline_template
 
@@ -4990,3 +5031,29 @@ class List:
         .list-position-unset {{list-style-position: unset;}}
         """
         self.list_style_css_classes.append(list_style_position_css)
+
+
+class Visibility:
+    """
+    Visibility classes.
+    Date: January 29, 2023.
+    """
+    def __init__(self):
+        self.visibility_style_css_classes = list()
+        self.visibility_helpers()
+
+    @property
+    def css_properties(self):
+        return self.visibility_style_css_classes
+
+    def visibility_helpers(self):
+        pointer_events_css = f"""
+                .visible-inherit {{visibility: inherit;}}
+                .visible-auto {{visibility: auto;}}
+                .visible-unset {{visibility: unset;}}
+                .visible-revert {{visibility: revert;}}
+                .visible-revert-layer {{visibility: revert-layer;}}
+                .visible {{visibility: visible;}}
+                .invisible {{visibility: hidden;}}
+                """
+        self.visibility_style_css_classes.append(pointer_events_css)
