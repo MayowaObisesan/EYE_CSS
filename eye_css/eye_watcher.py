@@ -103,7 +103,7 @@ class EyeWriter:
         _css_list = list()
         for _ in css_dict.values():
             _css_list.extend(_.replace("{", "").replace("}", "").strip(" ").split(";"))
-        _css_list.remove("")
+        _css_list.remove("") if "" in _css_list else None
         return ";".join(_css_list)
 
     # def collect_markup_css_classes_from_files(self):
@@ -532,6 +532,10 @@ class EyeWriter:
                 border_style_definition_variant = border_style_definition.split("|")
                 border_variant_list = list()
                 for each_variant in border_style_definition_variant:
+                    each_variant_split = each_variant.split("_")
+                    if CSSGenerator().is_color_code(each_variant_split[-1]):
+                        each_variant_split[-1] = f"#{each_variant_split[-1]}"
+                        each_variant = "_".join(each_variant_split)
                     replaced_each_variant = each_variant.replace("_", " ")
                     border_variant_list.append(replaced_each_variant)
                 border_style_value = "".join(border_variant_list)
@@ -549,18 +553,18 @@ class EyeWriter:
                 outline_style_value = "".join(outline_variant_list)
                 reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%", "\%").replace("(", "\(").replace(")", "\)")
                 dynamic_watched_css_dict.update({f""".{reconstructed_dynamic_css_class}""": f"{{outline: {outline_style_value};}}"})
-            elif dynamic_css_class_key.startswith("child"):
-                child_style_split = each_dynamic_css_class.rsplit(":", 1)
-                print(child_style_split)
-                _, child_style_definition = child_style_split[0], child_style_split[-1]
-                parent_counterpart = f".parent-{_.split('-')[-1]}".replace("\\", "")
-
-                style_definition_variant = child_style_definition.split("|")
-                base_css_classes = {f".{k}": CSSGenerator().css_dictionary()[f'.{k}'] for k in style_definition_variant}
-                reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%", "\%").replace("(", "\(").replace(")", "\)")
-                css_result = ";".join([_.replace("{", "").replace("}", "").replace(";", "") for _ in base_css_classes.values()])
-                print(css_result)
-                dynamic_watched_css_dict.update({f"{parent_counterpart} .{reconstructed_dynamic_css_class}": f"{{{css_result}}}"})
+            # elif dynamic_css_class_key.startswith("child"):
+            #     child_style_split = each_dynamic_css_class.rsplit(":", 1)
+            #     print(child_style_split)
+            #     _, child_style_definition = child_style_split[0], child_style_split[-1]
+            #     parent_counterpart = f".parent-{_.split('-')[-1]}".replace("\\", "")
+            #
+            #     style_definition_variant = child_style_definition.split("|")
+            #     base_css_classes = {f".{k}": CSSGenerator().css_dictionary()[f'.{k}'] for k in style_definition_variant}
+            #     reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%", "\%").replace("(", "\(").replace(")", "\)")
+            #     css_result = ";".join([_.replace("{", "").replace("}", "").replace(";", "") for _ in base_css_classes.values()])
+            #     print(css_result)
+            #     dynamic_watched_css_dict.update({f"{parent_counterpart} .{reconstructed_dynamic_css_class}": f"{{{css_result}}}"})
 
         return dynamic_watched_css_dict
 
@@ -619,7 +623,8 @@ class EyeWriter:
             style_definition_variant = style_definition.split("|")
             base_css_classes = self.generate_base_css_classes(style_definition_variant)
             reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%", "\%").replace("(", "\(").replace(")", "\)").replace(f"\.{_pseudo_name}", f".{_pseudo_name}")
-            css_result = ";".join([_.replace("{", "").replace("}", "").replace(";", "") for _ in base_css_classes.values()])
+            # css_result = ";".join([_.replace("{", "").replace("}", "").replace(";", "") for _ in base_css_classes.values()])
+            css_result = self.group_generated_base_css_classes(base_css_classes)
             dynamic_watched_pseudo_class_css_dict.update({f".{reconstructed_dynamic_css_class}": f"{{{css_result}}}"})
             # if each_dynamic_css_class.startswith("hover"):
 
@@ -633,17 +638,17 @@ class EyeWriter:
         """
         dynamic_watched_pseudo_class_css_dict: dict = dict()
         for each_dynamic_css_class in dynamic_css_class_list:
-            if each_dynamic_css_class.startswith("every"):
-                hover_style_split = each_dynamic_css_class.split(":", 1)
-                _pseudo_name, style_definition = hover_style_split[0], hover_style_split[-1]
-                # print(f"{_pseudo_name.upper()} SPLIT: {hover_style_split}")
-                style_definition_variant = style_definition.split("|")
-                base_css_classes = self.generate_base_css_classes(style_definition_variant)
-                # print(base_css_classes)
-                reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%", "\%").replace("(", "\(").replace(")", "\)").replace(f"\.{_pseudo_name}", f".{_pseudo_name}")
-                # css_result = ";".join([_.replace("{", "").replace("}", "").replace(";", "") for _ in base_css_classes.values()])
-                css_result = self.group_generated_base_css_classes(base_css_classes)
-                dynamic_watched_pseudo_class_css_dict.update({f".{reconstructed_dynamic_css_class}": f"{{{css_result}}}"})
+            group_style_split = each_dynamic_css_class.split(":", 1)
+            _pseudo_name, style_definition = group_style_split[0], group_style_split[-1]
+            # print(f"{_pseudo_name.upper()} SPLIT: {group_style_split}")
+            style_definition_variant = style_definition.split("|")
+            base_css_classes = self.generate_base_css_classes(style_definition_variant)
+            # print(base_css_classes)
+            reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%", "\%").replace("(", "\(").replace(")", "\)").replace(f"\.{_pseudo_name}", f".{_pseudo_name}")
+            # css_result = ";".join([_.replace("{", "").replace("}", "").replace(";", "") for _ in base_css_classes.values()])
+            css_result = self.group_generated_base_css_classes(base_css_classes)
+            dynamic_watched_pseudo_class_css_dict.update({f".{reconstructed_dynamic_css_class}": f"{{{css_result}}}"})
+            # if each_dynamic_css_class.startswith("every"):
 
         return dynamic_watched_pseudo_class_css_dict
 
@@ -1073,7 +1078,14 @@ class EyeMarkupParser:
         # Get the pseudo_group from the markup css_classes and perform substitution and addition.
         replaced_css = css_class.replace(":", "\:")
         pseudo_class = css_class.split(":", 1)[0]
-        return f"{replaced_css} > *"
+        # print(pseudo_class)
+        if pseudo_class == "every":
+            return f"{replaced_css} > *"
+        elif pseudo_class == "all":
+            return f"{replaced_css} *"
+        elif pseudo_class == "sibling":
+            return f"{replaced_css} ~ *"
+        return replaced_css
 
     @staticmethod
     def reconstruct_markup_pseudo_classes_css_class(css_class: str) -> str:
@@ -1104,6 +1116,16 @@ class EyeMarkupParser:
             # print(f"{css_class} <> {replaced_css}")
             reconstructed_css = f"sibling-{sibling_group_identifier}:{pseudo_class} ~ .{replaced_css}"
             return reconstructed_css
+        # If the pseudo_class contains an all modifier
+        if css_class.__contains__("all"):
+            replaced_css = css_class.replace(":", "\:")
+            pseudo_class = css_class.split(":", 1)[0]
+            return f"{replaced_css} *:{pseudo_class}"
+        # If the pseudo_class contains an every modifier
+        if css_class.__contains__("every"):
+            replaced_css = css_class.replace(":", "\:")
+            pseudo_class = css_class.split(":", 1)[0]
+            return f"{replaced_css} > *:{pseudo_class}"
         # Get the pseudo_classes from the markup css_classes and perform substitution and addition.
         replaced_css = css_class.replace(":", "\:")
         pseudo_class = css_class.split(":", 1)[0]
