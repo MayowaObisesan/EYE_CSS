@@ -18,6 +18,7 @@ class Eye:
     if bool(args.file):
         try:
             if os.path.isfile(args.file):
+                EYE_CONFIG_FILE = args.file
                 with open(args.file, "r") as eye_config_file:
                     eye_css_config_data = yaml.safe_load(eye_config_file)
                     eye_config_file.close()
@@ -32,7 +33,8 @@ class Eye:
         except Exception as err:
             print("Cannot Start Eye.css. Check your config file.")
         else:
-            if eye_css_config_data.get("eye") is not None:
+            # if eye_css_config_data.get("eye") is not None:
+            if eye_config := eye_css_config_data.get("eye"):
                 # we do not make provision for multiple directories to be watched because the watcher library being used
                 # does not support multiple directories being watched. - August 25, 2022.
                 # There are alternatives to the watcher library but not using the alternatives yet. - September 4, 2022.
@@ -50,6 +52,24 @@ class Eye:
 
                 EXCLUDE_DIRECTORY = eye_css_config_data.get("eye").get("exclude_directory", "")
                 EXCLUDE_FILES = eye_css_config_data.get("eye").get("exclude_files", "")
+
+                # ======================== #
+                # SCROLLBAR CONFIGURATIONS - MARCH 26, 2023.
+                # ======================== #
+                SCROLLBAR_COLOR = eye_config.get("scrollbar_color", "#EEEEEE")
+                SCROLLBAR_COLOR_DARK = eye_config.get("scrollbar_color_dark", "#222222")
+                SCROLLBAR_WIDTH = eye_config.get("scrollbar_width", "8px")
+                SCROLLBAR_WIDTH_SMALL = eye_config.get("scrollbar_width_small", "4px")
+                SCROLLBAR_HEIGHT = eye_config.get("scrollbar_height", "8px")
+                SCROLLBAR_HEIGHT_SMALL = eye_config.get("scrollbar_height_small", "1px")
+
+                SCROLLBAR_TRACK_COLOR = eye_config.get("scrollbar_track_color", "#F3F3F3")
+                SCROLLBAR_TRACK_COLOR_DARK = eye_config.get("scrollbar_track_color_dark", "#222222")
+                SCROLLBAR_TRACK_RADIUS = eye_config.get("scrollbar_track_radius", "0px")
+
+                SCROLLBAR_THUMB_COLOR = eye_config.get("scrollbar_thumb_color", "#D7D7D7")
+                SCROLLBAR_THUMB_COLOR_DARK = eye_config.get("scrollbar_thumb_color_dark", "#444444")
+                SCROLLBAR_THUMB_RADIUS = eye_config.get("scrollbar_thumb_radius", "0px")
             else:
                 DIRECTORY_TO_WATCH = eye_css_config_data.get("input_directory", "")
                 EXTENSIONS_TO_WATCH = eye_css_config_data.get("input_extensions", "")
