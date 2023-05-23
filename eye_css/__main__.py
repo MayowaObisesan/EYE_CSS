@@ -57,14 +57,16 @@ class Eye:
                 # SCROLLBAR CONFIGURATIONS - MARCH 26, 2023.
                 # ======================== #
                 SCROLLBAR_COLOR = eye_config.get("scrollbar_color", "#EEEEEE")
-                SCROLLBAR_COLOR_DARK = eye_config.get("scrollbar_color_dark", "#222222")
+                # SCROLLBAR_COLOR_DARK = eye_config.get("scrollbar_color_dark", "#222222")
+                SCROLLBAR_COLOR_DARK = eye_config.get("scrollbar_color_dark", "transparent")
                 SCROLLBAR_WIDTH = eye_config.get("scrollbar_width", "8px")
                 SCROLLBAR_WIDTH_SMALL = eye_config.get("scrollbar_width_small", "4px")
                 SCROLLBAR_HEIGHT = eye_config.get("scrollbar_height", "8px")
                 SCROLLBAR_HEIGHT_SMALL = eye_config.get("scrollbar_height_small", "1px")
 
                 SCROLLBAR_TRACK_COLOR = eye_config.get("scrollbar_track_color", "#F3F3F3")
-                SCROLLBAR_TRACK_COLOR_DARK = eye_config.get("scrollbar_track_color_dark", "#222222")
+                # SCROLLBAR_TRACK_COLOR_DARK = eye_config.get("scrollbar_track_color_dark", "#222222")
+                SCROLLBAR_TRACK_COLOR_DARK = eye_config.get("scrollbar_track_color_dark", "transparent")
                 SCROLLBAR_TRACK_RADIUS = eye_config.get("scrollbar_track_radius", "0px")
 
                 SCROLLBAR_THUMB_COLOR = eye_config.get("scrollbar_thumb_color", "#D7D7D7")
