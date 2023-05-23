@@ -812,9 +812,9 @@ class Handler(FileSystemEventHandler):
                 # Take any action here when a file is modified.
                 logging.info("Received modified event - %s." % event.src_path)
 
-                # if event.src_path in self.FILES_TO_WATCH:
-                #     EyeWriter().create_watched_css()
-            EyeWriter().create_watched_css()
+                if event.src_path in self.FILES_TO_WATCH:
+                    EyeWriter().create_watched_css()
+            # EyeWriter().create_watched_css()
 
     # def on_modified(self, event):
     #     if event.src_path in self.files_to_watch:

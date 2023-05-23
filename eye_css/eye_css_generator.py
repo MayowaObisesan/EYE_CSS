@@ -148,15 +148,25 @@ class CSSGenerator:
             --scrollbar_track_color_dark: {scrollbar_track_color_dark};
             --scrollbar_track_radius: {scrollbar_track_radius};
         }}
-        *::-webkit-scrollbar {{
-            width: var(--scrollbar_width, 8px);
-            height: 100%;
-            min-height: var(--scrollbar_height, 8px);    /* For horizontal scrollbar to display. */
-            max-height: var(--scrollbar_height, 8px);    /* For horizontal scrollbar to display. */
-            background-color: var(--scrollbar_color, #EEEEEE);
-        }}
-        @media (max-width: 1024px) {{
+        @media (min-width: 1024px) {{
             *::-webkit-scrollbar {{
+                width: var(--scrollbar_width, 8px);
+                height: 100%;
+                min-height: var(--scrollbar_height, 8px);    /* For horizontal scrollbar to display. */
+                max-height: var(--scrollbar_height, 8px);    /* For horizontal scrollbar to display. */
+                background-color: var(--scrollbar_color, #EEEEEE);
+            }}
+            *::-webkit-scrollbar-thumb {{
+                border-radius: var(--scrollbar_thumb_radius, 0px);
+                background-color: var(--scrollbar_thumb_color, #D7D7D7);
+            }}
+            *::-webkit-scrollbar-track {{
+                border-radius: var(--scrollbar_track_radius, 0px);
+                background-color: var(--scrollbar_track_color, #F3F3F3);
+            }}
+        }}
+        @media (min-width: 1024px) {{
+            .lg\:*::-webkit-scrollbar {{
                 width: var(--scrollbar_width_small, 4px);
                 height: 100%;
                 min-height: var(--scrollbar_height_small, 1px);    /* For horizontal scrollbar to display. */
@@ -164,15 +174,7 @@ class CSSGenerator:
                 background-color: var(--scrollbar_color, #EEEEEE);
             }}
         }}
-        *::-webkit-scrollbar-thumb {{
-            border-radius: var(--scrollbar_thumb_radius, 0px);
-            background-color: var(--scrollbar_thumb_color, #D7D7D7);
-        }}
-        *::-webkit-scrollbar-track {{
-            border-radius: var(--scrollbar_track_radius, 0px);
-            background-color: var(--scrollbar_track_color, #F3F3F3);
-        }}
-        @media (prefers-color-scheme: dark) {{
+        @media (min-width: 1024px) and (prefers-color-scheme: dark) {{
             *::-webkit-scrollbar {{
                 background: var(--scrollbar_color_dark);
             }}
@@ -182,7 +184,8 @@ class CSSGenerator:
             }}
         
             *::-webkit-scrollbar-track {{
-                background-color: var(--scrollbar_track_color_dark, #121714);
+                /* background-color: var(--scrollbar_track_color_dark, #121714); */
+                background-color: var(--scrollbar_track_color_dark, transparent);
             }}
         }}
         *::-webkit-scrollbar-track-piece {{}}
@@ -463,7 +466,8 @@ class Root:
         self.default_color_black = "hsla(0, 0%, 0%, 1)"
         self.default_color_black_transparent = "hsla(0, 0%, 0%, .9)"
 
-        self.default_color_light = "hsla(0, 0%, 82.7%, 0.9)"
+        # self.default_color_light = "hsla(0, 0%, 82.7%, 0.9)"
+        self.default_color_light = "hsla(0, 0%, 90.8%, 0.9)"
         self.default_color_light_hover = "hsla(0, 0%, 72.7%, 0.9)"
         self.default_color_light_disabled = "hsla(0, 0%, 62.7%, 0.8)"
         self.default_color_light_solid = "hsla(0, 0%, 82.7%, 1)"
@@ -521,6 +525,8 @@ class Root:
 
         self.gen_root()
         self.default_variables()
+        self.appearance()
+        self.box_sizing()
         self.color_table()
 
     @staticmethod
@@ -4486,9 +4492,10 @@ class PointerEvents:
         self.pointer_events_css_classes.append(pointer_events_css)
 
 
-class AccentColor:
+class AccentColor(Root):
     """ :Date: July 18, 2022. """
     def __init__(self) -> None:
+        super().__init__()
         self.accent_color_css_classes = list()
         self.accent_color_default_helpers()
 
@@ -4519,10 +4526,11 @@ class AccentColor:
 
     def accent_color_helpers(self):
         """ :Date: inherit """
-        accent_color_css = f"""
-        .accent- {{accent-color: }}
-        """
-        self.accent_color_css_classes.append(accent_color_css)
+        for k, v in self.color_dictionary().items():
+            accent_color_css = f"""
+            .accent-{k} {{accent-color: {v};}}
+            """
+            self.accent_color_css_classes.append(accent_color_css)
 
 
 class BackFace:

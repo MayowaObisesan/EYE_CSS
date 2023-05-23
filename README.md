@@ -53,6 +53,16 @@ eye:
 
   exclude_directory: ".git"
   exclude_files: ".gitignore"
+  
+  scrollbar_width: "8px"
+  scrollbar_height: "8px" # for horizontal scrolls
+  scrollbar_color: "lightgray"
+  scrollbar_color_dark: "#222222" # for dark themes
+  scrollbar_track_color: "lightgray"
+  scrollbar_color_track_dark: "#222222" # for dark themes
+  scrollbar_thumb_color: "gray"
+  scrollbar_thumb_color_dark: "gray"  # for dark themes
+  scrollbar_thumb_radius: "8px 8px"
 ```
 
 _**Remember to name the file: eye_config.yml**_
