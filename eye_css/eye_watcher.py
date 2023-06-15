@@ -520,7 +520,7 @@ class EyeWriter:
             elif dynamic_css_class_key.startswith("repeating-conic-gradient\:"):
                 self.process_dynamic_gradients(css_class=each_dynamic_css_class, dynamic_watched_css_dict=dynamic_watched_css_dict, gradient_name="repeating-conic-gradient")
             elif dynamic_css_class_key.startswith("transform\:"):
-                transform_style_split = each_dynamic_css_class.split(":")
+                transform_style_split = each_dynamic_css_class.split(":", 1)
                 transform_style = transform_style_split[0]
                 transform_style_definition = transform_style_split[-1]
 
@@ -528,8 +528,13 @@ class EyeWriter:
                 transform_variant_list = []
                 for each_variant in transform_style_definition_variant:
                     # replaced_each_variant = each_variant.replace("_", " ").replace("-", "")
-                    transform_variant_name = each_variant.rsplit("-", 1)[0]
-                    transform_variant_dimension = each_variant.rsplit("-", 1)[-1]
+                    transform_variant_name = each_variant.rsplit("-", 1)[0].split(":")[-1]
+                    transform_variant_dimension = (
+                        f"-{each_variant.rsplit('-', 1)[-1]}"
+                        if each_variant.startswith("neg\:") or each_variant.startswith("neg:")
+                        else each_variant.rsplit("-", 1)[-1]
+                    )
+                    # print(f"{each_variant} <--> {transform_variant_name} <-> {transform_variant_dimension}")
                     transform_variant_name_type = transform_variant_name.split("-")[0]
                     transform_variant_name_plane = transform_variant_name.split("-")[-1].upper()
                     transform_variant_list.append(f"{transform_variant_name_type}{transform_variant_name_plane}({transform_variant_dimension})")
@@ -978,7 +983,7 @@ class EyeMarkupParser:
         :Date: January 28, 2023.
         """
         pseudo_classes = CSSGenerator().default_pseudo_group_list
-        if css_class_str.split(":", 1)[0].strip(".").strip("\\") in pseudo_classes:
+        if css_class_str.split(":", 1)[0].split("-", 1)[0].strip(".").strip("\\") in pseudo_classes:
         # if css_class_str.startswith(pseudo_classes):
             return True
         return False
@@ -1207,6 +1212,9 @@ class EyeMarkupParser:
             return f"{replaced_css} *"
         elif pseudo_class == "sibling":
             return f"{replaced_css} ~ *"
+        elif pseudo_class.startswith("class-"):
+            print(f"PSEUDO GROUP CLASS: {pseudo_class}")
+            return f"{pseudo_class}"
         return replaced_css
 
     @staticmethod
@@ -1237,6 +1245,15 @@ class EyeMarkupParser:
             replaced_css = css_class.replace(':', '\:')
             # print(f"{css_class} <> {replaced_css}")
             reconstructed_css = f"sibling-{sibling_group_identifier}:{pseudo_class} ~ .{replaced_css}"
+            return reconstructed_css
+        # If the pseudo_class contains a `class-`, meaning it has a `class-group_selector`
+        if css_class.__contains__("class-"):
+            class_group = re.findall(r"(class-[\w-]+)", css_class)
+            class_group_identifier = class_group[0].split("-")[-1]
+            # pseudo_class = css_class.split(":", 1)[0]
+            # replaced_css = css_class.replace(":", "\:")
+            reconstructed_css = f"{class_group_identifier}"
+            print(f"RECONSTRUCTED CLASS: {reconstructed_css}")
             return reconstructed_css
         # If the pseudo_class contains an all modifier
         if css_class.__contains__("all:"):

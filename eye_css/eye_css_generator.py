@@ -39,7 +39,7 @@ class CSSGenerator:
         self.default_pseudo_element_list = ("after", "before", "first-letter", "first-line", "marker", "placeholder",
                                             "selection", "motion-reduce", "motion-safe", "contrast-more", "print",
                                             "portrait", "landscape")
-        self.default_pseudo_group_list = ("all", "parent", "child", "every", "children", "sibling")
+        self.default_pseudo_group_list = ("all", "parent", "child", "every", "children", "sibling", "class")
         self.default_pseudo_class_list = ('hover', 'focus', 'focus-within', 'focus-visible', 'active', 'visited',
                                           'target', 'first-child', 'last-child', 'only-child', 'nth-child(odd)',
                                           'nth-child(even)', 'first-of-type', 'last-of-type', 'only-of-type',
