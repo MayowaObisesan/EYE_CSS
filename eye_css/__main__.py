@@ -42,7 +42,10 @@ class Eye:
                 if not os.path.isabs(DIRECTORY_TO_WATCH):
                     watched_directory_path = os.path.dirname(args.file)
                     DIRECTORY_TO_WATCH = os.path.realpath(os.path.join(watched_directory_path, DIRECTORY_TO_WATCH))
-                EXTENSIONS_TO_WATCH = eye_css_config_data.get("eye").get("input_extensions", "").split(",")
+                if type(eye_config.get("input_extensions")) is list:
+                    EXTENSIONS_TO_WATCH = eye_css_config_data.get("eye").get("input_extensions", "")
+                else:
+                    EXTENSIONS_TO_WATCH = eye_css_config_data.get("eye").get("input_extensions", "").split(",")
 
                 OUTPUT_PATH = eye_css_config_data.get("eye").get("output_path", "") or os.path.dirname(args.file)
                 OUTPUT_NAME = eye_css_config_data.get("eye").get("output_name", "")
@@ -50,7 +53,10 @@ class Eye:
 
                 EXACT_FILE = eye_css_config_data.get("eye").get("input_exact_files", "")
 
-                EXCLUDE_DIRECTORY = eye_css_config_data.get("eye").get("exclude_directory", "")
+                if type(eye_config.get("exclude_directory")) is list:
+                    EXCLUDE_DIRECTORY = eye_css_config_data.get("eye").get("exclude_directory", "")
+                else:
+                    EXCLUDE_DIRECTORY = eye_css_config_data.get("eye").get("exclude_directory", "").split(',')
                 EXCLUDE_FILES = eye_css_config_data.get("eye").get("exclude_files", "")
 
                 # ======================== #

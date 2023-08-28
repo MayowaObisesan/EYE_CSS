@@ -44,12 +44,14 @@ class EyeWriter:
         self.watched_pseudo_group_list: list = list()
         self.watched_pseudo_classes_list: list = list()
         self.watched_theme_list: list = list()
+        self.watched_template_list: list = list()
         self.watched_media_query_list: list = list()
         self.watched_base_classes_dynamic_list: list = list()
         self.watched_pseudo_elements_dynamic_list: list = list()
         self.watched_pseudo_classes_dynamic_list: list = list()
         self.watched_pseudo_group_dynamic_list: list = list()
         self.watched_theme_dynamic_list: list = list()
+        self.watched_template_dynamic_list: list = list()
         self.watched_media_query_dynamic_list: list = list()
 
     @classmethod
@@ -184,6 +186,12 @@ class EyeWriter:
                 else:
                     # print(f"Dynamic Theme list: {each_css_class}")
                     self.watched_theme_dynamic_list.append(each_css_class)
+            # elif EyeMarkupParser().is_template_class(each_css_class):
+            #     reconstructed_base_css_class = f""".{EyeMarkupParser().reconstruct_markup_base_css_class(
+            #         EyeMarkupParser().get_base_class_from_pseudo_selector_str(each_css_class)
+            #     )}"""
+            #     if reconstructed_base_css_class in eye_css_dictionary.keys():
+            #         self.watched_template_list.append(each_css_class)
             elif EyeMarkupParser().is_media_query_class(each_css_class):
                 # print(f"Media query class: {each_css_class}")
                 reconstructed_base_css_class = f""".{EyeMarkupParser().reconstruct_markup_base_css_class(
@@ -482,6 +490,9 @@ class EyeWriter:
                 gradient_variant_list = []
                 for each_variant in gradient_style_definition_variant:
                     replaced_each_variant = each_variant.replace("_", " ").replace("-", ",")
+                    for _ in replaced_each_variant.split(","):
+                        if CSSGenerator().is_color_code(_):
+                            replaced_each_variant = replaced_each_variant.replace(_, f"#{_}")
                     gradient_variant_list.append(f"""linear-gradient({replaced_each_variant})""")
                 gradient_style_value = ", ".join(gradient_variant_list)
                 reconstructed_dynamic_css_class = EyeMarkupParser().reconstruct_css_class(each_dynamic_css_class).replace("|", "\|").replace(".", "\.").replace("#", "\#").replace("%", "\%").replace("(", "\(").replace(")", "\)")
@@ -603,6 +614,10 @@ class EyeWriter:
                 outline_style_definition_variant = outline_style_definition.split("|")
                 outline_variant_list = list()
                 for each_variant in outline_style_definition_variant:
+                    each_variant_split = each_variant.split("_")
+                    if CSSGenerator().is_color_code(each_variant_split[-1]):
+                        each_variant_split[-1] = f"#{each_variant_split[-1]}"
+                        each_variant = "_".join(each_variant_split)
                     replaced_each_variant = each_variant.replace("_", " ")
                     outline_variant_list.append(replaced_each_variant)
                 outline_style_value = "".join(outline_variant_list)
@@ -706,6 +721,9 @@ class EyeWriter:
             css_result = self.group_generated_base_css_classes(base_css_classes)
             dynamic_watched_pseudo_class_css_dict.update({f".{reconstructed_dynamic_css_class}": f"{{{css_result}}}"})
             # if each_dynamic_css_class.startswith("every"):
+            if each_dynamic_css_class.startswith("class-"):
+                # print({f".{reconstructed_dynamic_css_class}": f"{{{css_result}}}"})
+                CSSGenerator().css_dictionary().update({f".{reconstructed_dynamic_css_class}": f"{{{css_result}}}"})
 
         return dynamic_watched_pseudo_class_css_dict
 
@@ -1214,7 +1232,7 @@ class EyeMarkupParser:
             return f"{replaced_css} ~ *"
         elif pseudo_class.startswith("class-"):
             print(f"PSEUDO GROUP CLASS: {pseudo_class}")
-            return f"{pseudo_class}"
+            return f"{pseudo_class.replace('class-', '', 1)}"
         return replaced_css
 
     @staticmethod
@@ -1249,10 +1267,10 @@ class EyeMarkupParser:
         # If the pseudo_class contains a `class-`, meaning it has a `class-group_selector`
         if css_class.__contains__("class-"):
             class_group = re.findall(r"(class-[\w-]+)", css_class)
-            class_group_identifier = class_group[0].split("-")[-1]
+            class_group_identifier = class_group[0].split("-", 1)[1:]
             # pseudo_class = css_class.split(":", 1)[0]
             # replaced_css = css_class.replace(":", "\:")
-            reconstructed_css = f"{class_group_identifier}"
+            reconstructed_css = f"{''.join(class_group_identifier)}"
             print(f"RECONSTRUCTED CLASS: {reconstructed_css}")
             return reconstructed_css
         # If the pseudo_class contains an all modifier
@@ -1308,7 +1326,7 @@ class EyeMarkupParser:
         elif self.is_pseudo_group_class(after_media_query_css_str):
             reconstructed_after_media_query_str = f".{media_type}\:{self.reconstruct_markup_pseudo_group_css_class(after_media_query_css_str)}"
         elif self.is_theme_class(after_media_query_css_str):
-            reconstructed_after_media_query_str = f".{media_type}\:{self.reconstruct_markup_theme_css_class(after_media_query_css_str)}"
+            reconstructed_after_media_query_str = f".{media_type}\:{self.reconstruct_markup_theme_css_class(after_media_query_css_str).removeprefix('.')}"
         elif self.is_pseudo_classes_class(after_media_query_css_str):
             reconstructed_after_media_query_str = f".{media_type}\:{self.reconstruct_markup_pseudo_classes_css_class(after_media_query_css_str)}"
         return reconstructed_after_media_query_str
@@ -1329,7 +1347,9 @@ class EyeMarkupParser:
         after_theme_css_str: str = partitioned_css_class[-1]
         reconstructed_after_theme_str: str = ""
 
-        if _ := self.reconstruct_css_class(after_theme_css_str):
+        if self.is_media_query_class(after_theme_css_str):
+            reconstructed_after_theme_str = f".{theme_type}\:{self.reconstruct_markup_theme_css_class(after_theme_css_str).removeprefix('.')}"
+        elif _ := self.reconstruct_css_class(after_theme_css_str):
             reconstructed_after_theme_str = f".{theme_type}\:{_}" if _ else reconstructed_after_theme_str
         return reconstructed_after_theme_str
 
