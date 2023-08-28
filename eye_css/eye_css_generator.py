@@ -36,6 +36,7 @@ class CSSGenerator:
                                               "repeating-linear-gradient", "repeating-radial-gradient",
                                               "repeating-conic-gradient", "transform", "transform-origin",
                                               "transition", "animation", "border", "outline")
+        self.default_pseudo_template_list = ("class",)
         self.default_pseudo_element_list = ("after", "before", "first-letter", "first-line", "marker", "placeholder",
                                             "selection", "motion-reduce", "motion-safe", "contrast-more", "print",
                                             "portrait", "landscape")
@@ -3649,6 +3650,7 @@ class Backgrounds(Root):
     def mica_bg(self):
         """:Date: July 1, 2022."""
         mica_bg = f"""
+        .bg-mica-unset {{backdrop-filter: blur(0px);}}
         .bg-mica {{backdrop-filter: blur(8px);}}
         .bg-mica-sm {{backdrop-filter: blur(6px);}}
         .bg-mica-smr {{backdrop-filter: blur(4px);}}
